@@ -1,0 +1,568 @@
+/**
+ * =============================================================================
+ * SourceMod VScript Extension
+ * Copyright 2025-2026 ProjectSky
+ * =============================================================================
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "extension.h"
+#include "core/handle_types.h"
+#include "core/vscript_manager.h"
+#include "core/generic_operations.h"
+#include "core/variant_helpers.h"
+#include <vscript/ivscript.h>
+
+static cell_t Native_VScriptTable_Create(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm = g_VScriptManager.GetVM();
+	if (!vm) return 0;
+
+	ScriptVariant_t tableVar;
+	vm->CreateTable(tableVar);
+
+	if (tableVar.m_type != FIELD_HSCRIPT || tableVar.m_hScript == INVALID_HSCRIPT) return 0;
+
+	VScriptTableHandle* handle = new VScriptTableHandle(tableVar.m_hScript, false);
+	handle->SetVariant(tableVar);
+	return CreateVScriptTableHandle(ctx, handle);
+}
+
+static cell_t Native_VScriptTable_Length_get(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+	return vm->GetNumTableEntries(table);
+}
+
+static cell_t Native_VScriptTable_SetInt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+	return vm->SetValue(table, key, params[3]);
+}
+
+static cell_t Native_VScriptTable_SetFloat(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+	return vm->SetValue(table, key, sp_ctof(params[3]));
+}
+
+static cell_t Native_VScriptTable_SetBool(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+	return vm->SetValue(table, key, params[3] != 0);
+}
+
+static cell_t Native_VScriptTable_SetString(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+	char* value;
+	ctx->LocalToString(params[3], &value);
+	return vm->SetValue(table, key, value);
+}
+
+static cell_t Native_VScriptTable_SetVector(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	Vector v = ReadVectorParam(ctx, params, 3);
+	ScriptVariant_t variant = CreateVectorVariant(v);
+	return vm->SetValue(table, key, variant);
+}
+
+static cell_t Native_VScriptTable_SetValue(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	VScriptVariantHandle* varHandle = ReadScriptVariantHandle(ctx, params[3]);
+	if (!varHandle) return 0;
+
+	return vm->SetValue(table, key, varHandle->GetVariant());
+}
+
+static cell_t Native_VScriptTable_SetIntAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	ScriptVariant_t variant;
+	variant.m_type = FIELD_INTEGER;
+	variant.m_int = params[3];
+	return vm->SetValue(table, params[2], variant);
+}
+
+static cell_t Native_VScriptTable_SetFloatAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	ScriptVariant_t variant;
+	variant.m_type = FIELD_FLOAT;
+	variant.m_float = sp_ctof(params[3]);
+	return vm->SetValue(table, params[2], variant);
+}
+
+static cell_t Native_VScriptTable_SetValueAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	VScriptVariantHandle* varHandle = ReadScriptVariantHandle(ctx, params[3]);
+	if (!varHandle) return 0;
+
+	return vm->SetValue(table, params[2], varHandle->GetVariant());
+}
+
+static cell_t Native_VScriptTable_SetBoolAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	ScriptVariant_t variant;
+	variant.m_type = FIELD_BOOLEAN;
+	variant.m_bool = (params[3] != 0);
+	return vm->SetValue(table, params[2], variant);
+}
+
+static cell_t Native_VScriptTable_SetStringAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* str;
+	ctx->LocalToString(params[3], &str);
+
+	ScriptVariant_t variant;
+	variant.m_type = FIELD_CSTRING;
+	variant.m_pszString = str;
+	return vm->SetValue(table, params[2], variant);
+}
+
+static cell_t Native_VScriptTable_SetVectorAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	Vector v = ReadVectorParam(ctx, params, 3);
+	ScriptVariant_t variant = CreateVectorVariant(v);
+	return vm->SetValue(table, params[2], variant);
+}
+
+static cell_t Native_VScriptTable_GetInt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return params[3];
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, key, &variant)) return params[3];
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = params[3];
+	if (variant.m_type == FIELD_INTEGER) result = variant.m_int;
+	else if (variant.m_type == FIELD_FLOAT) result = (cell_t)variant.m_float;
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetFloat(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return params[3];
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, key, &variant)) return params[3];
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = params[3];
+	if (variant.m_type == FIELD_FLOAT) result = sp_ftoc(variant.m_float);
+	else if (variant.m_type == FIELD_INTEGER) result = sp_ftoc((float)variant.m_int);
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetBool(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return params[3];
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, key, &variant)) return params[3];
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = params[3];
+	if (variant.m_type == FIELD_BOOLEAN) result = variant.m_bool;
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetString(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, key, &variant)) return 0;
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = 0;
+	if (variant.m_type == FIELD_CSTRING && variant.m_pszString) {
+		ctx->StringToLocalUTF8(params[3], params[4], variant.m_pszString, nullptr);
+		result = strlen(variant.m_pszString);
+	}
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetVector(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, key, &variant)) return 0;
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	if (variant.m_type == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, variant.m_pVector)) {
+		return 1;
+	}
+
+	return 0;
+}
+
+static cell_t Native_VScriptTable_GetValue(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, key, &variant)) return 0;
+
+	return CreateVariantHandleFromScriptVariant(ctx, variant);
+}
+
+static cell_t Native_VScriptTable_GetIntAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return params[3];
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, params[2], &variant)) return params[3];
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = params[3];
+	if (variant.m_type == FIELD_INTEGER) result = variant.m_int;
+	else if (variant.m_type == FIELD_FLOAT) result = (cell_t)variant.m_float;
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetFloatAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return params[3];
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, params[2], &variant)) return params[3];
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = params[3];
+	if (variant.m_type == FIELD_FLOAT) result = sp_ftoc(variant.m_float);
+	else if (variant.m_type == FIELD_INTEGER) result = sp_ftoc((float)variant.m_int);
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetValueAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, params[2], &variant)) return 0;
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	VScriptVariantHandle* handle = new VScriptVariantHandle();
+	handle->GetVariant() = variant;
+	handle->SetOwnsMemory((variant.m_flags & SV_FREE) != 0);
+	return CreateScriptVariantHandle(ctx, handle);
+}
+
+static cell_t Native_VScriptTable_GetBoolAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return params[3];
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, params[2], &variant)) return params[3];
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = params[3];
+	if (variant.m_type == FIELD_BOOLEAN) result = variant.m_bool;
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetStringAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, params[2], &variant)) return 0;
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	cell_t result = 0;
+	if (variant.m_type == FIELD_CSTRING && variant.m_pszString) {
+		ctx->StringToLocalUTF8(params[3], params[4], variant.m_pszString, nullptr);
+		result = strlen(variant.m_pszString);
+	}
+
+	return result;
+}
+
+static cell_t Native_VScriptTable_GetVectorAt(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	ScriptVariant_t variant;
+	if (!vm->GetValue(table, params[2], &variant)) return 0;
+	AutoReleaseVariant autoRelease(vm, variant);
+
+	if (variant.m_type == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, variant.m_pVector)) {
+		return 1;
+	}
+
+	return 0;
+}
+
+static cell_t Native_VScriptTable_GetKeyValue(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return -1;
+
+	int iterator = params[2];
+
+	// Loop to skip non-string keys
+	while (true) {
+		ScriptVariant_t keyVar, valueVar;
+		iterator = vm->GetKeyValue(table, iterator, &keyVar, &valueVar);
+
+		// Iteration complete
+		if (iterator == -1) return -1;
+
+		// Skip non-string keys (internal metadata)
+		if (keyVar.m_type != FIELD_CSTRING || !keyVar.m_pszString) {
+			// Release variants before continuing to avoid memory leak
+			if (keyVar.m_flags & SV_FREE) vm->ReleaseValue(keyVar);
+			if (valueVar.m_flags & SV_FREE) vm->ReleaseValue(valueVar);
+			continue;
+		}
+
+		// Copy key to output buffer
+		ctx->StringToLocalUTF8(params[3], params[4], keyVar.m_pszString, nullptr);
+
+		// Release key variant after copying string
+		if (keyVar.m_flags & SV_FREE) vm->ReleaseValue(keyVar);
+
+		// Create handle for value (transfers ownership)
+		Handle_t valueHandle = CreateVariantHandleFromScriptVariant(ctx, valueVar);
+		cell_t* outValue;
+		ctx->LocalToPhysAddr(params[5], &outValue);
+		*outValue = valueHandle;
+
+		return iterator;
+	}
+}
+
+static cell_t Native_VScriptTable_HasKey(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+	return vm->ValueExists(table, key);
+}
+
+static cell_t Native_VScriptTable_ClearKey(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* key;
+	ctx->LocalToString(params[2], &key);
+	return vm->ClearValue(table, key);
+}
+
+static cell_t Native_VScriptTable_LookupFunction(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	char* name;
+	ctx->LocalToString(params[2], &name);
+
+	HSCRIPT func = vm->LookupFunction(name, table);
+	if (func == INVALID_HSCRIPT || func == NULL) return 0;
+
+	VScriptFunctionHandle* handle = new VScriptFunctionHandle(func, true, false);
+	return CreateVScriptFunctionHandle(ctx, handle);
+}
+
+static cell_t Native_VScriptTable_Clear(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	// Use VScript to clear: table.clear()
+	HSCRIPT root = vm->GetRootTable();
+	if (root == INVALID_HSCRIPT) return 0;
+
+	ScriptVariant_t tableVar;
+	tableVar.m_type = FIELD_HSCRIPT;
+	tableVar.m_hScript = table;
+	vm->SetValue(root, "__sm_temp_table__", tableVar);
+
+	HSCRIPT compiled = vm->CompileScript("__sm_temp_table__.clear()", "TableClear");
+	if (compiled != INVALID_HSCRIPT) {
+		vm->ExecuteFunction(compiled, nullptr, 0, nullptr, root, true);
+		vm->ReleaseScript(compiled);
+	}
+
+	vm->ClearValue(root, "__sm_temp_table__");
+	return 1;
+}
+
+static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	// Create new array to hold keys
+	ScriptVariant_t arrVar;
+	vm->CreateArray(arrVar);
+	if (arrVar.m_type != FIELD_HSCRIPT || arrVar.m_hScript == INVALID_HSCRIPT) return 0;
+
+	HSCRIPT arr = arrVar.m_hScript;
+
+	// Iterate through table and collect keys
+	int iterator = 0;  // SDK uses 0 as start
+	while (true) {
+		ScriptVariant_t keyVar, valueVar;
+		iterator = vm->GetKeyValue(table, iterator, &keyVar, &valueVar);
+
+		if (iterator == -1) break;
+
+		// Skip non-string keys (internal metadata)
+		if (keyVar.m_type == FIELD_CSTRING && keyVar.m_pszString) {
+			// Add key to array
+			vm->ArrayAddToTail(arr, keyVar);
+		}
+
+		// Release variants
+		if (keyVar.m_flags & SV_FREE) vm->ReleaseValue(keyVar);
+		if (valueVar.m_flags & SV_FREE) vm->ReleaseValue(valueVar);
+	}
+
+	// Create handle for the array
+	VScriptArrayHandle* handle = new VScriptArrayHandle(arr, false);
+	handle->SetVariant(arrVar);
+	return CreateVScriptArrayHandle(ctx, handle);
+}
+
+static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* params) {
+	IScriptVM* vm; HSCRIPT table;
+	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
+
+	// Create new table
+	ScriptVariant_t newTableVar;
+	vm->CreateTable(newTableVar);
+	if (newTableVar.m_type != FIELD_HSCRIPT || newTableVar.m_hScript == INVALID_HSCRIPT) return 0;
+
+	HSCRIPT newTable = newTableVar.m_hScript;
+
+	// Iterate through source table and copy all key-value pairs
+	int iterator = 0;  // SDK uses 0 as start
+	while (true) {
+		ScriptVariant_t keyVar, valueVar;
+		iterator = vm->GetKeyValue(table, iterator, &keyVar, &valueVar);
+
+		if (iterator == -1) break;
+
+		// Copy key-value pair to new table
+		if (keyVar.m_type == FIELD_CSTRING && keyVar.m_pszString) {
+			vm->SetValue(newTable, keyVar.m_pszString, valueVar);
+		} else if (keyVar.m_type == FIELD_INTEGER) {
+			vm->SetValue(newTable, keyVar.m_int, valueVar);
+		}
+
+		// Release variants
+		if (keyVar.m_flags & SV_FREE) vm->ReleaseValue(keyVar);
+		if (valueVar.m_flags & SV_FREE) vm->ReleaseValue(valueVar);
+	}
+
+	// Create handle for the new table
+	VScriptTableHandle* handle = new VScriptTableHandle(newTable, false);
+	handle->SetVariant(newTableVar);
+	return CreateVScriptTableHandle(ctx, handle);
+}
+
+const sp_nativeinfo_t g_TableNatives[] = {
+	{"VScriptTable.VScriptTable",    Native_VScriptTable_Create},
+	{"VScriptTable.Length.get",     Native_VScriptTable_Length_get},
+	{"VScriptTable.SetInt",         Native_VScriptTable_SetInt},
+	{"VScriptTable.SetFloat",       Native_VScriptTable_SetFloat},
+	{"VScriptTable.SetBool",        Native_VScriptTable_SetBool},
+	{"VScriptTable.SetString",      Native_VScriptTable_SetString},
+	{"VScriptTable.SetVector",      Native_VScriptTable_SetVector},
+	{"VScriptTable.SetValue",       Native_VScriptTable_SetValue},
+	{"VScriptTable.SetIntAt",       Native_VScriptTable_SetIntAt},
+	{"VScriptTable.SetFloatAt",     Native_VScriptTable_SetFloatAt},
+	{"VScriptTable.SetBoolAt",      Native_VScriptTable_SetBoolAt},
+	{"VScriptTable.SetStringAt",    Native_VScriptTable_SetStringAt},
+	{"VScriptTable.SetVectorAt",    Native_VScriptTable_SetVectorAt},
+	{"VScriptTable.SetValueAt",     Native_VScriptTable_SetValueAt},
+	{"VScriptTable.GetInt",         Native_VScriptTable_GetInt},
+	{"VScriptTable.GetFloat",       Native_VScriptTable_GetFloat},
+	{"VScriptTable.GetBool",        Native_VScriptTable_GetBool},
+	{"VScriptTable.GetString",      Native_VScriptTable_GetString},
+	{"VScriptTable.GetVector",      Native_VScriptTable_GetVector},
+	{"VScriptTable.GetValue",       Native_VScriptTable_GetValue},
+	{"VScriptTable.GetIntAt",       Native_VScriptTable_GetIntAt},
+	{"VScriptTable.GetFloatAt",     Native_VScriptTable_GetFloatAt},
+	{"VScriptTable.GetBoolAt",      Native_VScriptTable_GetBoolAt},
+	{"VScriptTable.GetStringAt",    Native_VScriptTable_GetStringAt},
+	{"VScriptTable.GetVectorAt",    Native_VScriptTable_GetVectorAt},
+	{"VScriptTable.GetValueAt",     Native_VScriptTable_GetValueAt},
+	{"VScriptTable.GetKeyValue",    Native_VScriptTable_GetKeyValue},
+	{"VScriptTable.HasKey",         Native_VScriptTable_HasKey},
+	{"VScriptTable.ClearKey",       Native_VScriptTable_ClearKey},
+	{"VScriptTable.LookupFunction", Native_VScriptTable_LookupFunction},
+	{"VScriptTable.Clear",          Native_VScriptTable_Clear},
+	{"VScriptTable.GetKeys",        Native_VScriptTable_GetKeys},
+	{"VScriptTable.Clone",          Native_VScriptTable_Clone},
+	{nullptr,                       nullptr}
+};

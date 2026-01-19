@@ -1,0 +1,1626 @@
+Function:    AddThinkToEnt
+Signature:   void AddThinkToEnt(handle, string)
+Description: Adds a late bound think function to the C++ think tables for the obj
+
+Function:    CBaseAnimating::FindBodygroupByName
+Signature:   int CBaseAnimating::FindBodygroupByName(string)
+Description: Find a bodygroup id by name
+
+Function:    CBaseAnimating::GetAttachmentAngles
+Signature:   QAngle CBaseAnimating::GetAttachmentAngles(int)
+Description: Get the attachement id's angles as a p,y,r vector
+
+Function:    CBaseAnimating::GetAttachmentBone
+Signature:   int CBaseAnimating::GetAttachmentBone(int)
+Description: Get the named attachement's parent bone index
+
+Function:    CBaseAnimating::GetAttachmentOrigin
+Signature:   Vector CBaseAnimating::GetAttachmentOrigin(int)
+Description: Get the attachement id's origin vector
+
+Function:    CBaseAnimating::GetBodygroup
+Signature:   int CBaseAnimating::GetBodygroup(int)
+Description: Get a bodygroup by id
+
+Function:    CBaseAnimating::GetBodygroupName
+Signature:   string CBaseAnimating::GetBodygroupName(int)
+Description: Get the bodygroup id's name
+
+Function:    CBaseAnimating::GetBodygroupPartName
+Signature:   string CBaseAnimating::GetBodygroupPartName(int, int)
+Description: Get name by group and part
+
+Function:    CBaseAnimating::GetBoneAngles
+Signature:   QAngle CBaseAnimating::GetBoneAngles(int)
+Description: Get the bone id's angles as a p,y,r vector
+
+Function:    CBaseAnimating::GetBoneOrigin
+Signature:   Vector CBaseAnimating::GetBoneOrigin(int)
+Description: Get the bone id's origin vector
+
+Function:    CBaseAnimating::GetModelScale
+Signature:   float CBaseAnimating::GetModelScale()
+
+Function:    CBaseAnimating::GetSequence
+Signature:   int CBaseAnimating::GetSequence()
+Description: Get the current sequence id
+
+Function:    CBaseAnimating::GetSequenceActivityName
+Signature:   string CBaseAnimating::GetSequenceActivityName(int)
+Description: Get the activity name for a sequence by id
+
+Function:    CBaseAnimating::GetSequenceDuration
+Signature:   float CBaseAnimating::GetSequenceDuration(int)
+Description: Get a sequence duration by id
+
+Function:    CBaseAnimating::GetSequenceName
+Signature:   string CBaseAnimating::GetSequenceName(int)
+Description: Get a sequence name by id
+
+Function:    CBaseAnimating::IsSequenceFinished
+Signature:   bool CBaseAnimating::IsSequenceFinished()
+Description: Ask whether the main sequence is done playing
+
+Function:    CBaseAnimating::LookupActivity
+Signature:   int CBaseAnimating::LookupActivity(string)
+Description: Get the named activity index
+
+Function:    CBaseAnimating::LookupAttachment
+Signature:   int CBaseAnimating::LookupAttachment(string)
+Description: Get the named attachement id
+
+Function:    CBaseAnimating::LookupBone
+Signature:   int CBaseAnimating::LookupBone(string)
+Description: Get the named bone index
+
+Function:    CBaseAnimating::LookupSequence
+Signature:   int CBaseAnimating::LookupSequence(string)
+Description: Looks up a sequence by sequence name or activity name
+
+Function:    CBaseAnimating::ResetSequence
+Signature:   void CBaseAnimating::ResetSequence(int)
+Description: Reset a sequence by id. If the id is different than the current sequence, switch to the new sequence
+
+Function:    CBaseAnimating::SetBodygroup
+Signature:   void CBaseAnimating::SetBodygroup(int, int)
+Description: Sets a bodygroup
+
+Function:    CBaseAnimating::SetModelScale
+Signature:   void CBaseAnimating::SetModelScale(float, float)
+Description: (scale, change_duration) Changes a model's scale over time
+
+Function:    CBaseAnimating::SetPoseParameter
+Signature:   float CBaseAnimating::SetPoseParameter(int, float)
+Description: (id, value) Sets a pose parameter value
+
+Function:    CBaseAnimating::SetSequence
+Signature:   void CBaseAnimating::SetSequence(int)
+Description: Set a sequence by id
+
+Function:    CBaseEntity::ApplyAbsVelocityImpulse
+Signature:   void CBaseEntity::ApplyAbsVelocityImpulse(Vector)
+Description: Apply a Velocity Impulse
+
+Function:    CBaseEntity::ApplyLocalAngularVelocityImpulse
+Signature:   void CBaseEntity::ApplyLocalAngularVelocityImpulse(Vector)
+Description: Apply an Ang Velocity Impulse
+
+Function:    CBaseEntity::ConnectOutput
+Signature:   void CBaseEntity::ConnectOutput(string, string)
+Description: Adds an I/O connection that will call the named function when the specified output fires
+
+Function:    CBaseEntity::DisconnectOutput
+Signature:   void CBaseEntity::DisconnectOutput(string, string)
+Description: Removes a connected script function from an I/O event.
+
+Function:    CBaseEntity::FirstMoveChild
+Signature:   handle CBaseEntity::FirstMoveChild()
+
+Function:    CBaseEntity::GetAngles
+Signature:   QAngle CBaseEntity::GetAngles()
+
+Function:    CBaseEntity::GetBaseVelocity
+Signature:   Vector CBaseEntity::GetBaseVelocity()
+Description: Get Base? velocity
+
+Function:    CBaseEntity::GetCenter
+Signature:   Vector CBaseEntity::GetCenter()
+Description: Get world space center of object - absolute coords
+
+Function:    CBaseEntity::GetClassname
+Signature:   string CBaseEntity::GetClassname()
+
+Function:    CBaseEntity::GetContext
+Signature:   <unknown> CBaseEntity::GetContext(string)
+Description: GetContext( name ): looks up a context and returns it if available. May return string, float, or null (if the context isn't found)
+
+Function:    CBaseEntity::GetEntityHandle
+Signature:   <unknown> CBaseEntity::GetEntityHandle()
+Description: Get the entity as an EHANDLE
+
+Function:    CBaseEntity::GetEntityIndex
+Signature:   int CBaseEntity::GetEntityIndex()
+
+Function:    CBaseEntity::GetForwardVector
+Signature:   Vector CBaseEntity::GetForwardVector()
+Description: Get the forward vector of the entity
+
+Function:    CBaseEntity::GetHealth
+Signature:   int CBaseEntity::GetHealth()
+
+Function:    CBaseEntity::GetLocalAngles
+Signature:   QAngle CBaseEntity::GetLocalAngles()
+
+Function:    CBaseEntity::GetLocalAngularVelocity
+Signature:   QAngle CBaseEntity::GetLocalAngularVelocity()
+Description: Maybe local angvel
+
+Function:    CBaseEntity::GetLocalOrigin
+Signature:   Vector CBaseEntity::GetLocalOrigin()
+
+Function:    CBaseEntity::GetLocalVelocity
+Signature:   Vector CBaseEntity::GetLocalVelocity()
+Description: Get Entity relative velocity
+
+Function:    CBaseEntity::GetMaxHealth
+Signature:   int CBaseEntity::GetMaxHealth()
+
+Function:    CBaseEntity::GetModelName
+Signature:   string CBaseEntity::GetModelName()
+
+Function:    CBaseEntity::GetMoveParent
+Signature:   handle CBaseEntity::GetMoveParent()
+Description: If in hierarchy, retrieves the entity's parent
+
+Function:    CBaseEntity::GetName
+Signature:   string CBaseEntity::GetName()
+
+Function:    CBaseEntity::GetOrigin
+Signature:   Vector CBaseEntity::GetOrigin()
+
+Function:    CBaseEntity::GetOwnerEntity
+Signature:   handle CBaseEntity::GetOwnerEntity()
+Description: Get the owner entity, if there is one
+
+Function:    CBaseEntity::GetPreTemplateName
+Signature:   string CBaseEntity::GetPreTemplateName()
+Description: Get the entity name stripped of template unique decoration
+
+Function:    CBaseEntity::GetRootMoveParent
+Signature:   handle CBaseEntity::GetRootMoveParent()
+Description: If in hierarchy, walks up the hierarchy to find the root parent
+
+Function:    CBaseEntity::GetScriptId
+Signature:   string CBaseEntity::GetScriptId()
+Description: Retrieve the unique identifier used to refer to the entity within the scripting system
+
+Function:    CBaseEntity::GetScriptScope
+Signature:   handle CBaseEntity::GetScriptScope()
+Description: Retrieve the script-side data associated with an entity
+
+Function:    CBaseEntity::GetVelocity
+Signature:   Vector CBaseEntity::GetVelocity()
+
+Function:    CBaseEntity::IsPlayer
+Signature:   bool CBaseEntity::IsPlayer()
+
+Function:    CBaseEntity::Kill
+Signature:   void CBaseEntity::Kill()
+
+Function:    CBaseEntity::NextMovePeer
+Signature:   handle CBaseEntity::NextMovePeer()
+
+Function:    CBaseEntity::OverrideFriction
+Signature:   void CBaseEntity::OverrideFriction(float, float)
+Description: Takes duration, value for a temporary override
+
+Function:    CBaseEntity::PrecacheModel
+Signature:   int CBaseEntity::PrecacheModel(string)
+
+Function:    CBaseEntity::PrecacheScriptSound
+Signature:   void CBaseEntity::PrecacheScriptSound(string)
+
+Function:    CBaseEntity::SetAngles
+Signature:   void CBaseEntity::SetAngles(QAngle)
+
+Function:    CBaseEntity::SetContext
+Signature:   void CBaseEntity::SetContext(string, string, float)
+Description: SetContext( name , value, duration ): store any key/value pair in this entity's dialog contexts. Value must be a string. Will last for duration (set -1 to mean 'forever').
+
+Function:    CBaseEntity::SetContextNum
+Signature:   void CBaseEntity::SetContextNum(string, float, float)
+Description: SetContext( name , value, duration ): store any key/value pair in this entity's dialog contexts. Value must be a number (int or float). Will last for duration (set -1 to mean 'forever').
+
+Function:    CBaseEntity::SetForwardVector
+Signature:   void CBaseEntity::SetForwardVector(Vector)
+Description: Set the orientation of the entity to have this forward vector
+
+Function:    CBaseEntity::SetFriction
+Signature:   void CBaseEntity::SetFriction(float)
+Description: Set PLAYER friction, ignored for objects
+
+Function:    CBaseEntity::SetGravity
+Signature:   void CBaseEntity::SetGravity(float)
+Description: Set PLAYER gravity, ignored for objects
+
+Function:    CBaseEntity::SetHealth
+Signature:   void CBaseEntity::SetHealth(int)
+
+Function:    CBaseEntity::SetLocalAngles
+Signature:   void CBaseEntity::SetLocalAngles(QAngle)
+
+Function:    CBaseEntity::SetLocalOrigin
+Signature:   void CBaseEntity::SetLocalOrigin(Vector)
+
+Function:    CBaseEntity::SetMaxHealth
+Signature:   void CBaseEntity::SetMaxHealth(int)
+
+Function:    CBaseEntity::SetModel
+Signature:   void CBaseEntity::SetModel(string)
+Description: Set a model for this entity
+
+Function:    CBaseEntity::SetOrigin
+Signature:   void CBaseEntity::SetOrigin(Vector)
+
+Function:    CBaseEntity::SetVelocity
+Signature:   void CBaseEntity::SetVelocity(Vector)
+
+Function:    CBaseEntity::TakeDamage
+Signature:   void CBaseEntity::TakeDamage(float, int, handle)
+Description: (flDamage, nDamageType, hAttacker)
+
+Function:    CBaseEntity::TakeDamageEx
+Signature:   void CBaseEntity::TakeDamageEx(handle, handle, handle, Vector, Vector, float, int)
+Description: (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
+
+Function:    CBaseEntity::ValidateScriptScope
+Signature:   bool CBaseEntity::ValidateScriptScope()
+Description: Ensure that an entity's script scope has been created
+
+Function:    CBaseFlex::GetCurrentScene
+Signature:   handle CBaseFlex::GetCurrentScene()
+Description: Returns the instance of the oldest active scene entity (if any).
+
+Function:    CBaseFlex::GetSceneByIndex
+Signature:   handle CBaseFlex::GetSceneByIndex(int)
+Description: Returns the instance of the scene entity at the specified index.
+
+Function:    CBaseFlex::PlayScene
+Signature:   float CBaseFlex::PlayScene(string, float)
+Description: Play the specified .vcd file.
+
+Function:    CDirector::AreAllSurvivorsInBattlefield
+Signature:   bool CDirector::AreAllSurvivorsInBattlefield()
+Description: Returns true if all Survivors are in the battlefield
+
+Function:    CDirector::AreAllSurvivorsInFinaleArea
+Signature:   bool CDirector::AreAllSurvivorsInFinaleArea()
+Description: True when all survivors are within the finale area
+
+Function:    CDirector::AreTeamsFlipped
+Signature:   bool CDirector::AreTeamsFlipped()
+Description: True when teams are flipped in Versus modes
+
+Function:    CDirector::ClearCachedBotQueries
+Signature:   void CDirector::ClearCachedBotQueries()
+Description: Mark all cached bot query results as invalid
+
+Function:    CDirector::ForceNextStage
+Signature:   void CDirector::ForceNextStage()
+Description: Push the ScriptedMode to next stage - i.e. request GNSS be called
+
+Function:    CDirector::GetAveragedSurvivorSpan
+Signature:   float CDirector::GetAveragedSurvivorSpan()
+Description: Get the distance between the lead and trailing survivors, smoothed over time
+
+Function:    CDirector::GetAveragedSurvivorSpeed
+Signature:   float CDirector::GetAveragedSurvivorSpeed()
+Description: Get the rate at which the lead survivor is moving along the flow, smoothed over time
+
+Function:    CDirector::GetClosestActivePipeBomb
+Signature:   handle CDirector::GetClosestActivePipeBomb(Vector)
+Description: Returns the closest active pipe bomb from this origin
+
+Function:    CDirector::GetClosestCharacterWhoIsIT
+Signature:   handle CDirector::GetClosestCharacterWhoIsIT(handle)
+Description: Returns the closest character who is IT
+
+Function:    CDirector::GetClosestSurvivor
+Signature:   handle CDirector::GetClosestSurvivor(Vector, bool, bool)
+Description: Returns the closest Survivor to the passed origin
+
+Function:    CDirector::GetCommonInfectedCount
+Signature:   int CDirector::GetCommonInfectedCount()
+Description: Returns number fo infected currently spawned
+
+Function:    CDirector::GetFurthestSurvivorFlow
+Signature:   float CDirector::GetFurthestSurvivorFlow()
+Description: Get the maximum distance along the flow that the survivors have reached
+
+Function:    CDirector::GetGameMode
+Signature:   string CDirector::GetGameMode()
+Description: Get the current game mode
+
+Function:    CDirector::GetGameModeBase
+Signature:   string CDirector::GetGameModeBase()
+Description: Get the current base game mode
+
+Function:    CDirector::GetHighestFlowSurvivor
+Signature:   handle CDirector::GetHighestFlowSurvivor()
+Description: Returns the Survivor with the highest flow
+
+Function:    CDirector::GetHoldoutCooldownEndTime
+Signature:   float CDirector::GetHoldoutCooldownEndTime()
+Description: Get the end time of the cooldown timer
+
+Function:    CDirector::GetLowestFlowSurvivor
+Signature:   handle CDirector::GetLowestFlowSurvivor()
+Description: Returns the Survivor with the lowest flow
+
+Function:    CDirector::GetMapName
+Signature:   string CDirector::GetMapName()
+Description: Get the current game mode
+
+Function:    CDirector::GetMapNumber
+Signature:   int CDirector::GetMapNumber()
+Description: Return the current map number
+
+Function:    CDirector::GetMissionWipes
+Signature:   int CDirector::GetMissionWipes()
+Description: Returns the current number of mission wipes
+
+Function:    CDirector::GetPendingMobCount
+Signature:   int CDirector::GetPendingMobCount()
+Description: Returns tnumber of infected waiting to spawn
+
+Function:    CDirector::GetRandomSurvivor
+Signature:   handle CDirector::GetRandomSurvivor()
+Description: Returns a random Survivor
+
+Function:    CDirector::GetSurvivorSet
+Signature:   int CDirector::GetSurvivorSet()
+Description: 1=L4D1 Survivors, 2=L4D2 Survivors
+
+Function:    CDirector::GetTimeSinceSpecialZombieKilled
+Signature:   float CDirector::GetTimeSinceSpecialZombieKilled(int)
+Description: Returns the time since the passed zombie type was killed
+
+Function:    CDirector::GetTotalElapsedMissionTime
+Signature:   int CDirector::GetTotalElapsedMissionTime()
+Description: Returns the total elapsed mission time
+
+Function:    CDirector::HasAnySurvivorLeftSafeArea
+Signature:   bool CDirector::HasAnySurvivorLeftSafeArea()
+Description: True when one or more survivors have left the starting safe area
+
+Function:    CDirector::IsAnySurvivorBypassingTank
+Signature:   bool CDirector::IsAnySurvivorBypassingTank()
+Description: True when one or more survivors are bypassing the Tank
+
+Function:    CDirector::IsAnySurvivorInCombat
+Signature:   bool CDirector::IsAnySurvivorInCombat()
+Description: Returns true if any survivor recently dealt or took damage
+
+Function:    CDirector::IsAnySurvivorInExitCheckpoint
+Signature:   bool CDirector::IsAnySurvivorInExitCheckpoint()
+Description: True when one or more survivors are in the exit checkpoint
+
+Function:    CDirector::IsAnySurvivorInStartArea
+Signature:   bool CDirector::IsAnySurvivorInStartArea()
+Description: True when one or more survivors are in the starting safe area
+
+Function:    CDirector::IsFinale
+Signature:   bool CDirector::IsFinale()
+Description: True when the finale has started
+
+Function:    CDirector::IsFinaleEscapeInProgress
+Signature:   bool CDirector::IsFinaleEscapeInProgress()
+Description: True when the finale escape is in progress
+
+Function:    CDirector::IsFinaleVehicleReady
+Signature:   bool CDirector::IsFinaleVehicleReady()
+Description: True when the finale vehicle is ready
+
+Function:    CDirector::IsFinaleWon
+Signature:   bool CDirector::IsFinaleWon()
+Description: Returns true if the finale has been won
+
+Function:    CDirector::IsFirstMapInScenario
+Signature:   bool CDirector::IsFirstMapInScenario()
+Description: True if the first map in a scenario
+
+Function:    CDirector::IsL4D1Campaign
+Signature:   bool CDirector::IsL4D1Campaign()
+Description: Return true is the current campaign is originally from L4D1
+
+Function:    CDirector::IsLocationFoggedToSurvivors
+Signature:   bool CDirector::IsLocationFoggedToSurvivors(Vector)
+Description: Returns true if the passed location is fogged to Survivors
+
+Function:    CDirector::IsPlayingIntro
+Signature:   bool CDirector::IsPlayingIntro()
+Description: True if the intro is currently playing
+
+Function:    CDirector::IsPlayingOnConsole
+Signature:   bool CDirector::IsPlayingOnConsole()
+Description: Return true if game is running on a console (such as Xbox 360)
+
+Function:    CDirector::IsSessionStartMap
+Signature:   bool CDirector::IsSessionStartMap()
+Description: True if the map is the start of the session
+
+Function:    CDirector::IsSinglePlayerGame
+Signature:   bool CDirector::IsSinglePlayerGame()
+Description: Return true if game is in single player
+
+Function:    CDirector::IsTankInPlay
+Signature:   bool CDirector::IsTankInPlay()
+Description: Returns true if any tanks are aggro on survivors
+
+Function:    CDirector::L4D1SurvivorGiveItem
+Signature:   void CDirector::L4D1SurvivorGiveItem()
+Description: Let the L4D1 survivors know that now is a good time to give the players an item
+
+Function:    CDirector::PlayMegaMobWarningSounds
+Signature:   void CDirector::PlayMegaMobWarningSounds()
+Description: Plays a horde scream sound and asks survivors to speak 'incoming horde' lines
+
+Function:    CDirector::RegisterForbiddenTarget
+Signature:   void CDirector::RegisterForbiddenTarget(handle)
+Description: Registers a target entity as forbidden
+
+Function:    CDirector::ResetMobTimer
+Signature:   void CDirector::ResetMobTimer()
+Description: Trigger a mob as soon as possible when in BUILD_UP
+
+Function:    CDirector::ResetSpecialTimers
+Signature:   void CDirector::ResetSpecialTimers()
+Description: Reset all special timers (by type and by slot) so that hopefully mobs will spawn asap
+
+Function:    CDirector::SetHoldoutCooldownEndTime
+Signature:   void CDirector::SetHoldoutCooldownEndTime(float)
+Description: Set the end time of the cooldown timer
+
+Function:    CDirector::UnregisterForbiddenTarget
+Signature:   void CDirector::UnregisterForbiddenTarget(handle)
+Description: Unregisters a target entity as forbidden
+
+Function:    CDirector::UserDefinedEvent1
+Signature:   void CDirector::UserDefinedEvent1()
+Description: generic user defined event fired from a squirrel script
+
+Function:    CDirector::UserDefinedEvent2
+Signature:   void CDirector::UserDefinedEvent2()
+Description: generic user defined event fired from a squirrel script
+
+Function:    CDirector::UserDefinedEvent3
+Signature:   void CDirector::UserDefinedEvent3()
+Description: generic user defined event fired from a squirrel script
+
+Function:    CDirector::UserDefinedEvent4
+Signature:   void CDirector::UserDefinedEvent4()
+Description: generic user defined event fired from a squirrel script
+
+Function:    CDirector::WarpAllSurvivorsToBattlefield
+Signature:   void CDirector::WarpAllSurvivorsToBattlefield()
+Description: Warp the survivors to the crescendo event
+
+Function:    CDirector::WarpAllSurvivorsToCheckpoint
+Signature:   void CDirector::WarpAllSurvivorsToCheckpoint()
+Description: Warp the survivors to the next checkpoint
+
+Function:    CDirector::WarpAllSurvivorsToFinale
+Signature:   void CDirector::WarpAllSurvivorsToFinale()
+Description: Warp the survivors to the finale area
+
+Function:    CEntities::FindByClassname
+Signature:   handle CEntities::FindByClassname(handle, string)
+Description: Find entities by class name. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search
+
+Function:    CEntities::FindByClassnameNearest
+Signature:   handle CEntities::FindByClassnameNearest(string, Vector, float)
+Description: Find entities by class name nearest to a point.
+
+Function:    CEntities::FindByClassnameWithin
+Signature:   handle CEntities::FindByClassnameWithin(handle, string, Vector, float)
+Description: Find entities by class name within a radius. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search
+
+Function:    CEntities::FindByModel
+Signature:   handle CEntities::FindByModel(handle, string)
+Description: Find entities by model name. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search
+
+Function:    CEntities::FindByName
+Signature:   handle CEntities::FindByName(handle, string)
+Description: Find entities by name. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search
+
+Function:    CEntities::FindByNameNearest
+Signature:   handle CEntities::FindByNameNearest(string, Vector, float)
+Description: Find entities by name nearest to a point.
+
+Function:    CEntities::FindByNameWithin
+Signature:   handle CEntities::FindByNameWithin(handle, string, Vector, float)
+Description: Find entities by name within a radius. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search
+
+Function:    CEntities::FindByTarget
+Signature:   handle CEntities::FindByTarget(handle, string)
+Description: Find entities by targetname. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search
+
+Function:    CEntities::FindInSphere
+Signature:   handle CEntities::FindInSphere(handle, Vector, float)
+Description: Find entities within a radius. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search
+
+Function:    CEntities::First
+Signature:   handle CEntities::First()
+Description: Begin an iteration over the list of entities
+
+Function:    CEntities::Next
+Signature:   handle CEntities::Next(handle)
+Description: Continue an iteration over the list of entities, providing reference to a previously found entity
+
+Function:    CNavMesh::FindLadderAlongRay
+Signature:   handle CNavMesh::FindLadderAlongRay(Vector, Vector, handle)
+Description: Arguments: ( startpos, endpos, ignoreArea ) - get nav ladder from ray
+
+Function:    CNavMesh::FindNavAreaAlongRay
+Signature:   handle CNavMesh::FindNavAreaAlongRay(Vector, Vector, handle)
+Description: Arguments: ( startpos, endpos, ignoreAreaID ) - get nav area from ray
+
+Function:    CNavMesh::GetAllAreas
+Signature:   void CNavMesh::GetAllAreas(handle)
+Description: Arguments: ( table ) - fills a passed in table of all nav areas
+
+Function:    CNavMesh::GetAllLadders
+Signature:   void CNavMesh::GetAllLadders(handle)
+Description: Arguments: ( table ) - fills a passed in table of all nav ladders
+
+Function:    CNavMesh::GetAreasWithAttributes
+Signature:   void CNavMesh::GetAreasWithAttributes(int, handle)
+Description: Arguments: ( bits, table ) - fills a passed in table of all nav areas that have the specified attributes
+
+Function:    CNavMesh::GetLadderByID
+Signature:   handle CNavMesh::GetLadderByID(int)
+Description: Arguments: ( ladderID ) - get nav ladder by ID
+
+Function:    CNavMesh::GetLadderCount
+Signature:   int CNavMesh::GetLadderCount()
+Description: return total number of nav ladders
+
+Function:    CNavMesh::GetNavArea
+Signature:   handle CNavMesh::GetNavArea(Vector, float)
+Description: Arguments: ( origin, flBeneath ) - given a position in the world, return the nav area that is closest to or below that height.
+
+Function:    CNavMesh::GetNavAreaByID
+Signature:   handle CNavMesh::GetNavAreaByID(int)
+Description: Arguments: ( areaID ) - get nav area by ID
+
+Function:    CNavMesh::GetNavAreaCount
+Signature:   int CNavMesh::GetNavAreaCount()
+Description: return total number of nav areas
+
+Function:    CNavMesh::GetNavAreasFromBuildPath
+Signature:   bool CNavMesh::GetNavAreasFromBuildPath(handle, handle, Vector, float, int, bool, handle)
+Description: Arguments: ( table ) - Fills the table with areas from a path. Returns whether a path was found
+
+Function:    CNavMesh::GetNavAreasInRadius
+Signature:   void CNavMesh::GetNavAreasInRadius(Vector, float, handle)
+Description: Arguments: ( origin, radius, table ) - fills a passed in table of nav areas within radius
+
+Function:    CNavMesh::GetNavAreasOverlappingEntityExtent
+Signature:   void CNavMesh::GetNavAreasOverlappingEntityExtent(handle, handle)
+Description: Arguments: ( entity, table ) - fills passed in table with areas overlapping entity's extent
+
+Function:    CNavMesh::GetNearestNavArea
+Signature:   handle CNavMesh::GetNearestNavArea(Vector, float, bool, bool)
+Description: Arguments: ( origin, maxDist, checkLOS, checkGround ) - given a position in the world, return the nav area that is closest to or below that height.
+
+Function:    CNavMesh::GetObstructingEntities
+Signature:   void CNavMesh::GetObstructingEntities(handle)
+Description: Arguments: ( table ) - fills a passed in table of all obstructing entities
+
+Function:    CNavMesh::NavAreaBuildPath
+Signature:   bool CNavMesh::NavAreaBuildPath(handle, handle, Vector, float, int, bool)
+Description: Arguments: ( area, area, goalPos, flMaxPathLength, teamID, ignoreNavBlockers ) - returns true if a path exists
+
+Function:    CNavMesh::NavAreaTravelDistance
+Signature:   float CNavMesh::NavAreaTravelDistance(handle, handle, float)
+Description: Arguments: ( area, area, flMaxPathLength ) - compute distance between two areas. Return -1 if can't reach 'endArea' from 'startArea'
+
+Function:    CNavMesh::RegisterAvoidanceObstacle
+Signature:   void CNavMesh::RegisterAvoidanceObstacle(handle)
+Description: Arguments: ( entity ) - registers avoidance obstacle
+
+Function:    CNavMesh::UnblockRescueVehicleNav
+Signature:   void CNavMesh::UnblockRescueVehicleNav()
+Description: Unblock the rescue vehicle nav areas so bots can path through them
+
+Function:    CNavMesh::UnregisterAvoidanceObstacle
+Signature:   void CNavMesh::UnregisterAvoidanceObstacle(handle)
+Description: Arguments: ( entity ) - unregisters avoidance obstacle
+
+Function:    CNetPropManager::GetPropArraySize
+Signature:   int CNetPropManager::GetPropArraySize(handle, string)
+Description: Arguments: ( entity, propertyName )
+
+Function:    CNetPropManager::GetPropEntity
+Signature:   handle CNetPropManager::GetPropEntity(handle, string)
+Description: Arguments: ( entity, propertyName ) - returns an entity
+
+Function:    CNetPropManager::GetPropEntityArray
+Signature:   handle CNetPropManager::GetPropEntityArray(handle, string, int)
+Description: Arguments: ( entity, propertyName, arrayElement ) - returns an entity
+
+Function:    CNetPropManager::GetPropFloat
+Signature:   float CNetPropManager::GetPropFloat(handle, string)
+Description: Arguments: ( entity, propertyName )
+
+Function:    CNetPropManager::GetPropFloatArray
+Signature:   float CNetPropManager::GetPropFloatArray(handle, string, int)
+Description: Arguments: ( entity, propertyName, arrayElement )
+
+Function:    CNetPropManager::GetPropInt
+Signature:   int CNetPropManager::GetPropInt(handle, string)
+Description: Arguments: ( entity, propertyName )
+
+Function:    CNetPropManager::GetPropIntArray
+Signature:   int CNetPropManager::GetPropIntArray(handle, string, int)
+Description: Arguments: ( entity, propertyName, arrayElement )
+
+Function:    CNetPropManager::GetPropString
+Signature:   string CNetPropManager::GetPropString(handle, string)
+Description: Arguments: ( entity, propertyName )
+
+Function:    CNetPropManager::GetPropStringArray
+Signature:   string CNetPropManager::GetPropStringArray(handle, string, int)
+Description: Arguments: ( entity, propertyName, arrayElement )
+
+Function:    CNetPropManager::GetPropType
+Signature:   string CNetPropManager::GetPropType(handle, string)
+Description: Arguments: ( entity, propertyName ) - return the prop type as a string
+
+Function:    CNetPropManager::GetPropVector
+Signature:   Vector CNetPropManager::GetPropVector(handle, string)
+Description: Arguments: ( entity, propertyName )
+
+Function:    CNetPropManager::GetPropVectorArray
+Signature:   Vector CNetPropManager::GetPropVectorArray(handle, string, int)
+Description: Arguments: ( entity, propertyName, arrayElement )
+
+Function:    CNetPropManager::HasProp
+Signature:   bool CNetPropManager::HasProp(handle, string)
+Description: Arguments: ( entity, propertyName )
+
+Function:    CNetPropManager::SetPropEntity
+Signature:   void CNetPropManager::SetPropEntity(handle, string, handle)
+Description: Arguments: ( entity, propertyName, value )
+
+Function:    CNetPropManager::SetPropEntityArray
+Signature:   void CNetPropManager::SetPropEntityArray(handle, string, handle, int)
+Description: Arguments: ( entity, propertyName, value, arrayElement )
+
+Function:    CNetPropManager::SetPropFloat
+Signature:   void CNetPropManager::SetPropFloat(handle, string, float)
+Description: Arguments: ( entity, propertyName, value )
+
+Function:    CNetPropManager::SetPropFloatArray
+Signature:   void CNetPropManager::SetPropFloatArray(handle, string, float, int)
+Description: Arguments: ( entity, propertyName, value, arrayElement )
+
+Function:    CNetPropManager::SetPropInt
+Signature:   void CNetPropManager::SetPropInt(handle, string, int)
+Description: Arguments: ( entity, propertyName, value )
+
+Function:    CNetPropManager::SetPropIntArray
+Signature:   void CNetPropManager::SetPropIntArray(handle, string, int, int)
+Description: Arguments: ( entity, propertyName, value, arrayElement )
+
+Function:    CNetPropManager::SetPropString
+Signature:   void CNetPropManager::SetPropString(handle, string, string)
+Description: Arguments: ( entity, propertyName, value )
+
+Function:    CNetPropManager::SetPropStringArray
+Signature:   void CNetPropManager::SetPropStringArray(handle, string, string, int)
+Description: Arguments: ( entity, propertyName, value, arrayElement )
+
+Function:    CNetPropManager::SetPropVector
+Signature:   void CNetPropManager::SetPropVector(handle, string, Vector)
+Description: Arguments: ( entity, propertyName, value )
+
+Function:    CNetPropManager::SetPropVectorArray
+Signature:   void CNetPropManager::SetPropVectorArray(handle, string, Vector, int)
+Description: Arguments: ( entity, propertyName, value, arrayElement )
+
+Function:    CScriptEntityOutputs::AddOutput
+Signature:   void CScriptEntityOutputs::AddOutput(handle, string, string, string, string, float, int)
+Description: Arguments: ( entity, outputName, targetName, inputName, parameter, delay, timesToFire ) - add a new output to the entity
+
+Function:    CScriptEntityOutputs::GetNumElements
+Signature:   int CScriptEntityOutputs::GetNumElements(handle, string)
+Description: Arguments: ( entity, outputName ) - returns the number of array elements
+
+Function:    CScriptEntityOutputs::GetOutputTable
+Signature:   void CScriptEntityOutputs::GetOutputTable(handle, string, handle, int)
+Description: Arguments: ( entity, outputName, table, arrayElement ) - returns a table of output information
+
+Function:    CScriptEntityOutputs::HasAction
+Signature:   bool CScriptEntityOutputs::HasAction(handle, string)
+Description: Arguments: ( entity, outputName ) - returns true if an action exists for the output
+
+Function:    CScriptEntityOutputs::HasOutput
+Signature:   bool CScriptEntityOutputs::HasOutput(handle, string)
+Description: Arguments: ( entity, outputName ) - returns true if the output exists
+
+Function:    CScriptEntityOutputs::RemoveOutput
+Signature:   void CScriptEntityOutputs::RemoveOutput(handle, string, string, string, string)
+Description: Arguments: ( entity, outputName, targetName, inputName, parameter ) - remove an output from the entity
+
+Function:    CScriptResponseCriteria::GetTable
+Signature:   void CScriptResponseCriteria::GetTable(handle, handle)
+Description: Arguments: ( entity, table ) - returns a table of all criteria
+
+Function:    CScriptResponseCriteria::GetValue
+Signature:   string CScriptResponseCriteria::GetValue(handle, string)
+Description: Arguments: ( entity, criteriaName ) - returns a string
+
+Function:    CScriptResponseCriteria::HasCriterion
+Signature:   bool CScriptResponseCriteria::HasCriterion(handle, string)
+Description: Arguments: ( entity, criteriaName ) - returns true if the criterion exists
+
+Function:    CTerrorPlayer::DropItem
+Signature:   void CTerrorPlayer::DropItem(string)
+Description: Make the player drop an item/weapon
+
+Function:    CTerrorPlayer::Extinguish
+Signature:   void CTerrorPlayer::Extinguish()
+Description: Extinguish a burning player
+
+Function:    CTerrorPlayer::EyeAngles
+Signature:   QAngle CTerrorPlayer::EyeAngles()
+Description: Try and get the current Eye Angles
+
+Function:    CTerrorPlayer::EyePosition
+Signature:   Vector CTerrorPlayer::EyePosition()
+Description: Try and get the current eye position
+
+Function:    CTerrorPlayer::GetActiveWeapon
+Signature:   handle CTerrorPlayer::GetActiveWeapon()
+Description: Get the player's active weapon
+
+Function:    CTerrorPlayer::GetAliveDuration
+Signature:   float CTerrorPlayer::GetAliveDuration()
+Description: Returns the time the character has been alive (only valid when alive)
+
+Function:    CTerrorPlayer::GetButtonMask
+Signature:   int CTerrorPlayer::GetButtonMask()
+Description: Get the player's mask of pressed buttons
+
+Function:    CTerrorPlayer::GetHealthBuffer
+Signature:   float CTerrorPlayer::GetHealthBuffer()
+Description: Get Player Health Buffer - from pills or adrenalin etc
+
+Function:    CTerrorPlayer::GetLastKnownArea
+Signature:   handle CTerrorPlayer::GetLastKnownArea()
+Description: Return the last nav area occupied - NULL if unknown
+
+Function:    CTerrorPlayer::GetNetworkIDString
+Signature:   string CTerrorPlayer::GetNetworkIDString()
+Description: Get the player's network (i.e. Steam) ID.
+
+Function:    CTerrorPlayer::GetPlayerName
+Signature:   string CTerrorPlayer::GetPlayerName()
+Description: Get the player's name
+
+Function:    CTerrorPlayer::GetPlayerUserId
+Signature:   int CTerrorPlayer::GetPlayerUserId()
+Description: Get the player's userID.
+
+Function:    CTerrorPlayer::GetSenseFlags
+Signature:   int CTerrorPlayer::GetSenseFlags()
+Description: Get the current bits for the bot sense flags
+
+Function:    CTerrorPlayer::GetSpecialInfectedDominatingMe
+Signature:   handle CTerrorPlayer::GetSpecialInfectedDominatingMe()
+Description: Get the Special Infected dominating this Survivor
+
+Function:    CTerrorPlayer::GetSurvivorSlot
+Signature:   int CTerrorPlayer::GetSurvivorSlot()
+Description: Get the player's slot
+
+Function:    CTerrorPlayer::GetZombieType
+Signature:   int CTerrorPlayer::GetZombieType()
+Description: If an infected, find out what type
+
+Function:    CTerrorPlayer::GiveAmmo
+Signature:   void CTerrorPlayer::GiveAmmo(int)
+Description: Give this much ammo for your primary weapon
+
+Function:    CTerrorPlayer::GiveItem
+Signature:   void CTerrorPlayer::GiveItem(string)
+Description: Give an item/weapon to the player
+
+Function:    CTerrorPlayer::GiveItemWithSkin
+Signature:   void CTerrorPlayer::GiveItemWithSkin(string, int)
+Description: Give an item/weapon to the player with a skin value
+
+Function:    CTerrorPlayer::GiveUpgrade
+Signature:   void CTerrorPlayer::GiveUpgrade(int)
+Description: Give a weapon upgrade by name
+
+Function:    CTerrorPlayer::HasEverBeenInjured
+Signature:   bool CTerrorPlayer::HasEverBeenInjured(int)
+Description: Returns true if the character has ever been injured by a member of the given team
+
+Function:    CTerrorPlayer::HitWithVomit
+Signature:   void CTerrorPlayer::HitWithVomit()
+Description: Cause the vomit effect and make a player IT
+
+Function:    CTerrorPlayer::IsAdrenalineActive
+Signature:   bool CTerrorPlayer::IsAdrenalineActive()
+Description: Return true if adrenaline is active
+
+Function:    CTerrorPlayer::IsDead
+Signature:   bool CTerrorPlayer::IsDead()
+Description: Is the player dead
+
+Function:    CTerrorPlayer::IsDominatedBySpecialInfected
+Signature:   bool CTerrorPlayer::IsDominatedBySpecialInfected()
+Description: Return true if being dominated by a Special Infected
+
+Function:    CTerrorPlayer::IsDying
+Signature:   bool CTerrorPlayer::IsDying()
+Description: Player is dying, but not dead yet
+
+Function:    CTerrorPlayer::IsFiringWeapon
+Signature:   bool CTerrorPlayer::IsFiringWeapon()
+Description: Return true if player is firing a weapon
+
+Function:    CTerrorPlayer::IsGettingUp
+Signature:   bool CTerrorPlayer::IsGettingUp()
+Description: Return true if player is currently getting up
+
+Function:    CTerrorPlayer::IsGhost
+Signature:   bool CTerrorPlayer::IsGhost()
+Description: Is Player a Ghost
+
+Function:    CTerrorPlayer::IsHangingFromLedge
+Signature:   bool CTerrorPlayer::IsHangingFromLedge()
+Description: Is the player currently hanging from a ledge
+
+Function:    CTerrorPlayer::IsIT
+Signature:   bool CTerrorPlayer::IsIT()
+Description: Return true if currently IT from bile
+
+Function:    CTerrorPlayer::IsImmobilized
+Signature:   bool CTerrorPlayer::IsImmobilized()
+Description: Return true if currently immobilized
+
+Function:    CTerrorPlayer::IsInCombat
+Signature:   bool CTerrorPlayer::IsInCombat()
+Description: Return true if currently in combat
+
+Function:    CTerrorPlayer::IsIncapacitated
+Signature:   bool CTerrorPlayer::IsIncapacitated()
+Description: Is the player currently incapacitated
+
+Function:    CTerrorPlayer::IsOnFire
+Signature:   bool CTerrorPlayer::IsOnFire()
+Description: Returns whether a player is on fire
+
+Function:    CTerrorPlayer::IsOnThirdStrike
+Signature:   bool CTerrorPlayer::IsOnThirdStrike()
+Description: Return true if on third-strike
+
+Function:    CTerrorPlayer::IsStaggering
+Signature:   bool CTerrorPlayer::IsStaggering()
+Description: Return true if player is staggering
+
+Function:    CTerrorPlayer::IsSuppressingFallingDamage
+Signature:   bool CTerrorPlayer::IsSuppressingFallingDamage()
+Description: Returns true if falling damage is currently suppressed
+
+Function:    CTerrorPlayer::IsSurvivor
+Signature:   bool CTerrorPlayer::IsSurvivor()
+Description: On the survivor team (Otherwise, infected).
+
+Function:    CTerrorPlayer::RemoveUpgrade
+Signature:   void CTerrorPlayer::RemoveUpgrade(int)
+Description: Remove a weapon upgrade by name
+
+Function:    CTerrorPlayer::ReviveByDefib
+Signature:   void CTerrorPlayer::ReviveByDefib()
+Description: Revive a dead player by defibrillator
+
+Function:    CTerrorPlayer::ReviveFromIncap
+Signature:   void CTerrorPlayer::ReviveFromIncap()
+Description: Revive an incapped player
+
+Function:    CTerrorPlayer::SetHealthBuffer
+Signature:   void CTerrorPlayer::SetHealthBuffer(float)
+Description: Set Player Health Buffer - from pills or adrenalin etc
+
+Function:    CTerrorPlayer::SetReviveCount
+Signature:   void CTerrorPlayer::SetReviveCount(int)
+Description: Set the number of times the player has been revived
+
+Function:    CTerrorPlayer::SetSenseFlags
+Signature:   void CTerrorPlayer::SetSenseFlags(int)
+Description: Set the current bits for the bot sense flags - this is a SET, not an or
+
+Function:    CTerrorPlayer::SnapEyeAngles
+Signature:   void CTerrorPlayer::SnapEyeAngles(QAngle)
+Description: Sets the view angles.
+
+Function:    CTerrorPlayer::Stagger
+Signature:   void CTerrorPlayer::Stagger(Vector)
+Description: Stagger a player, optionally from a vector position
+
+Function:    CTerrorPlayer::SwitchToItem
+Signature:   bool CTerrorPlayer::SwitchToItem(string)
+Description: Make the player switch to an item/weapon
+
+Function:    CTerrorPlayer::TryGetPathableLocationWithin
+Signature:   Vector CTerrorPlayer::TryGetPathableLocationWithin(float)
+Description: Get a pathable location within this radius
+
+Function:    CTerrorPlayer::UseAdrenaline
+Signature:   void CTerrorPlayer::UseAdrenaline(float)
+Description: Cause the effect of Adrenaline - but no HP (SetHealthBuffer for that) - this is just speed!
+
+Function:    CTerrorWeapon::Clip1
+Signature:   int CTerrorWeapon::Clip1()
+
+Function:    CTerrorWeapon::Clip2
+Signature:   int CTerrorWeapon::Clip2()
+
+Function:    CTerrorWeapon::GetDefaultClip1
+Signature:   int CTerrorWeapon::GetDefaultClip1()
+
+Function:    CTerrorWeapon::GetDefaultClip2
+Signature:   int CTerrorWeapon::GetDefaultClip2()
+
+Function:    CTerrorWeapon::GetMaxClip1
+Signature:   int CTerrorWeapon::GetMaxClip1()
+
+Function:    CTerrorWeapon::GetMaxClip2
+Signature:   int CTerrorWeapon::GetMaxClip2()
+
+Function:    CTerrorWeapon::GiveDefaultAmmo
+Signature:   void CTerrorWeapon::GiveDefaultAmmo()
+
+Function:    CTerrorWeapon::Reload
+Signature:   bool CTerrorWeapon::Reload()
+
+Function:    CTerrorWeapon::SetClip1
+Signature:   void CTerrorWeapon::SetClip1(int)
+
+Function:    CTerrorWeapon::SetClip2
+Signature:   void CTerrorWeapon::SetClip2(int)
+
+Function:    CheckForSpecialStage
+Signature:   function CheckForSpecialStage(level, stage_list, stage_info)
+Description: Helper for picking a random special stage based on stage_info table
+
+Function:    CheckOrSetMapCallback
+Signature:   function CheckOrSetMapCallback(cb_name, cb_default)
+Description: Pass a callback and default @ for it, if it doesnt exist in current table, place it there
+
+Function:    ClearSavedTables
+Signature:   void ClearSavedTables()
+Description: Remove all saved tables
+
+Function:    ClientPrint
+Signature:   void ClientPrint(handle, int, string)
+Description: Print a client message
+
+Function:    CommandABot
+Signature:   bool CommandABot(handle)
+Description: Pass table - Inputs: bot, target, pos, cmd -- cmd BOT_CMD_MOVE, _ATTACK, _RETREAT, _RESET
+
+Function:    Convars::GetClientConvarValue
+Signature:   string Convars::GetClientConvarValue(string, int)
+Description: GetClientConvarValue(name) : returns the convar value for the entindex as a string.
+
+Function:    Convars::GetFloat
+Signature:   float Convars::GetFloat(string)
+Description: GetFloat(name) : returns the convar as a float. May return null if no such convar.
+
+Function:    Convars::GetStr
+Signature:   string Convars::GetStr(string)
+Description: GetFloat(name) : returns the convar as a string. May return null if no such convar.
+
+Function:    Convars::SetValue
+Signature:   void Convars::SetValue(string, value)
+Description: SetValue(name, value) : sets the value of the convar. Supported types are bool, int, float, string.
+
+Function:    DebugDrawBox
+Signature:   void DebugDrawBox(Vector, Vector, Vector, int, int, int, int, float)
+Description: Draw a debug overlay box
+
+Function:    DebugDrawBoxAngles
+Signature:   void DebugDrawBoxAngles(Vector, Vector, Vector, QAngle, Vector, float, float)
+Description: Draw a debug oriented box (cent, min, max, angles(p,y,r), vRgb, a, duration)
+
+Function:    DebugDrawBoxDirection
+Signature:   void DebugDrawBoxDirection(Vector, Vector, Vector, Vector, Vector, float, float)
+Description: Draw a debug forward box (cent, min, max, forward, vRgb, a, duration)
+
+Function:    DebugDrawCircle
+Signature:   void DebugDrawCircle(Vector, Vector, float, float, bool, float)
+Description: Draw a debug circle (center, rad, vRgb, a, ztest, duration)
+
+Function:    DebugDrawClear
+Signature:   void DebugDrawClear()
+Description: Try to clear all the debug overlay info
+
+Function:    DebugDrawLine
+Signature:   void DebugDrawLine(Vector, Vector, int, int, int, bool, float)
+Description: Draw a debug overlay line
+
+Function:    DebugDrawLine_vCol
+Signature:   void DebugDrawLine_vCol(Vector, Vector, Vector, bool, float)
+Description: Draw a debug line using color vec (start, end, vRgb, a, ztest, duration)
+
+Function:    DebugDrawScreenTextLine
+Signature:   void DebugDrawScreenTextLine(float, float, int, string, int, int, int, int, float)
+Description: Draw text with a line offset
+
+Function:    DebugDrawText
+Signature:   void DebugDrawText(Vector, string, bool, float)
+Description: Draw text in 3d (origin, text, bViewCheck, duration)
+
+Function:    Decider::AddRule
+Signature:   bool Decider::AddRule(handle)
+Description: AddRule(CRule) : Add a CRule object (defined in rulescript_base.nut) 
+
+Function:    Decider::FindAllMatches
+Signature:   handle Decider::FindAllMatches(handle, float)
+Description: Binding_FindAllMatches(query,leeway) : Returns an array of all matching responses. If leeway is nonzero, all results scoring within 'leeway' of the best score return. 
+
+Function:    Decider::FindBestMatch
+Signature:   handle Decider::FindBestMatch(handle)
+Description: Binding_FindBestMatch(query) : Query the database and return the best result found. If multiple of equal score found, an arbitrary one returns. 
+
+Function:    DeepPrintTable
+Signature:   function DeepPrintTable(debugTable, prefix)
+Description: Print out a table (and subtables) to the console
+
+Function:    DoIncludeScript
+Signature:   bool DoIncludeScript(string, handle)
+Description: Execute a script (internal)
+
+Function:    DropFire
+Signature:   void DropFire(Vector)
+Description: Drop a fire pool from the specified location
+
+Function:    DropSpit
+Signature:   void DropSpit(Vector)
+Description: Drop a spit pool from the specified location
+
+Function:    DuplicateTable
+Signature:   function DuplicateTable(srcTable)
+Description: This returns a deep copy of the passed in table
+
+Function:    EmitAmbientSoundOn
+Signature:   void EmitAmbientSoundOn(string, float, int, int, handle)
+Description: Play named ambient sound on an entity.
+
+Function:    EmitSoundOn
+Signature:   void EmitSoundOn(string, handle)
+Description: Play named sound on Entity
+
+Function:    EmitSoundOnClient
+Signature:   void EmitSoundOnClient(string, handle)
+Description: Play named sound only on the client for the passed in player
+
+Function:    EntFire
+Signature:   function EntFire(target, action, value, delay, activator)
+Description: Generate and entity i/o event
+
+Function:    EntIndexToHScript
+Signature:   handle EntIndexToHScript(int)
+Description: Turn an entity index integer to an HScript representing that entity's script instance.
+
+Function:    FileToString
+Signature:   string FileToString(string)
+Description: Reads a string from a file to send to script
+
+Function:    FindRescueAreaTrigger
+Signature:   handle FindRescueAreaTrigger()
+Description: Returns the trigger for the rescue area
+
+Function:    FireGameEvent
+Signature:   bool FireGameEvent(string, handle)
+Description: Fire a game event to a listening callback function in script. Parameters are passed in a squirrel table.
+
+Function:    ForceScavengeStart
+Signature:   void ForceScavengeStart()
+Description: Starts the scavenge round, even if the setup timer hasn't elapsed
+
+Function:    ForceSurvivalStart
+Signature:   void ForceSurvivalStart()
+Description: Starts the survival round, even if the survivors haven't activated the radio
+
+Function:    ForceVersusStart
+Signature:   void ForceVersusStart()
+Description: Starts the versus round, even if the survivors haven't left the safe room
+
+Function:    GetAverageSurvivorFlowDistance
+Signature:   float GetAverageSurvivorFlowDistance()
+Description: Gets the average flow distance of all the survivors.
+
+Function:    GetCharacterDisplayName
+Signature:   string GetCharacterDisplayName(handle)
+Description: Return null if not a survivor, else the survivors 'real name'
+
+Function:    GetCurrentFlowDistanceForPlayer
+Signature:   float GetCurrentFlowDistanceForPlayer(handle)
+Description: Gets the distance of how far the given player has made it to the goal.
+
+Function:    GetCurrentFlowPercentForPlayer
+Signature:   float GetCurrentFlowPercentForPlayer(handle)
+Description: Gets the percentage of how far the given player has made it to the goal.
+
+Function:    GetDifficulty
+Signature:   int GetDifficulty()
+Description: Returns the current difficulty as a numeric value.
+
+Function:    GetDifficultyString
+Signature:   string GetDifficultyString()
+Description: Returns the current difficulty as a string.
+
+Function:    GetFlowDistanceForPosition
+Signature:   float GetFlowDistanceForPosition(Vector)
+Description: Gets distance from the start of the map for a given position.
+
+Function:    GetFlowPercentForPosition
+Signature:   float GetFlowPercentForPosition(Vector, bool)
+Description: Gets the percent of where in the flow a given position is.
+
+Function:    GetFrameCount
+Signature:   int GetFrameCount()
+Description: Returns the engines current frame count
+
+Function:    GetFriction
+Signature:   float GetFriction(handle)
+Description: Returns the Friction on a player entity, meaningless if not a player
+
+Function:    GetInfectedStats
+Signature:   void GetInfectedStats(handle)
+Description: Fill passed in table with current stats about infected in the world
+
+Function:    GetInvTable
+Signature:   void GetInvTable(handle, handle)
+Description: Put Player's inventory data into a passed in table
+
+Function:    GetListenServerHost
+Signature:   handle GetListenServerHost()
+Description: Get the local player on a listen server.
+
+Function:    GetMaxFlowDistance
+Signature:   float GetMaxFlowDistance()
+Description: Gets the max flow distance for the entire map.
+
+Function:    GetModelIndex
+Signature:   int GetModelIndex(string)
+Description: Returns the index of the named model.
+
+Function:    GetPhysAngularVelocity
+Signature:   Vector GetPhysAngularVelocity(handle)
+Description: Get Angular Velocity for VPHYS or normal object
+
+Function:    GetPhysVelocity
+Signature:   Vector GetPhysVelocity(handle)
+Description: Get Velocity for VPHYS or normal object
+
+Function:    GetPlayerFromCharacter
+Signature:   handle GetPlayerFromCharacter(int)
+Description: Given a character type, return the entity, or null
+
+Function:    GetPlayerFromUserID
+Signature:   handle GetPlayerFromUserID(int)
+Description: Given a user id, return the entity, or null
+
+Function:    GetScavengeItemsGoal
+Signature:   int GetScavengeItemsGoal()
+Description: Returns number of Scavenge items needed.
+
+Function:    GetScavengeItemsRemaining
+Signature:   int GetScavengeItemsRemaining()
+Description: Returns number of Scavenge items remaining.
+
+Function:    GetSoundDuration
+Signature:   float GetSoundDuration(string, string)
+Description: Returns float duration of the sound. Takes soundname and optional actormodelname.
+
+Function:    HUDManageTimers
+Signature:   void HUDManageTimers(int, int, float)
+Description: Manage the system timers
+
+Function:    HUDPlace
+Signature:   void HUDPlace(int, float, float, float, float)
+Description: Place the HUD element for Slot at X,Y,W,H
+
+Function:    HUDReadTimer
+Signature:   float HUDReadTimer(int)
+Description: Read value from a system timer
+
+Function:    HUDSetLayout
+Signature:   void HUDSetLayout(handle)
+Description: Pass the HUD definition table for your mode
+
+Function:    HasConfigurableDifficultySetting
+Signature:   bool HasConfigurableDifficultySetting()
+Description: Returns true if the mode has more than a single difficulty.
+
+Function:    HasPlayerControlledZombies
+Signature:   bool HasPlayerControlledZombies()
+Description: Does the current game mode have humans playing as zombies?
+
+Function:    IsDedicatedServer
+Signature:   bool IsDedicatedServer()
+Description: Returns true if this server is a dedicated server.
+
+Function:    IsMissionFinalMap
+Signature:   bool IsMissionFinalMap()
+Description: True if the current map is the final map of the campaign
+
+Function:    IsModelPrecached
+Signature:   bool IsModelPrecached(string)
+Description: Checks if the modelname is precached.
+
+Function:    IsPlayerABot
+Signature:   bool IsPlayerABot(handle)
+Description: Is this player/entity a bot
+
+Function:    IsSoundPrecached
+Signature:   bool IsSoundPrecached(string)
+Description: Takes a sound name
+
+Function:    LocalTime
+Signature:   void LocalTime(handle)
+Description: Fills out a table with the local time (second, minute, hour, day, month, year, dayofweek, dayofyear, daylightsavings)
+
+Function:    PickupObject
+Signature:   void PickupObject(handle, handle)
+Description: Have a player pickup a nearby named entity
+
+Function:    PlayerInstanceFromIndex
+Signature:   handle PlayerInstanceFromIndex(int)
+Description: Get a script instance of a player by index.
+
+Function:    PrecacheEntityFromTable
+Signature:   bool PrecacheEntityFromTable(handle)
+Description: Precache an entity from KeyValues in table
+
+Function:    PrecacheModel
+Signature:   int PrecacheModel(string)
+Description: Precache a model.
+
+Function:    PrecacheSound
+Signature:   void PrecacheSound(string)
+Description: Precache a sound.
+
+Function:    QueueSpeak
+Signature:   void QueueSpeak(handle, string, float, string)
+Description: (hEntity, szConcept, flDelay, szCriteria) Queue a speech concept
+
+Function:    RandomFloat
+Signature:   float RandomFloat(float, float)
+Description: Generate a random floating point number within a range, inclusive
+
+Function:    RandomInt
+Signature:   int RandomInt(int, int)
+Description: Generate a random integer within a range, inclusive
+
+Function:    ReapplyInfectedFlags
+Signature:   void ReapplyInfectedFlags(int, handle)
+Description: Apply passed flags to passed infected or all commons if 2nd param is null
+
+Function:    RegisterScriptGameEventListener
+Signature:   void RegisterScriptGameEventListener(string)
+Description: Register as a listener for a game event from script.
+
+Function:    ReloadMOTD
+Signature:   void ReloadMOTD()
+Description: Reloads the MotD file
+
+Function:    RestoreTable
+Signature:   void RestoreTable(string, handle)
+Description: Put saved data back into the passed in table
+
+Function:    RotateOrientation
+Signature:   QAngle RotateOrientation(QAngle, QAngle)
+Description: Rotate a QAngle by another QAngle.
+
+Function:    RotatePosition
+Signature:   Vector RotatePosition(Vector, QAngle, Vector)
+Description: Rotate a Vector around a point.
+
+Function:    RushVictim
+Signature:   void RushVictim(handle, float)
+Description: (hVictim, flRange) Make all common zombies in range rush the victim
+
+Function:    SaveTable
+Signature:   void SaveTable(string, handle)
+Description: Save the passed in table
+
+Function:    Say
+Signature:   void Say(handle, string, bool)
+Description: Have Entity say string, and teamOnly or not
+
+Function:    ScreenFade
+Signature:   void ScreenFade(handle, int, int, int, int, float, float, int)
+Description: Start a screenfade with the following parameters. player, red, green, blue, alpha, flFadeTime, flFadeHold, flags
+
+Function:    ScreenShake
+Signature:   void ScreenShake(Vector, float, float, float, float, int, bool)
+Description: Start a screenshake with the following parameters. vecCenter, flAmplitude, flFrequency, flDuration, flRadius, eCommand( SHAKE_START = 0, SHAKE_STOP = 1 ), bAirShake
+
+Function:    ScriptMode_SystemCall
+Signature:   function ScriptMode_SystemCall(callname)
+Description: Makes the passed in call to g_MapScript and g_ModeScript, but it must have Zero args
+
+Function:    ScriptedMode_CallNextUpdate
+Signature:   function ScriptedMode_CallNextUpdate(callnext)
+Description: Pass a lambda to this, it will get called once as part of next Update, for doing something 'soon but not now'
+
+Function:    SendToConsole
+Signature:   void SendToConsole(string)
+Description: Send a string to the console as a client command
+
+Function:    SendToServerConsole
+Signature:   void SendToServerConsole(string)
+Description: Send a string to the console as a server command
+
+Function:    SetFakeClientConVarValue
+Signature:   void SetFakeClientConVarValue(handle, string, string)
+Description: Sets a USERINFO client ConVar for a fakeclient
+
+Function:    SetScavengeItemsGoal
+Signature:   void SetScavengeItemsGoal(int)
+Description: Set the number of Scavenge items needed.
+
+Function:    SetScavengeItemsRemaining
+Signature:   void SetScavengeItemsRemaining(int)
+Description: Set the number of Scavenge items remaining.
+
+Function:    ShowMessage
+Signature:   void ShowMessage(string)
+Description: Print a hud message on all clients
+
+Function:    SpawnEntityFromTable
+Signature:   handle SpawnEntityFromTable(string, handle)
+Description: Spawn entity from KeyValues in table - 'name' is entity name, rest are KeyValues for spawn.
+
+Function:    SpawnEntityGroupFromTable
+Signature:   bool SpawnEntityGroupFromTable(handle)
+Description: Hierarchically spawn an entity group from a set of spawn tables.
+
+Function:    SpawnStartBox
+Signature:   function SpawnStartBox(centerobjname, useFloating, width, depth, barriermodel, min_gap)
+Description: Auto-create a startbox that will give you a callback when the first player exits it
+
+Function:    StageInfo_Execute
+Signature:   function StageInfo_Execute(stageInfo, stageDefaults)
+Description: Execute a stage table, i.e. move parameters to DirectorOptions, do callbacks and so on
+
+Function:    StartAssault
+Signature:   void StartAssault()
+Description: Tells all existing nextbots to swap into assault mode and not hide/dither/loiter
+
+Function:    StopAmbientSoundOn
+Signature:   void StopAmbientSoundOn(string, handle)
+Description: Stop named ambient sound on an entity.
+
+Function:    StopSoundOn
+Signature:   void StopSoundOn(string, handle)
+Description: Stop named sound on Entity
+
+Function:    StringToFile
+Signature:   bool StringToFile(string, string)
+Description: Store a string to a file for later reading
+
+Function:    TeleportPlayersToStartPoints
+Signature:   function TeleportPlayersToStartPoints(spawnpointName)
+Description: Teleport players to start entities named by the argument - must have 4 spawnpoints
+
+Function:    Ticker_AddToHud
+Signature:   function Ticker_AddToHud(hudTable, strInit, blink)
+Description: adds ticker data to a passed in HUDTable
+
+Function:    Ticker_NewStr
+Signature:   function Ticker_NewStr(newStr, newTimeout)
+Description: sets the current Ticker string, w/an optional timeout value
+
+Function:    Time
+Signature:   float Time()
+Description: Get the current server time
+
+Function:    TimeToDisplayString
+Signature:   function TimeToDisplayString(disp_time)
+Description: Convert a # of seconds to a displayable time string form m:ss
+
+Function:    TraceLine
+Signature:   bool TraceLine(handle)
+Description: Pass table - Inputs: start, end, mask, ignore  -- outputs: pos, fraction, hit, enthit, startsolid
+
+Function:    UniqueString
+Signature:   function UniqueString(string)
+Description: Generate a string guaranteed to be unique across the life of the script VM, with an optional root string. Useful for adding data to tables when not sure what keys are already in use in that table.
+
+Function:    ZSpawn
+Signature:   bool ZSpawn(handle)
+Description: Does a z_spawn like spawn based on an input table
+
+Function:    rr_AddDecisionRule
+Signature:   bool rr_AddDecisionRule(handle)
+Description: Add a rule to the decision database.
+
+Function:    rr_CommitAIResponse
+Signature:   bool rr_CommitAIResponse(handle, handle)
+Description: Commit the result of QueryBestResponse back to the given entity to play. Call with params (entity, airesponse)
+
+Function:    rr_GetResponseTargets
+Signature:   handle rr_GetResponseTargets()
+Description: Retrieve a table of all available expresser targets, in the form { name : handle, name: handle }.
+
+Function:    rr_QueryBestResponse
+Signature:   handle rr_QueryBestResponse(handle, handle)
+Description: Params: (entity, query) : tests 'query' against entity's response system and returns the best response found (or null if none found).Function:    array
+Signature:   array array(int, any)
+Description: Create and returns array of a specified size where each element is set to fill.
+
+Function:    assert
+Signature:   void assert(bool)
+Description: Throws an exception if exp is evaluated to false.
+
+Function:    callee
+Signature:   function callee()
+Description: Returns the currently running closure.
+
+Function:    collectgarbage
+Signature:   int collectgarbage()
+Description: Runs the garbage collector and returns the number of reference cycles found(and deleted) This function only works on garbage collector builds.
+
+Function:    compilestring
+Signature:   function compilestring(string, string)
+Description: Compiles a string containing a squirrel script into a function and returns it.
+
+Function:    enabledebuginfo
+Signature:   void enabledebuginfo(any)
+Description: Enable/disable the debug line information generation at compile time. enable != null enables . enable == null disables.
+
+Function:    error
+Signature:   void error(string)
+Description: Prints x in the standard error output.
+
+Function:    getconsttable
+Signature:   table getconsttable()
+Description: Returns the const table of the VM.
+
+Function:    getroottable
+Signature:   table getroottable()
+Description: Returns the root table of the VM.
+
+Function:    getstackinfos
+Signature:   table getstackinfos(int)
+Description: Returns the stack frame informations at the given stack level (0 is the current function 1 is the caller and so on). If the stack level doesn't exist the function returns null.
+
+Function:    print
+Signature:   void print(string)
+Description: Prints message to console without any line feed after.
+
+Function:    resurrectunreachable
+Signature:   array resurrectunreachable()
+Description: Runs the garbage collector and returns an array containing all unreachable object found. If no unreachable object is found, null is returned instead. This function is meant to help debugging reference cycles. This function only works on garbage collector builds.
+
+Function:    setconsttable
+Signature:   table setconsttable(table)
+Description: Sets the const table of the VM which also returns the previous const table.
+
+Function:    seterrorhandler
+Signature:   void seterrorhandler(func)
+Description: Sets the runtime error handler.
+
+Function:    setroottable
+Signature:   table setroottable(table)
+Description: Sets the root table of the VM which also returns the previous root table.
+
+Function:    suspend
+Signature:   void suspend(any)
+Description: Suspends the coroutine that called this function.
+
+Function:    type
+Signature:   string type(any)
+Description: Return the 'raw' type of an object without invoking the metatmethod '_typeof'.
+
+Function:    abs
+Signature:   int abs(float)
+Description: Returns the absolute value of x as an integer.
+
+Function:    acos
+Signature:   float acos(float)
+Description: Returns the arccosine of x.
+
+Function:    asin
+Signature:   float asin(float)
+Description: Returns the arcsine of x.
+
+Function:    atan
+Signature:   float atan(float)
+Description: Returns the arctangent of x.
+
+Function:    atan2
+Signature:   float atan2(float, float)
+Description: Returns the arctangent of x/y. Unlike atan, it does not lose quadrant information.
+
+Function:    ceil
+Signature:   float ceil(float)
+Description: Returns a float value representing the smallest integer that is greater than or equal to x.
+
+Function:    cos
+Signature:   float cos(float)
+Description: Returns the cosine of x.
+
+Function:    exp
+Signature:   float exp(float)
+Description: Returns the exponential value (e^x) of the float parameter x.
+
+Function:    fabs
+Signature:   float fabs(float)
+Description: Returns the absolute value of x as a float.
+
+Function:    floor
+Signature:   float floor(float)
+Description: Returns a float value representing the largest integer that is less than or equal to x.
+
+Function:    log
+Signature:   float log(float)
+Description: Returns the natural logarithm of x.
+
+Function:    log10
+Signature:   float log10(float)
+Description: Returns the logarithm base-10 of x.
+
+Function:    pow
+Signature:   float pow(float, float)
+Description: Returns x raised to the power of y.
+
+Function:    rand
+Signature:   int rand()
+Description: Returns a pseudorandom integer in the range 0 to RAND_MAX.
+
+Function:    sin
+Signature:   float sin(float)
+Description: Returns the sine of x.
+
+Function:    sqrt
+Signature:   float sqrt(float)
+Description: Returns the square root of x.
+
+Function:    srand
+Signature:   void srand(float)
+Description: Sets the starting point for generating a series of pseudorandom integers.
+
+Function:    tan
+Signature:   float tan(float)
+Description: Returns the tangent of x.
+
+Function:    format
+Signature:   string format(string, ...)
+Description: Returns a formatted string. Same rules as the standard C functions (except * is not supported).
+
+Function:    lstrip
+Signature:   string lstrip(string)
+Description: Removes whitespace characters at the beginning of the given string.
+
+Function:    rstrip
+Signature:   string rstrip(string)
+Description: Removes whitespace characters at the end of the given string.
+
+Function:    split
+Signature:   array split(string, string)
+Description: Returns an array of strings split at each point where a separator character occurs in str. The separator is not returned as part of any array element. the parameter separators is a string that specifies the characters as to be used for the splitting.
+
+Function:    strip
+Signature:   string strip(string)
+Description: Removes whitespace characters at both the beginning and end of the given string.
