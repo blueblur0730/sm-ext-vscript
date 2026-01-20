@@ -1,0 +1,93 @@
+========================================
+Vscript Test Suite
+========================================
+
+[VScript Base] Testing base class methods...
+[VScript Base] IsValid: PASS
+[VScript Base] IsArray on array: PASS
+[VScript Base] IsArray on scope: PASS
+[VScript Base] IsTable on table: PASS
+[VScript Base] IsTable on scope: PASS
+[VScript Base] Compile: PASS (result=20)
+[VScript Base] Run: PASS
+
+[VScriptScope] Testing scope methods...
+[VScriptScope] Constructor with parent: PASS
+[VScriptScope] SetInt/GetInt: PASS
+[VScriptScope] SetFloat/GetFloat: PASS
+[VScriptScope] SetBool/GetBool: PASS
+[VScriptScope] SetValue/GetValue: PASS
+[VScriptScope] SetString/GetString: PASS (hello)
+[VScriptScope] SetVector/GetVector: PASS
+[VScriptScope] SetTable/GetTable: PASS
+[VScriptScope] SetArray/GetArray: PASS
+[VScriptScope] GetBool: PASS
+[VScriptScope] HasKey: PASS
+[VScriptScope] ClearKey: PASS
+[VScriptScope] Execute: PASS (result=150)
+[VScriptScope] LookupFunction: PASS (result=125)
+
+[VScriptTable] Testing table methods...
+[VScriptTable] SetInt/GetInt: PASS
+[VScriptTable] SetFloat/GetFloat: PASS
+[VScriptTable] SetBool/GetBool: PASS
+[VScriptTable] SetString/GetString: PASS (world)
+[VScriptTable] SetIntAt/GetIntAt: PASS
+[VScriptTable] SetFloatAt/GetFloatAt: PASS
+[VScriptTable] SetBoolAt/GetBoolAt: PASS
+[VScriptTable] SetStringAt/GetStringAt: PASS
+[VScriptTable] SetVectorAt/GetVectorAt: PASS
+[VScriptTable] SetValue/GetValue: PASS
+[VScriptTable] SetValueAt/GetValueAt: PASS
+[VScriptTable] Length: PASS (length=11)
+[VScriptTable] HasKey: PASS
+[VScriptTable] ClearKey: PASS
+[VScriptTable] GetKeys: PASS (length=7)
+[VScriptTable] GetKeyValue iterator: PASS (found 7 keys)
+[VScriptTable] Clone: PASS
+[VScriptTable] Clear: PASS
+[VScriptTable] LookupFunction: PASS (result=21)
+
+[VScriptArray] Testing array methods...
+[VScriptArray] Length after pushes: PASS (length=6)
+[VScriptArray] GetInt: PASS
+[VScriptArray] GetFloat: PASS
+[VScriptArray] GetBool: PASS
+[VScriptArray] GetString: PASS (test)
+[VScriptArray] GetVector: PASS
+[VScriptArray] GetValue: PASS
+[VScriptArray] SetInt: PASS
+[VScriptArray] SetValue: PASS
+[VScriptArray] Insert: PASS (value=999, length=7)
+[VScriptArray] Contains: PASS
+[VScriptArray] IndexOf: PASS (index=1)
+[VScriptArray] Pop: PASS (length: 7 -> 6)
+[VScriptArray] Remove: PASS (length: 6 -> 5)
+[VScriptArray] Clear: PASS (length=0)
+
+[VScriptFunction] Testing function methods...
+[VScriptFunction] Call (no args): PASS (result=42)
+[VScriptFunction] CallWithArgs: PASS (result=42)
+[VScriptFunction] Call (with scope): PASS (result=100)
+[VScriptFunction] Compiled function: PASS (result=42)
+
+[ScriptVariant] Testing variant methods...
+[ScriptVariant] FromInt: PASS (type=5, value=42)
+[ScriptVariant] FromFloat: PASS (type=1, value=3.14)
+[ScriptVariant] FromBool: PASS (type=6, value=1)
+[ScriptVariant] FromString: PASS (type=31, value=hello)
+[ScriptVariant] FromVector: PASS (type=3)
+[ScriptVariant] FromTable: PASS (type=32, value=123)
+[ScriptVariant] FromArray: PASS (type=32, value=456)
+[ScriptVariant] Null: PASS (type=0, IsNull=1)
+[ScriptVariant] FromEntity/ToEntity: SKIP (no client)
+[ScriptVariant] Function property: PASS
+[ScriptVariant] Function execution: PASS (result=10)
+========================================
+Vscript Test Suite Results
+========================================
+Total Tests: 69
+Passed: 69
+Failed: 0
+Success Rate: 100.00%
+========================================

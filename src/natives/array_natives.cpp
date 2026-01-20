@@ -36,7 +36,7 @@ static cell_t Native_VScriptArray_Create(IPluginContext* ctx, const cell_t* para
 
 	VScriptArrayHandle* handle = new VScriptArrayHandle(arrVar.m_hScript, false);
 	handle->SetVariant(arrVar);
-	return CreateVScriptArrayHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 static cell_t Native_VScriptArray_Length_get(IPluginContext* ctx, const cell_t* params) {
@@ -106,7 +106,7 @@ static cell_t Native_VScriptArray_PushValue(IPluginContext* ctx, const cell_t* p
 	IScriptVM* vm; HSCRIPT arr;
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
-	VScriptVariantHandle* varHandle = ReadScriptVariantHandle(ctx, params[2]);
+	VScriptVariantHandle* varHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[2]);
 	if (!varHandle) return 0;
 
 	vm->ArrayAddToTail(arr, varHandle->GetVariant());
@@ -223,7 +223,7 @@ static cell_t Native_VScriptArray_SetValue(IPluginContext* ctx, const cell_t* pa
 	IScriptVM* vm; HSCRIPT arr;
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
-	VScriptVariantHandle* varHandle = ReadScriptVariantHandle(ctx, params[3]);
+	VScriptVariantHandle* varHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[3]);
 	if (!varHandle) return 0;
 
 	return vm->SetValue(arr, params[2], varHandle->GetVariant());
@@ -355,7 +355,7 @@ static cell_t Native_VScriptArray_Contains(IPluginContext* ctx, const cell_t* pa
 	IScriptVM* vm; HSCRIPT arr;
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
-	VScriptVariantHandle* searchHandle = ReadScriptVariantHandle(ctx, params[2]);
+	VScriptVariantHandle* searchHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[2]);
 	if (!searchHandle) return 0;
 
 	int length = vm->GetArrayCount(arr);
@@ -376,7 +376,7 @@ static cell_t Native_VScriptArray_IndexOf(IPluginContext* ctx, const cell_t* par
 	IScriptVM* vm; HSCRIPT arr;
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return -1;
 
-	VScriptVariantHandle* searchHandle = ReadScriptVariantHandle(ctx, params[2]);
+	VScriptVariantHandle* searchHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[2]);
 	if (!searchHandle) return -1;
 
 	int length = vm->GetArrayCount(arr);
@@ -402,7 +402,7 @@ static cell_t Native_VScriptArray_Insert(IPluginContext* ctx, const cell_t* para
 
 	if (index < 0 || index > length) return 0;
 
-	VScriptVariantHandle* valueHandle = ReadScriptVariantHandle(ctx, params[3]);
+	VScriptVariantHandle* valueHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[3]);
 	if (!valueHandle) return 0;
 
 	// Use VScript to insert: array.insert(index, value)

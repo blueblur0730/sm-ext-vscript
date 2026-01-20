@@ -41,16 +41,16 @@ public:
 	virtual ~VScriptBaseHandle() = default;
 
 	// Virtual interface
-	virtual bool IsValid() const = 0;
-	virtual HSCRIPT GetHScript() const { return INVALID_HSCRIPT; }
-	virtual HandleType_t GetHandleType() const = 0;
-	virtual const char* GetTypeName() const = 0;
+	[[nodiscard]] virtual bool IsValid() const = 0;
+	[[nodiscard]] virtual HSCRIPT GetHScript() const { return INVALID_HSCRIPT; }
+	[[nodiscard]] virtual HandleType_t GetHandleType() const = 0;
+	[[nodiscard]] virtual const char* GetTypeName() const = 0;
 	virtual void Cleanup(IScriptVM* vm) = 0;
 
 	// Common functionality
-	int GetVMGeneration() const { return vmGeneration; }
+	[[nodiscard]] int GetVMGeneration() const { return vmGeneration; }
 	void SetVMGeneration(int gen) { vmGeneration = gen; }
-	bool ValidateGeneration(IPluginContext* ctx) const;
+	[[nodiscard]] bool ValidateGeneration(IPluginContext* ctx) const;
 };
 
 // ScriptVariant handle (stores any type of value)
@@ -162,12 +162,12 @@ public:
 extern VScriptHandlerUnified g_VScriptHandlerUnified;
 
 // Helper functions
-bool InitializeHandleTypes();
-void ShutdownHandleTypes();
+[[nodiscard]] bool InitializeHandleTypes();
+void RemoveHandleTypes();
 
 // Template-based handle creation
 template<typename T>
-Handle_t CreateVScriptHandle(IPluginContext* ctx, T* handle) {
+[[nodiscard]] Handle_t CreateVScriptHandle(IPluginContext* ctx, T* handle) {
 	handle->SetVMGeneration(g_VScriptManager.GetVMGeneration());
 	return handlesys->CreateHandle(handle->GetHandleType(), handle,
 		ctx->GetIdentity(), myself->GetIdentity(), nullptr);
@@ -175,28 +175,37 @@ Handle_t CreateVScriptHandle(IPluginContext* ctx, T* handle) {
 
 // Template-based handle reading
 template<typename T>
-T* ReadVScriptHandle(IPluginContext* ctx, Handle_t handle);
+[[nodiscard]] T* ReadVScriptHandle(IPluginContext* ctx, Handle_t handle) {
+	HandleError err;
+	HandleSecurity sec(ctx->GetIdentity(), myself->GetIdentity());
+	void* object;
+
+	T dummy;  // To get type info
+	if ((err = handlesys->ReadHandle(handle, dummy.GetHandleType(), &sec, &object)) != HandleError_None) {
+		ctx->ReportError("Invalid %s handle %x (error %d)", dummy.GetTypeName(), handle, err);
+		return nullptr;
+	}
+	return static_cast<T*>(object);
+}
 
 // Polymorphic handle reading (for IsValid)
-VScriptBaseHandle* ReadAnyVScriptHandle(IPluginContext* ctx, Handle_t handle);
+[[nodiscard]] VScriptBaseHandle* ReadAnyVScriptHandle(IPluginContext* ctx, Handle_t handle);
 
 // Template-based VM and HSCRIPT retrieval
 template<typename T>
-bool GetVMAndHScript(IPluginContext* ctx, cell_t handleParam, IScriptVM*& vm, HSCRIPT& hscript);
+[[nodiscard]] bool GetVMAndHScript(IPluginContext* ctx, cell_t handleParam, IScriptVM*& vm, HSCRIPT& hscript) {
+	vm = g_VScriptManager.GetVM();
+	if (!vm) return false;
 
-// Backward compatibility wrappers (will be removed after migration)
-Handle_t CreateScriptVariantHandle(IPluginContext* ctx, VScriptVariantHandle* variant);
-Handle_t CreateVScriptScopeHandle(IPluginContext* ctx, VScriptScopeHandle* handle);
-Handle_t CreateVScriptTableHandle(IPluginContext* ctx, VScriptTableHandle* handle);
-Handle_t CreateVScriptArrayHandle(IPluginContext* ctx, VScriptArrayHandle* handle);
-Handle_t CreateVScriptFunctionHandle(IPluginContext* ctx, VScriptFunctionHandle* handle);
+	T* handle = ReadVScriptHandle<T>(ctx, handleParam);
+	if (!handle) return false;
 
-VScriptVariantHandle* ReadScriptVariantHandle(IPluginContext* ctx, Handle_t handle);
-VScriptScopeHandle* ReadVScriptScopeHandle(IPluginContext* ctx, Handle_t handle);
-VScriptTableHandle* ReadVScriptTableHandle(IPluginContext* ctx, Handle_t handle);
-VScriptArrayHandle* ReadVScriptArrayHandle(IPluginContext* ctx, Handle_t handle);
-VScriptFunctionHandle* ReadVScriptFunctionHandle(IPluginContext* ctx, Handle_t handle);
+	if (!handle->ValidateGeneration(ctx)) return false;
+
+	hscript = handle->GetHScript();
+	return true;
+}
 
 // VM generation validation
-bool ValidateVScriptHandleGeneration(IPluginContext* ctx, VScriptBaseHandle* handle, const char* typeName);
-bool ValidateScriptVariantHandleGeneration(IPluginContext* ctx, VScriptVariantHandle* handle);
+[[nodiscard]] bool ValidateVScriptHandleGeneration(IPluginContext* ctx, VScriptBaseHandle* handle, const char* typeName);
+[[nodiscard]] bool ValidateScriptVariantHandleGeneration(IPluginContext* ctx, VScriptVariantHandle* handle);

@@ -143,7 +143,7 @@ cell_t GenericGetValue(IPluginContext* ctx, const cell_t* params) {
 	VScriptVariantHandle* handle = new VScriptVariantHandle();
 	handle->GetVariant() = variant;
 	handle->SetOwnsMemory((variant.m_flags & SV_FREE) != 0);
-	return CreateScriptVariantHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 // Generic Set operations for HSCRIPT-based handles
@@ -244,7 +244,7 @@ cell_t GenericSetValue(IPluginContext* ctx, const cell_t* params) {
 	char* key;
 	ctx->LocalToString(params[2], &key);
 
-	VScriptVariantHandle* varHandle = ReadScriptVariantHandle(ctx, params[3]);
+	VScriptVariantHandle* varHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[3]);
 	if (!varHandle) return 0;
 
 	return vm->SetValue(hscript, key, varHandle->GetVariant());

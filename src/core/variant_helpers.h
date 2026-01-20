@@ -23,6 +23,7 @@
 #include "handle_types.h"
 #include <vscript/ivscript.h>
 #include <smsdk_ext.h>
+#include <memory>
 
 // RAII wrapper for automatic ScriptVariant_t cleanup
 class AutoReleaseVariant {
@@ -47,40 +48,36 @@ public:
 // RAII wrapper for formatted strings with dynamic allocation
 class FormattedString {
 private:
-	char buffer[512];
-	char* dynamic;
-	char* str;
+	static constexpr size_t BUFFER_SIZE = 512;
+	char buffer[BUFFER_SIZE];
+	std::unique_ptr<char[]> dynamic;
+	const char* str;
 
 public:
-	FormattedString(IPluginContext* ctx, const cell_t* params, int paramIndex) : dynamic(nullptr) {
-		size_t result = smutils->FormatString(buffer, sizeof(buffer), ctx, params, paramIndex);
-		if (result >= sizeof(buffer)) {
-			dynamic = new char[result + 1];
-			str = dynamic;
-			smutils->FormatString(dynamic, result + 1, ctx, params, paramIndex);
+	FormattedString(IPluginContext* ctx, const cell_t* params, int paramIndex) {
+		size_t result = smutils->FormatString(buffer, BUFFER_SIZE, ctx, params, paramIndex);
+		if (result >= BUFFER_SIZE) {
+			dynamic = std::make_unique<char[]>(result + 1);
+			smutils->FormatString(dynamic.get(), result + 1, ctx, params, paramIndex);
+			str = dynamic.get();
 		} else {
 			str = buffer;
 		}
 	}
 
-	~FormattedString() {
-		if (dynamic) delete[] dynamic;
-	}
+	operator const char*() const noexcept { return str; }
+	const char* c_str() const noexcept { return str; }
 
-	operator const char*() const { return str; }
-	const char* c_str() const { return str; }
-
-	// Prevent copying
 	FormattedString(const FormattedString&) = delete;
 	FormattedString& operator=(const FormattedString&) = delete;
 };
 
 // Create a VScriptVariantHandle from a ScriptVariant_t and return its Handle_t
-inline Handle_t CreateVariantHandleFromScriptVariant(IPluginContext* ctx, const ScriptVariant_t& variant) {
+[[nodiscard]] inline Handle_t CreateVariantHandleFromScriptVariant(IPluginContext* ctx, const ScriptVariant_t& variant) {
 	VScriptVariantHandle* handle = new VScriptVariantHandle();
 	handle->GetVariant() = variant;
 	handle->SetOwnsMemory((variant.m_flags & SV_FREE) != 0);
-	return CreateScriptVariantHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 // Read a Vector parameter from SourcePawn
@@ -91,7 +88,7 @@ inline Vector ReadVectorParam(IPluginContext* ctx, const cell_t* params, int par
 }
 
 // Write a Vector result to SourcePawn
-inline bool WriteVectorResult(IPluginContext* ctx, const cell_t* params, int paramIndex, const Vector* vec) {
+[[nodiscard]] inline bool WriteVectorResult(IPluginContext* ctx, const cell_t* params, int paramIndex, const Vector* vec) {
 	if (!vec) return false;
 
 	cell_t* out;

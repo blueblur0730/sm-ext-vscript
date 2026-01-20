@@ -53,7 +53,7 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 	IScriptVM* vm = g_VScriptManager.GetVM();
 	if (!vm) return 0;
 
-	VScriptFunctionHandle* funcHandle = ReadVScriptFunctionHandle(ctx, params[1]);
+	VScriptFunctionHandle* funcHandle = ReadVScriptHandle<VScriptFunctionHandle>(ctx, params[1]);
 	if (!funcHandle) return 0;
 
 	HSCRIPT scope = ReadScopeOrTableHandle(ctx, params[2]);
@@ -90,7 +90,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 	IScriptVM* vm = g_VScriptManager.GetVM();
 	if (!vm) return 0;
 
-	VScriptFunctionHandle* funcHandle = ReadVScriptFunctionHandle(ctx, params[1]);
+	VScriptFunctionHandle* funcHandle = ReadVScriptHandle<VScriptFunctionHandle>(ctx, params[1]);
 	if (!funcHandle) return 0;
 
 	HSCRIPT scope = ReadScopeOrTableHandle(ctx, params[2]);
@@ -119,7 +119,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 		}
 
 		cell_t handleId = *addr;
-		VScriptVariantHandle* argHandle = ReadScriptVariantHandle(ctx, handleId);
+		VScriptVariantHandle* argHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, handleId);
 		if (argHandle) {
 			args[i].variant = argHandle->GetVariant();
 		} else {
@@ -139,7 +139,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 		}
 
 		cell_t handleId = *addr;
-		VScriptVariantHandle* argHandle = ReadScriptVariantHandle(ctx, handleId);
+		VScriptVariantHandle* argHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, handleId);
 		if (argHandle) {
 			args[i] = argHandle->GetVariant();
 		} else {

@@ -64,6 +64,6 @@ bool VscriptExt::SDK_OnLoad(char* error, size_t maxlength, bool late) {
 }
 
 void VscriptExt::SDK_OnUnload() {
-	ShutdownHandleTypes();
+	RemoveHandleTypes();
 	g_VScriptManager.Shutdown();
 }

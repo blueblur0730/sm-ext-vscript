@@ -76,7 +76,7 @@ static cell_t Native_VScript_Compile(IPluginContext* ctx, const cell_t* params) 
 
 	// Return as VScriptFunction handle with isCompiledScript=true
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(compiled, true, true);
-	return CreateVScriptFunctionHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 // VScript_Run

@@ -122,7 +122,7 @@ bool InitializeHandleTypes() {
 }
 
 // Shutdown all handle types
-void ShutdownHandleTypes() {
+void RemoveHandleTypes() {
 	if (g_VScriptFunctionType) {
 		handlesys->RemoveType(g_VScriptFunctionType, myself->GetIdentity());
 		g_VScriptFunctionType = 0;
@@ -145,31 +145,8 @@ void ShutdownHandleTypes() {
 	}
 }
 
-// Template implementations
-template<typename T>
-T* ReadVScriptHandle(IPluginContext* ctx, Handle_t handle) {
-	HandleError err;
-	HandleSecurity sec(ctx->GetIdentity(), myself->GetIdentity());
-	void* object;
-
-	T dummy;  // To get type info
-	if ((err = handlesys->ReadHandle(handle, dummy.GetHandleType(), &sec, &object)) != HandleError_None) {
-		ctx->ReportError("Invalid %s handle %x (error %d)", dummy.GetTypeName(), handle, err);
-		return nullptr;
-	}
-	return static_cast<T*>(object);
-}
-
-// Explicit template instantiations
-template VScriptVariantHandle* ReadVScriptHandle<VScriptVariantHandle>(IPluginContext*, Handle_t);
-template VScriptScopeHandle* ReadVScriptHandle<VScriptScopeHandle>(IPluginContext*, Handle_t);
-template VScriptTableHandle* ReadVScriptHandle<VScriptTableHandle>(IPluginContext*, Handle_t);
-template VScriptArrayHandle* ReadVScriptHandle<VScriptArrayHandle>(IPluginContext*, Handle_t);
-template VScriptFunctionHandle* ReadVScriptHandle<VScriptFunctionHandle>(IPluginContext*, Handle_t);
-
 // Polymorphic handle reading
 VScriptBaseHandle* ReadAnyVScriptHandle(IPluginContext* ctx, Handle_t handle) {
-	HandleError err;
 	HandleSecurity sec(ctx->GetIdentity(), myself->GetIdentity());
 	void* object;
 
@@ -184,67 +161,6 @@ VScriptBaseHandle* ReadAnyVScriptHandle(IPluginContext* ctx, Handle_t handle) {
 		}
 	}
 	return nullptr;
-}
-
-// Template for VM and HSCRIPT retrieval
-template<typename T>
-bool GetVMAndHScript(IPluginContext* ctx, cell_t handleParam, IScriptVM*& vm, HSCRIPT& hscript) {
-	vm = g_VScriptManager.GetVM();
-	if (!vm) return false;
-
-	T* handle = ReadVScriptHandle<T>(ctx, handleParam);
-	if (!handle) return false;
-
-	if (!handle->ValidateGeneration(ctx)) return false;
-
-	hscript = handle->GetHScript();
-	return true;
-}
-
-// Explicit template instantiations
-template bool GetVMAndHScript<VScriptScopeHandle>(IPluginContext*, cell_t, IScriptVM*&, HSCRIPT&);
-template bool GetVMAndHScript<VScriptTableHandle>(IPluginContext*, cell_t, IScriptVM*&, HSCRIPT&);
-template bool GetVMAndHScript<VScriptArrayHandle>(IPluginContext*, cell_t, IScriptVM*&, HSCRIPT&);
-
-// Backward compatibility wrappers
-Handle_t CreateScriptVariantHandle(IPluginContext* ctx, VScriptVariantHandle* variant) {
-	return CreateVScriptHandle(ctx, variant);
-}
-
-Handle_t CreateVScriptScopeHandle(IPluginContext* ctx, VScriptScopeHandle* handle) {
-	return CreateVScriptHandle(ctx, handle);
-}
-
-Handle_t CreateVScriptTableHandle(IPluginContext* ctx, VScriptTableHandle* handle) {
-	return CreateVScriptHandle(ctx, handle);
-}
-
-Handle_t CreateVScriptArrayHandle(IPluginContext* ctx, VScriptArrayHandle* handle) {
-	return CreateVScriptHandle(ctx, handle);
-}
-
-Handle_t CreateVScriptFunctionHandle(IPluginContext* ctx, VScriptFunctionHandle* handle) {
-	return CreateVScriptHandle(ctx, handle);
-}
-
-VScriptVariantHandle* ReadScriptVariantHandle(IPluginContext* ctx, Handle_t handle) {
-	return ReadVScriptHandle<VScriptVariantHandle>(ctx, handle);
-}
-
-VScriptScopeHandle* ReadVScriptScopeHandle(IPluginContext* ctx, Handle_t handle) {
-	return ReadVScriptHandle<VScriptScopeHandle>(ctx, handle);
-}
-
-VScriptTableHandle* ReadVScriptTableHandle(IPluginContext* ctx, Handle_t handle) {
-	return ReadVScriptHandle<VScriptTableHandle>(ctx, handle);
-}
-
-VScriptArrayHandle* ReadVScriptArrayHandle(IPluginContext* ctx, Handle_t handle) {
-	return ReadVScriptHandle<VScriptArrayHandle>(ctx, handle);
-}
-
-VScriptFunctionHandle* ReadVScriptFunctionHandle(IPluginContext* ctx, Handle_t handle) {
-	return ReadVScriptHandle<VScriptFunctionHandle>(ctx, handle);
 }
 
 // VM generation validation

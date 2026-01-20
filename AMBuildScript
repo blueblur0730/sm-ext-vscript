@@ -162,9 +162,6 @@ class ExtensionConfig(object):
     cxx.cflags += ['/W3']
     cxx.cxxflags += ['/std:c++17', '/EHsc', '/GR-', '/TP']
 
-    # Required for HL2SDK member function pointer handling
-    #cxx.cflags += ['/vms']
-
     if builder.options.opt == '1':
       cxx.cflags += ['/O2', '/Zo']
       cxx.linkflags += ['/OPT:ICF', '/OPT:REF']

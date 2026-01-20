@@ -36,7 +36,7 @@ static cell_t Native_VScriptTable_Create(IPluginContext* ctx, const cell_t* para
 
 	VScriptTableHandle* handle = new VScriptTableHandle(tableVar.m_hScript, false);
 	handle->SetVariant(tableVar);
-	return CreateVScriptTableHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 static cell_t Native_VScriptTable_Length_get(IPluginContext* ctx, const cell_t* params) {
@@ -102,7 +102,7 @@ static cell_t Native_VScriptTable_SetValue(IPluginContext* ctx, const cell_t* pa
 	char* key;
 	ctx->LocalToString(params[2], &key);
 
-	VScriptVariantHandle* varHandle = ReadScriptVariantHandle(ctx, params[3]);
+	VScriptVariantHandle* varHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[3]);
 	if (!varHandle) return 0;
 
 	return vm->SetValue(table, key, varHandle->GetVariant());
@@ -132,7 +132,7 @@ static cell_t Native_VScriptTable_SetValueAt(IPluginContext* ctx, const cell_t* 
 	IScriptVM* vm; HSCRIPT table;
 	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
 
-	VScriptVariantHandle* varHandle = ReadScriptVariantHandle(ctx, params[3]);
+	VScriptVariantHandle* varHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[3]);
 	if (!varHandle) return 0;
 
 	return vm->SetValue(table, params[2], varHandle->GetVariant());
@@ -310,12 +310,8 @@ static cell_t Native_VScriptTable_GetValueAt(IPluginContext* ctx, const cell_t* 
 
 	ScriptVariant_t variant;
 	if (!vm->GetValue(table, params[2], &variant)) return 0;
-	AutoReleaseVariant autoRelease(vm, variant);
 
-	VScriptVariantHandle* handle = new VScriptVariantHandle();
-	handle->GetVariant() = variant;
-	handle->SetOwnsMemory((variant.m_flags & SV_FREE) != 0);
-	return CreateScriptVariantHandle(ctx, handle);
+	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
 static cell_t Native_VScriptTable_GetBoolAt(IPluginContext* ctx, const cell_t* params) {
@@ -431,7 +427,7 @@ static cell_t Native_VScriptTable_LookupFunction(IPluginContext* ctx, const cell
 	if (func == INVALID_HSCRIPT || func == NULL) return 0;
 
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(func, true, false);
-	return CreateVScriptFunctionHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 static cell_t Native_VScriptTable_Clear(IPluginContext* ctx, const cell_t* params) {
@@ -490,7 +486,7 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 	// Create handle for the array
 	VScriptArrayHandle* handle = new VScriptArrayHandle(arr, false);
 	handle->SetVariant(arrVar);
-	return CreateVScriptArrayHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* params) {
@@ -527,7 +523,7 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 	// Create handle for the new table
 	VScriptTableHandle* handle = new VScriptTableHandle(newTable, false);
 	handle->SetVariant(newTableVar);
-	return CreateVScriptTableHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 const sp_nativeinfo_t g_TableNatives[] = {

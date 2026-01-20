@@ -34,7 +34,7 @@ static cell_t Native_VScriptScope_Create(IPluginContext* ctx, const cell_t* para
 
 	HSCRIPT parent = INVALID_HSCRIPT;
 	if (params[2] != 0) {
-		VScriptScopeHandle* parentHandle = ReadVScriptScopeHandle(ctx, params[2]);
+		VScriptScopeHandle* parentHandle = ReadVScriptHandle<VScriptScopeHandle>(ctx, params[2]);
 		if (parentHandle) {
 			parent = parentHandle->GetHScript();
 		}
@@ -44,7 +44,7 @@ static cell_t Native_VScriptScope_Create(IPluginContext* ctx, const cell_t* para
 	if (scope == INVALID_HSCRIPT) return 0;
 
 	VScriptScopeHandle* handle = new VScriptScopeHandle(scope, true);
-	return CreateVScriptScopeHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 static cell_t Native_VScriptScope_GetRoot(IPluginContext* ctx, const cell_t* params) {
@@ -56,7 +56,7 @@ static cell_t Native_VScriptScope_GetRoot(IPluginContext* ctx, const cell_t* par
 
 	// Root table is not owned by us
 	VScriptScopeHandle* handle = new VScriptScopeHandle(root, false);
-	return CreateVScriptScopeHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 static cell_t Native_VScriptScope_SetInt(IPluginContext* ctx, const cell_t* params) {
@@ -91,7 +91,7 @@ static cell_t Native_VScriptScope_SetTable(IPluginContext* ctx, const cell_t* pa
 	char* key;
 	ctx->LocalToString(params[2], &key);
 
-	VScriptTableHandle* tableHandle = ReadVScriptTableHandle(ctx, params[3]);
+	VScriptTableHandle* tableHandle = ReadVScriptHandle<VScriptTableHandle>(ctx, params[3]);
 	if (!tableHandle) return 0;
 
 	ScriptVariant_t variant;
@@ -107,7 +107,7 @@ static cell_t Native_VScriptScope_SetArray(IPluginContext* ctx, const cell_t* pa
 	char* key;
 	ctx->LocalToString(params[2], &key);
 
-	VScriptArrayHandle* arrHandle = ReadVScriptArrayHandle(ctx, params[3]);
+	VScriptArrayHandle* arrHandle = ReadVScriptHandle<VScriptArrayHandle>(ctx, params[3]);
 	if (!arrHandle) return 0;
 
 	ScriptVariant_t variant;
@@ -154,7 +154,7 @@ static cell_t Native_VScriptScope_GetTable(IPluginContext* ctx, const cell_t* pa
 	cell_t result = 0;
 	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript != INVALID_HSCRIPT) {
 		VScriptTableHandle* handle = new VScriptTableHandle(variant.m_hScript, false);
-		result = CreateVScriptTableHandle(ctx, handle);
+		result = CreateVScriptHandle(ctx, handle);
 	}
 
 	return result;
@@ -174,7 +174,7 @@ static cell_t Native_VScriptScope_GetArray(IPluginContext* ctx, const cell_t* pa
 	cell_t result = 0;
 	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript != INVALID_HSCRIPT) {
 		VScriptArrayHandle* handle = new VScriptArrayHandle(variant.m_hScript, false);
-		result = CreateVScriptArrayHandle(ctx, handle);
+		result = CreateVScriptHandle(ctx, handle);
 	}
 
 	return result;
@@ -210,29 +210,17 @@ static cell_t Native_VScriptScope_LookupFunction(IPluginContext* ctx, const cell
 	if (func == INVALID_HSCRIPT || func == NULL) return 0;
 
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(func, true, false);
-	return CreateVScriptFunctionHandle(ctx, handle);
+	return CreateVScriptHandle(ctx, handle);
 }
 
 static cell_t Native_VScriptScope_Execute(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm; HSCRIPT scope;
 	if (!GetVMAndHScript<VScriptScopeHandle>(ctx, params[1], vm, scope)) return 0;
 
-	// Format the code string with variable arguments
-	char buffer[512];
-	char* code = buffer;
-	size_t result = smutils->FormatString(buffer, sizeof(buffer), ctx, params, 2);
-
-	// If buffer was too small, allocate dynamically
-	char* dynamic = nullptr;
-	if (result >= sizeof(buffer)) {
-		dynamic = new char[result + 1];
-		code = dynamic;
-		smutils->FormatString(dynamic, result + 1, ctx, params, 2);
-	}
+	FormattedString code(ctx, params, 2);
 
 	// Compile the script
 	HSCRIPT compiled = vm->CompileScript(code, "execute");
-	if (dynamic) delete[] dynamic;
 
 	if (compiled == INVALID_HSCRIPT) return 0;
 
@@ -243,11 +231,7 @@ static cell_t Native_VScriptScope_Execute(IPluginContext* ctx, const cell_t* par
 
 	if (status != SCRIPT_DONE) return 0;
 
-	// Create handle for return value
-	VScriptVariantHandle* handle = new VScriptVariantHandle();
-	handle->GetVariant() = returnValue;
-	handle->SetOwnsMemory((returnValue.m_flags & SV_FREE) != 0);
-	return CreateScriptVariantHandle(ctx, handle);
+	return CreateVariantHandleFromScriptVariant(ctx, returnValue);
 }
 
 const sp_nativeinfo_t g_ScopeNatives[] = {

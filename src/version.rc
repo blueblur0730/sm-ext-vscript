@@ -30,7 +30,7 @@ BEGIN
             VALUE "FileDescription", "SourceMod VScript Extension"
             VALUE "FileVersion", SMEXT_CONF_VERSION
             VALUE "InternalName", "SourceMod VScript Extension"
-            VALUE "LegalCopyright", "Copyright (c) 2024-2025, SkyServers"
+            VALUE "LegalCopyright", "Copyright (c) 2025-2026, SkyServers"
             VALUE "OriginalFilename", BINARY_NAME
             VALUE "ProductName", "SourceMod VScript Extension"
             VALUE "ProductVersion", SMEXT_CONF_VERSION
