@@ -138,6 +138,7 @@ class ExtensionConfig(object):
       '-Wno-write-strings',
       '-msse',
       '-fvisibility=hidden',
+      '-fPIC',
     ]
     cxx.cxxflags += [
       '-std=c++17',

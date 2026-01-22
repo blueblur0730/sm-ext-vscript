@@ -23,8 +23,8 @@
 
 #define SMEXT_CONF_NAME         "SourceMod VScript Extension"
 #define SMEXT_CONF_DESCRIPTION  "Provide VScript Native"
-#define SMEXT_CONF_VERSION      "1.0.1"
-#define SMEXT_CONF_VERSION_FILE	 1,0,0,1
+#define SMEXT_CONF_VERSION      "1.0.2"
+#define SMEXT_CONF_VERSION_FILE	 1,0,0,2
 #define SMEXT_CONF_AUTHOR       "ProjectSky"
 #define SMEXT_CONF_URL          "https://github.com/ProjectSky/sm-ext-vscript"
 #define SMEXT_CONF_LOGTAG       "VSCRIPT"
@@ -35,5 +35,6 @@
 
 #define SMEXT_CONF_METAMOD
 #define SMEXT_ENABLE_HANDLESYS
+#define SMEXT_ENABLE_FORWARDSYS
 
 #endif // _INCLUDE_SOURCEMOD_EXTENSION_CONFIG_H_

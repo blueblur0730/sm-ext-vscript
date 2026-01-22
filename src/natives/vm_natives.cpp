@@ -26,7 +26,8 @@
 
 static cell_t Native_VScript_IsValid_get(IPluginContext* ctx, const cell_t* params) {
 	VScriptBaseHandle* handle = ReadAnyVScriptHandle(ctx, params[1]);
-	return handle && handle->IsValid();
+	if (!handle) return 0;
+	return handle->IsValid();
 }
 
 static cell_t Native_VScript_IsArray_get(IPluginContext* ctx, const cell_t* params) {
@@ -72,7 +73,7 @@ static cell_t Native_VScript_Compile(IPluginContext* ctx, const cell_t* params) 
 	// Compile the script
 	HSCRIPT compiled = vm->CompileScript(code, "Compiled");
 
-	if (compiled == INVALID_HSCRIPT) return 0;
+	if (!compiled || compiled == INVALID_HSCRIPT) return 0;
 
 	// Return as VScriptFunction handle with isCompiledScript=true
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(compiled, true, true);

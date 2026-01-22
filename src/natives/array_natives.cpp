@@ -32,7 +32,7 @@ static cell_t Native_VScriptArray_Create(IPluginContext* ctx, const cell_t* para
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
 
-	if (arrVar.m_type != FIELD_HSCRIPT || arrVar.m_hScript == INVALID_HSCRIPT) return 0;
+	if (arrVar.m_type != FIELD_HSCRIPT || !arrVar.m_hScript || arrVar.m_hScript == INVALID_HSCRIPT) return 0;
 
 	VScriptArrayHandle* handle = new VScriptArrayHandle(arrVar.m_hScript, false);
 	handle->SetVariant(arrVar);
@@ -272,7 +272,7 @@ static cell_t Native_VScriptArray_Remove(IPluginContext* ctx, const cell_t* para
 
 	// Use VScript to remove element: array.remove(index)
 	HSCRIPT root = vm->GetRootTable();
-	if (root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) return 0;
 
 	char code[128];
 	snprintf(code, sizeof(code), "__sm_temp_array__.remove(%d)", index);
@@ -284,7 +284,7 @@ static cell_t Native_VScriptArray_Remove(IPluginContext* ctx, const cell_t* para
 	vm->SetValue(root, "__sm_temp_array__", arrVar);
 
 	HSCRIPT compiled = vm->CompileScript(code, "ArrayRemove");
-	if (compiled != INVALID_HSCRIPT) {
+	if (compiled && compiled != INVALID_HSCRIPT) {
 		vm->ExecuteFunction(compiled, nullptr, 0, nullptr, root, true);
 		vm->ReleaseScript(compiled);
 	}
@@ -307,7 +307,7 @@ static cell_t Native_VScriptArray_Pop(IPluginContext* ctx, const cell_t* params)
 
 	// Remove last element
 	HSCRIPT root = vm->GetRootTable();
-	if (root != INVALID_HSCRIPT) {
+	if (root && root != INVALID_HSCRIPT) {
 		char code[128];
 		snprintf(code, sizeof(code), "__sm_temp_array__.remove(%d)", length - 1);
 
@@ -317,7 +317,7 @@ static cell_t Native_VScriptArray_Pop(IPluginContext* ctx, const cell_t* params)
 		vm->SetValue(root, "__sm_temp_array__", arrVar);
 
 		HSCRIPT compiled = vm->CompileScript(code, "ArrayPop");
-		if (compiled != INVALID_HSCRIPT) {
+		if (compiled && compiled != INVALID_HSCRIPT) {
 			vm->ExecuteFunction(compiled, nullptr, 0, nullptr, root, true);
 			vm->ReleaseScript(compiled);
 		}
@@ -334,7 +334,7 @@ static cell_t Native_VScriptArray_Clear(IPluginContext* ctx, const cell_t* param
 
 	// Use VScript to clear: array.clear()
 	HSCRIPT root = vm->GetRootTable();
-	if (root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) return 0;
 
 	ScriptVariant_t arrVar;
 	arrVar.m_type = FIELD_HSCRIPT;
@@ -342,7 +342,7 @@ static cell_t Native_VScriptArray_Clear(IPluginContext* ctx, const cell_t* param
 	vm->SetValue(root, "__sm_temp_array__", arrVar);
 
 	HSCRIPT compiled = vm->CompileScript("__sm_temp_array__.clear()", "ArrayClear");
-	if (compiled != INVALID_HSCRIPT) {
+	if (compiled && compiled != INVALID_HSCRIPT) {
 		vm->ExecuteFunction(compiled, nullptr, 0, nullptr, root, true);
 		vm->ReleaseScript(compiled);
 	}
@@ -407,7 +407,7 @@ static cell_t Native_VScriptArray_Insert(IPluginContext* ctx, const cell_t* para
 
 	// Use VScript to insert: array.insert(index, value)
 	HSCRIPT root = vm->GetRootTable();
-	if (root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) return 0;
 
 	// Set array and value in root temporarily
 	ScriptVariant_t arrVar;
@@ -420,7 +420,7 @@ static cell_t Native_VScriptArray_Insert(IPluginContext* ctx, const cell_t* para
 	snprintf(code, sizeof(code), "__sm_temp_array__.insert(%d, __sm_temp_value__)", index);
 
 	HSCRIPT compiled = vm->CompileScript(code, "ArrayInsert");
-	if (compiled != INVALID_HSCRIPT) {
+	if (compiled && compiled != INVALID_HSCRIPT) {
 		vm->ExecuteFunction(compiled, nullptr, 0, nullptr, root, true);
 		vm->ReleaseScript(compiled);
 	}

@@ -28,6 +28,10 @@ public:
 	virtual bool SDK_OnLoad(char* error, size_t maxlength, bool late) override;
 	virtual void SDK_OnUnload() override;
 	virtual bool SDK_OnMetamodLoad(ISmmAPI* ismm, char* error, size_t maxlen, bool late) override;
+
+	// Forwards
+	IForward* m_OnVMCreate = nullptr;
+	IForward* m_OnVMDestroy = nullptr;
 };
 
 // Native registration

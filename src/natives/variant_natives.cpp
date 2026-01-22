@@ -58,6 +58,9 @@ static cell_t Native_ScriptVariant_FromString(IPluginContext* ctx, const cell_t*
 	// Create temporary table to force VM to copy and manage the string
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
+	if (tableVar.m_type != FIELD_HSCRIPT || !tableVar.m_hScript || tableVar.m_hScript == INVALID_HSCRIPT) {
+		return 0;
+	}
 
 	// Store string in table (VM copies it using its own allocator)
 	ScriptVariant_t tempVar;
@@ -81,6 +84,9 @@ static cell_t Native_ScriptVariant_FromVector(IPluginContext* ctx, const cell_t*
 	// Create temporary table to force VM to copy and manage the vector
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
+	if (tableVar.m_type != FIELD_HSCRIPT || !tableVar.m_hScript || tableVar.m_hScript == INVALID_HSCRIPT) {
+		return 0;
+	}
 
 	// Store vector in table (VM copies it using its own allocator)
 	Vector v = ReadVectorParam(ctx, params, 1);
@@ -205,7 +211,9 @@ static cell_t Native_ScriptVariant_GetTable(IPluginContext* ctx, const cell_t* p
 	IScriptVM* vm = g_VScriptManager.GetVM();
 	if (!vm) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT && handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
+	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
+	    handle->GetVariant().m_hScript &&
+	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
 		if (vm->IsTable(handle->GetVariant().m_hScript)) {
 			VScriptTableHandle* h = new VScriptTableHandle(handle->GetVariant().m_hScript, false);
 			return CreateVScriptHandle(ctx, h);
@@ -221,7 +229,9 @@ static cell_t Native_ScriptVariant_GetArray(IPluginContext* ctx, const cell_t* p
 	IScriptVM* vm = g_VScriptManager.GetVM();
 	if (!vm) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT && handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
+	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
+	    handle->GetVariant().m_hScript &&
+	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
 		if (vm->IsArray(handle->GetVariant().m_hScript)) {
 			VScriptArrayHandle* h = new VScriptArrayHandle(handle->GetVariant().m_hScript, false);
 			return CreateVScriptHandle(ctx, h);
@@ -234,7 +244,9 @@ static cell_t Native_ScriptVariant_GetScope(IPluginContext* ctx, const cell_t* p
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT && handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
+	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
+	    handle->GetVariant().m_hScript &&
+	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
 		VScriptScopeHandle* h = new VScriptScopeHandle(handle->GetVariant().m_hScript, false);
 		return CreateVScriptHandle(ctx, h);
 	}
@@ -245,7 +257,9 @@ static cell_t Native_ScriptVariant_GetFunction(IPluginContext* ctx, const cell_t
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT && handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
+	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
+	    handle->GetVariant().m_hScript &&
+	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
 		VScriptFunctionHandle* h = new VScriptFunctionHandle(handle->GetVariant().m_hScript, false, false);
 		return CreateVScriptHandle(ctx, h);
 	}
@@ -259,14 +273,14 @@ static cell_t Native_ScriptVariant_FromEntity(IPluginContext* ctx, const cell_t*
 	if (!vm) return 0;
 
 	HSCRIPT root = vm->GetRootTable();
-	if (root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) return 0;
 
 	// Use EntIndexToHScript to convert entity index to instance (more general than PlayerInstanceFromIndex)
 	char code[128];
 	snprintf(code, sizeof(code), "return EntIndexToHScript(%d)", entity);
 
 	HSCRIPT compiled = vm->CompileScript(code, "FromEntity");
-	if (compiled == INVALID_HSCRIPT) return 0;
+	if (!compiled || compiled == INVALID_HSCRIPT) return 0;
 
 	ScriptVariant_t returnValue;
 	ScriptStatus_t status = vm->ExecuteFunction(compiled, nullptr, 0, &returnValue, root, true);
@@ -281,7 +295,9 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return -1;
 
-	if (handle->GetVariant().m_type != FIELD_HSCRIPT || handle->GetVariant().m_hScript == INVALID_HSCRIPT) {
+	if (handle->GetVariant().m_type != FIELD_HSCRIPT ||
+	    !handle->GetVariant().m_hScript ||
+	    handle->GetVariant().m_hScript == INVALID_HSCRIPT) {
 		return -1;
 	}
 
@@ -289,7 +305,7 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 	if (!vm) return -1;
 
 	HSCRIPT root = vm->GetRootTable();
-	if (root == INVALID_HSCRIPT) return -1;
+	if (!root || root == INVALID_HSCRIPT) return -1;
 
 	// Call GetEntityIndex() method on the entity instance
 	ScriptVariant_t tableVar;
@@ -299,7 +315,7 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 
 	const char* code = "return __sm_temp_entity__.GetEntityIndex()";
 	HSCRIPT compiled = vm->CompileScript(code, "ToEntity");
-	if (compiled == INVALID_HSCRIPT) {
+	if (!compiled || compiled == INVALID_HSCRIPT) {
 		vm->ClearValue(root, "__sm_temp_entity__");
 		return -1;
 	}

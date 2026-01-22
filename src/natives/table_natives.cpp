@@ -32,7 +32,7 @@ static cell_t Native_VScriptTable_Create(IPluginContext* ctx, const cell_t* para
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
 
-	if (tableVar.m_type != FIELD_HSCRIPT || tableVar.m_hScript == INVALID_HSCRIPT) return 0;
+	if (tableVar.m_type != FIELD_HSCRIPT || !tableVar.m_hScript || tableVar.m_hScript == INVALID_HSCRIPT) return 0;
 
 	VScriptTableHandle* handle = new VScriptTableHandle(tableVar.m_hScript, false);
 	handle->SetVariant(tableVar);
@@ -424,7 +424,7 @@ static cell_t Native_VScriptTable_LookupFunction(IPluginContext* ctx, const cell
 	ctx->LocalToString(params[2], &name);
 
 	HSCRIPT func = vm->LookupFunction(name, table);
-	if (func == INVALID_HSCRIPT || func == NULL) return 0;
+	if (!func || func == INVALID_HSCRIPT) return 0;
 
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(func, true, false);
 	return CreateVScriptHandle(ctx, handle);
@@ -436,7 +436,7 @@ static cell_t Native_VScriptTable_Clear(IPluginContext* ctx, const cell_t* param
 
 	// Use VScript to clear: table.clear()
 	HSCRIPT root = vm->GetRootTable();
-	if (root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) return 0;
 
 	ScriptVariant_t tableVar;
 	tableVar.m_type = FIELD_HSCRIPT;
@@ -444,7 +444,7 @@ static cell_t Native_VScriptTable_Clear(IPluginContext* ctx, const cell_t* param
 	vm->SetValue(root, "__sm_temp_table__", tableVar);
 
 	HSCRIPT compiled = vm->CompileScript("__sm_temp_table__.clear()", "TableClear");
-	if (compiled != INVALID_HSCRIPT) {
+	if (compiled && compiled != INVALID_HSCRIPT) {
 		vm->ExecuteFunction(compiled, nullptr, 0, nullptr, root, true);
 		vm->ReleaseScript(compiled);
 	}
@@ -460,7 +460,7 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 	// Create new array to hold keys
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
-	if (arrVar.m_type != FIELD_HSCRIPT || arrVar.m_hScript == INVALID_HSCRIPT) return 0;
+	if (arrVar.m_type != FIELD_HSCRIPT || !arrVar.m_hScript || arrVar.m_hScript == INVALID_HSCRIPT) return 0;
 
 	HSCRIPT arr = arrVar.m_hScript;
 
@@ -496,7 +496,7 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 	// Create new table
 	ScriptVariant_t newTableVar;
 	vm->CreateTable(newTableVar);
-	if (newTableVar.m_type != FIELD_HSCRIPT || newTableVar.m_hScript == INVALID_HSCRIPT) return 0;
+	if (newTableVar.m_type != FIELD_HSCRIPT || !newTableVar.m_hScript || newTableVar.m_hScript == INVALID_HSCRIPT) return 0;
 
 	HSCRIPT newTable = newTableVar.m_hScript;
 

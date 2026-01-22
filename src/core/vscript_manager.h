@@ -21,7 +21,8 @@
 #pragma once
 
 #include <vscript/ivscript.h>
-#include <sh_vector.h>
+#include <IHandleSys.h>
+#include <unordered_set>
 
 class VScriptManager {
 public:
@@ -32,20 +33,22 @@ public:
 	void SetVM(IScriptVM* vm) {
 		if (vm != m_vm) {
 			m_vm = vm;
-			if (vm) {
-				m_vmGeneration++;
-			}
 		}
 	}
 
-	int GetVMGeneration() const { return m_vmGeneration; }
+	// Handle tracking
+	void RegisterHandle(SourceMod::Handle_t handle);
+	void UnregisterHandle(SourceMod::Handle_t handle);
+	void CloseAllHandles();
 
 private:
 	IScriptManager* m_scriptMgr = nullptr;
 	IScriptVM* m_vm = nullptr;
 	int m_createHookId = 0;
 	int m_destroyHookId = 0;
-	int m_vmGeneration = 0;
+
+	// Active handle tracking
+	std::unordered_set<SourceMod::Handle_t> m_activeHandles;
 };
 
 extern VScriptManager g_VScriptManager;

@@ -34,10 +34,10 @@ extern HandleType_t g_VScriptFunctionType;
 // Base class for all VScript handles
 class VScriptBaseHandle {
 protected:
-	int vmGeneration;
+	Handle_t sourcemodHandle;
 
 public:
-	VScriptBaseHandle() : vmGeneration(0) {}
+	VScriptBaseHandle() : sourcemodHandle(BAD_HANDLE) {}
 	virtual ~VScriptBaseHandle() = default;
 
 	// Virtual interface
@@ -47,10 +47,9 @@ public:
 	[[nodiscard]] virtual const char* GetTypeName() const = 0;
 	virtual void Cleanup(IScriptVM* vm) = 0;
 
-	// Common functionality
-	[[nodiscard]] int GetVMGeneration() const { return vmGeneration; }
-	void SetVMGeneration(int gen) { vmGeneration = gen; }
-	[[nodiscard]] bool ValidateGeneration(IPluginContext* ctx) const;
+	// Handle tracking
+	void SetSourceModHandle(Handle_t handle) { sourcemodHandle = handle; }
+	[[nodiscard]] Handle_t GetSourceModHandle() const { return sourcemodHandle; }
 };
 
 // ScriptVariant handle (stores any type of value)
@@ -168,9 +167,13 @@ void RemoveHandleTypes();
 // Template-based handle creation
 template<typename T>
 [[nodiscard]] Handle_t CreateVScriptHandle(IPluginContext* ctx, T* handle) {
-	handle->SetVMGeneration(g_VScriptManager.GetVMGeneration());
-	return handlesys->CreateHandle(handle->GetHandleType(), handle,
-		ctx->GetIdentity(), myself->GetIdentity(), nullptr);
+	Handle_t hndl = handlesys->CreateHandle(handle->GetHandleType(), handle,
+		myself->GetIdentity(), myself->GetIdentity(), nullptr);
+	if (hndl != BAD_HANDLE) {
+		handle->SetSourceModHandle(hndl);
+		g_VScriptManager.RegisterHandle(hndl);
+	}
+	return hndl;
 }
 
 // Template-based handle reading
@@ -200,12 +203,6 @@ template<typename T>
 	T* handle = ReadVScriptHandle<T>(ctx, handleParam);
 	if (!handle) return false;
 
-	if (!handle->ValidateGeneration(ctx)) return false;
-
 	hscript = handle->GetHScript();
 	return true;
 }
-
-// VM generation validation
-[[nodiscard]] bool ValidateVScriptHandleGeneration(IPluginContext* ctx, VScriptBaseHandle* handle, const char* typeName);
-[[nodiscard]] bool ValidateScriptVariantHandleGeneration(IPluginContext* ctx, VScriptVariantHandle* handle);

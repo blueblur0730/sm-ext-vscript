@@ -32,15 +32,6 @@ HandleType_t g_VScriptFunctionType = 0;
 // Unified handler instance
 VScriptHandlerUnified g_VScriptHandlerUnified;
 
-// Base class implementations
-bool VScriptBaseHandle::ValidateGeneration(IPluginContext* ctx) const {
-	if (vmGeneration != g_VScriptManager.GetVMGeneration()) {
-		ctx->ReportError("%s handle is from a different VM (stale after map change)", GetTypeName());
-		return false;
-	}
-	return true;
-}
-
 // VScriptVariantHandle implementations
 void VScriptVariantHandle::Cleanup(IScriptVM* vm) {
 	if (ownsMemory && (variant.m_flags & SV_FREE) && vm) {
@@ -86,8 +77,11 @@ void VScriptFunctionHandle::CleanupHScript(IScriptVM* vm) {
 void VScriptHandlerUnified::OnHandleDestroy(HandleType_t type, void* object) {
 	VScriptBaseHandle* handle = static_cast<VScriptBaseHandle*>(object);
 	if (handle) {
+		// Unregister from tracking
+		g_VScriptManager.UnregisterHandle(handle->GetSourceModHandle());
+
 		IScriptVM* vm = g_VScriptManager.GetVM();
-		if (vm && handle->GetVMGeneration() == g_VScriptManager.GetVMGeneration()) {
+		if (vm) {
 			handle->Cleanup(vm);
 		}
 		delete handle;
@@ -161,15 +155,4 @@ VScriptBaseHandle* ReadAnyVScriptHandle(IPluginContext* ctx, Handle_t handle) {
 		}
 	}
 	return nullptr;
-}
-
-// VM generation validation
-bool ValidateVScriptHandleGeneration(IPluginContext* ctx, VScriptBaseHandle* handle, const char* typeName) {
-	if (!handle) return false;
-	return handle->ValidateGeneration(ctx);
-}
-
-bool ValidateScriptVariantHandleGeneration(IPluginContext* ctx, VScriptVariantHandle* handle) {
-	if (!handle) return false;
-	return handle->ValidateGeneration(ctx);
 }

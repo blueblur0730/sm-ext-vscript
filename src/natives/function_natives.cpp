@@ -25,8 +25,11 @@
 #include <vscript/ivscript.h>
 
 // Helper to read a scope handle that can be either VScriptScope or VScriptTable
-static HSCRIPT ReadScopeOrTableHandle(IPluginContext* ctx, Handle_t handle) {
-	if (handle == 0) return nullptr;
+static bool ReadScopeOrTableHandle(IPluginContext* ctx, Handle_t handle, HSCRIPT& out) {
+	if (handle == 0) {
+		out = nullptr;
+		return true;
+	}
 
 	HandleSecurity sec(ctx->GetIdentity(), myself->GetIdentity());
 	HandleError err;
@@ -36,17 +39,28 @@ static HSCRIPT ReadScopeOrTableHandle(IPluginContext* ctx, Handle_t handle) {
 	err = handlesys->ReadHandle(handle, g_VScriptScopeType, &sec, &object);
 	if (err == HandleError_None) {
 		VScriptBaseHandle* vhandle = static_cast<VScriptBaseHandle*>(object);
-		return vhandle ? vhandle->GetHScript() : nullptr;
+		if (!vhandle) {
+			out = nullptr;
+			return true;
+		}
+		out = vhandle->GetHScript();
+		return true;
 	}
 
 	// Try VScriptTable
 	err = handlesys->ReadHandle(handle, g_VScriptTableType, &sec, &object);
 	if (err == HandleError_None) {
 		VScriptBaseHandle* vhandle = static_cast<VScriptBaseHandle*>(object);
-		return vhandle ? vhandle->GetHScript() : nullptr;
+		if (!vhandle) {
+			out = nullptr;
+			return true;
+		}
+		out = vhandle->GetHScript();
+		return true;
 	}
 
-	return nullptr;
+	out = nullptr;
+	return true;
 }
 
 static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* params) {
@@ -56,7 +70,8 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 	VScriptFunctionHandle* funcHandle = ReadVScriptHandle<VScriptFunctionHandle>(ctx, params[1]);
 	if (!funcHandle) return 0;
 
-	HSCRIPT scope = ReadScopeOrTableHandle(ctx, params[2]);
+	HSCRIPT scope;
+	if (!ReadScopeOrTableHandle(ctx, params[2], scope)) return 0;
 
 	HSCRIPT funcToCall = funcHandle->GetHScript();
 	bool needsRelease = false;
@@ -65,7 +80,12 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 	if (funcHandle->IsCompiledScript()) {
 		ScriptVariant_t scriptResult;
 		ScriptStatus_t status = vm->ExecuteFunction(funcHandle->GetHScript(), nullptr, 0, &scriptResult, scope, true);
-		if (status != SCRIPT_DONE || scriptResult.m_type != FIELD_HSCRIPT) return 0;
+		if (status != SCRIPT_DONE || scriptResult.m_type != FIELD_HSCRIPT) {
+			if (scriptResult.m_flags & SV_FREE) {
+				vm->ReleaseValue(scriptResult);
+			}
+			return 0;
+		}
 		funcToCall = scriptResult.m_hScript;
 		needsRelease = (scriptResult.m_flags & SV_FREE) != 0;
 	}
@@ -93,7 +113,8 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 	VScriptFunctionHandle* funcHandle = ReadVScriptHandle<VScriptFunctionHandle>(ctx, params[1]);
 	if (!funcHandle) return 0;
 
-	HSCRIPT scope = ReadScopeOrTableHandle(ctx, params[2]);
+	HSCRIPT scope;
+	if (!ReadScopeOrTableHandle(ctx, params[2], scope)) return 0;
 
 	// params[0] contains the number of parameters passed
 	// params[1] = function handle, params[2] = scope
@@ -155,7 +176,12 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 	if (funcHandle->IsCompiledScript()) {
 		ScriptVariant_t scriptResult;
 		ScriptStatus_t status = vm->ExecuteFunction(funcHandle->GetHScript(), nullptr, 0, &scriptResult, scope, true);
-		if (status != SCRIPT_DONE || scriptResult.m_type != FIELD_HSCRIPT) return 0;
+		if (status != SCRIPT_DONE || scriptResult.m_type != FIELD_HSCRIPT) {
+			if (scriptResult.m_flags & SV_FREE) {
+				vm->ReleaseValue(scriptResult);
+			}
+			return 0;
+		}
 		funcToCall = scriptResult.m_hScript;
 		needsRelease = (scriptResult.m_flags & SV_FREE) != 0;
 	}

@@ -32,16 +32,15 @@ static cell_t Native_VScriptScope_Create(IPluginContext* ctx, const cell_t* para
 	char* name;
 	ctx->LocalToString(params[1], &name);
 
-	HSCRIPT parent = INVALID_HSCRIPT;
+	HSCRIPT parent = nullptr;
 	if (params[2] != 0) {
 		VScriptScopeHandle* parentHandle = ReadVScriptHandle<VScriptScopeHandle>(ctx, params[2]);
-		if (parentHandle) {
-			parent = parentHandle->GetHScript();
-		}
+		if (!parentHandle) return 0;
+		parent = parentHandle->GetHScript();
 	}
 
 	HSCRIPT scope = vm->CreateScope(name, parent);
-	if (scope == INVALID_HSCRIPT) return 0;
+	if (!scope || scope == INVALID_HSCRIPT) return 0;
 
 	VScriptScopeHandle* handle = new VScriptScopeHandle(scope, true);
 	return CreateVScriptHandle(ctx, handle);
@@ -52,7 +51,7 @@ static cell_t Native_VScriptScope_GetRoot(IPluginContext* ctx, const cell_t* par
 	if (!vm) return 0;
 
 	HSCRIPT root = vm->GetRootTable();
-	if (root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) return 0;
 
 	// Root table is not owned by us
 	VScriptScopeHandle* handle = new VScriptScopeHandle(root, false);
@@ -152,7 +151,7 @@ static cell_t Native_VScriptScope_GetTable(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript != INVALID_HSCRIPT) {
+	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript && variant.m_hScript != INVALID_HSCRIPT) {
 		VScriptTableHandle* handle = new VScriptTableHandle(variant.m_hScript, false);
 		result = CreateVScriptHandle(ctx, handle);
 	}
@@ -172,7 +171,7 @@ static cell_t Native_VScriptScope_GetArray(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript != INVALID_HSCRIPT) {
+	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript && variant.m_hScript != INVALID_HSCRIPT) {
 		VScriptArrayHandle* handle = new VScriptArrayHandle(variant.m_hScript, false);
 		result = CreateVScriptHandle(ctx, handle);
 	}
@@ -206,8 +205,8 @@ static cell_t Native_VScriptScope_LookupFunction(IPluginContext* ctx, const cell
 	ctx->LocalToString(params[2], &name);
 
 	HSCRIPT func = vm->LookupFunction(name, scope);
-	// Check for both INVALID_HSCRIPT (-1) and NULL (0)
-	if (func == INVALID_HSCRIPT || func == NULL) return 0;
+	// Check for both INVALID_HSCRIPT (-1) and nullptr (0)
+	if (func == INVALID_HSCRIPT || func == nullptr) return 0;
 
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(func, true, false);
 	return CreateVScriptHandle(ctx, handle);
@@ -222,7 +221,7 @@ static cell_t Native_VScriptScope_Execute(IPluginContext* ctx, const cell_t* par
 	// Compile the script
 	HSCRIPT compiled = vm->CompileScript(code, "execute");
 
-	if (compiled == INVALID_HSCRIPT) return 0;
+	if (!compiled || compiled == INVALID_HSCRIPT) return 0;
 
 	// Execute and get return value
 	ScriptVariant_t returnValue;

@@ -60,10 +60,24 @@ bool VscriptExt::SDK_OnLoad(char* error, size_t maxlength, bool late) {
 	// Register library
 	sharesys->RegisterLibrary(myself, "vscript");
 
+	// Create forwards
+	m_OnVMCreate = forwards->CreateForward("OnVScriptVMCreate", ET_Ignore, 1, nullptr, Param_Cell);
+	m_OnVMDestroy = forwards->CreateForward("OnVScriptVMDestroy", ET_Ignore, 1, nullptr, Param_Cell);
+
 	return true;
 }
 
 void VscriptExt::SDK_OnUnload() {
+	// Release forwards
+	if (m_OnVMCreate) {
+		forwards->ReleaseForward(m_OnVMCreate);
+		m_OnVMCreate = nullptr;
+	}
+	if (m_OnVMDestroy) {
+		forwards->ReleaseForward(m_OnVMDestroy);
+		m_OnVMDestroy = nullptr;
+	}
+
 	RemoveHandleTypes();
 	g_VScriptManager.Shutdown();
 }

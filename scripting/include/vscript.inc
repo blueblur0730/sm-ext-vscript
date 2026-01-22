@@ -41,6 +41,13 @@
  * - ScriptVariant returned from Execute() or Call() must be deleted
  * - ScriptVariant created with FromXxx() must be deleted
  * - Handles returned from GetValue() must be deleted
+ * - Handles become invalid on VM reset and CANNOT be persisted across map changes
+ *
+ * VM Reset Behavior:
+ * - When the VScript VM resets (e.g., on map change), the VM releases all
+ *   associated resources, making all related SourceMod handles unusable
+ * - The extension automatically frees these handles during VM reset to prevent leaks
+ * - Attempting to use a handle after VM reset will result in an invalid handle error
  *
  * Note: GetRoot() returns a handle that wraps the VM's root table.
  * You must still delete the handle to avoid SourceMod handle leaks,
@@ -57,18 +64,20 @@
 // ============================================================================
 
 /**
- * Script field types for ScriptVariant
+ * Script field types for ScriptVariant_t
  */
 enum ScriptFieldType {
-	FIELD_VOID = 0,             // No value / null
-	FIELD_FLOAT = 1,            // Float number
-	FIELD_VECTOR = 3,           // 3D vector (float[3])
-	FIELD_INTEGER = 5,          // Integer number
-	FIELD_BOOLEAN = 6,          // Boolean (true/false)
-	FIELD_CHARACTER = 8,        // Single byte (char)
-	FIELD_CSTRING = 31,         // C string (const char*)
-	FIELD_HSCRIPT = 32,         // HSCRIPT
-	FIELD_VARIANT = 33          // Variant type
+	VSF_VOID = 0,             // No value / null
+	VSF_FLOAT = 1,            // Float number
+	VSF_VECTOR = 3,           // 3D vector (float[3])
+	VSF_INTEGER = 5,          // Integer number
+	VSF_BOOLEAN = 6,          // Boolean (true/false)
+	VSF_CHARACTER = 8,        // Single byte (char)
+	VSF_CSTRING = 31,         // C string (const char*)
+	VSF_HSCRIPT = 32,         // HSCRIPT
+	VSF_VARIANT = 33,         // Variant type
+	VSF_UNSIGNED = 38,        // Unsigned integer
+	VSF_QANGLE = 40           // QAngle (rotation)
 }
 
 // ============================================================================
@@ -689,6 +698,25 @@ methodmap ScriptVariant < VScript {
 	 */
 	public native int ToEntity();
 }
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+/**
+ * Called when the VScript VM is created.
+ * This occurs on map load or when the VM is initialized.
+ * @param vm    IScriptVM pointer
+ */
+forward void OnVScriptVMCreate(Address vm);
+
+/**
+ * Called when the VScript VM is about to be destroyed.
+ * This occurs on map change or when the VM is shut down.
+ * All VScript handles will be automatically freed after this forward.
+ * @param vm    IScriptVM pointer
+ */
+forward void OnVScriptVMDestroy(Address vm);
 
 // ============================================================================
 // Optional Native Markers
