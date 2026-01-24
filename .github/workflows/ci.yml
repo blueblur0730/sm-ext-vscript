@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-22.04, windows-latest]
         sm_version: [latest, "1.12"]
-        target_arch: [x86]
+        target_arch: [x86, x64]
 
         include:
           - os: ubuntu-latest
@@ -47,8 +47,8 @@ jobs:
           - target_arch: x86
             vs_dev_arch: x86
 
-          #- target_arch: x64
-          #  vs_dev_arch: x86_64
+          - target_arch: x64
+            vs_dev_arch: x86_64
 
     name: Build Project on ${{ matrix.os_short }}-${{ matrix.sm_short }}-${{ matrix.target_arch }}
     runs-on: ${{ matrix.os }}
@@ -168,12 +168,11 @@ jobs:
           mkdir build
           cd build
           python ../configure.py \
-            --hl2sdk-manifest-path="${{ github.workspace }}/alliedmodders/sourcemod/hl2sdk-manifests" \
             --hl2sdk-root="${{ github.workspace }}/alliedmodders" \
             --sm-path="${{ github.workspace }}/alliedmodders/sourcemod" \
             --mms-path="${{ github.workspace }}/alliedmodders/mmsource-${{ env.MMSOURCE_VERSION }}" \
             --enable-optimize \
-            --targets=${{ matrix.target_arch }} \
+            --arch=${{ matrix.target_arch }} \
             --sdks=${{ join(fromJSON(env.SDKS)) }}
           ambuild
 

@@ -52,12 +52,25 @@ class ExtensionConfig(object):
     self.mms_root = None
     self.sm_root = None
 
-    try:
-      cxx = builder.DetectCxx(target_arch='x86')  # only x86 is supported
-      self.target_archs.add(cxx.target.arch)
-      self.all_targets.append(cxx)
-    except Exception as e:
-      raise Exception('No suitable C/C++ compiler was found: {}'.format(e))
+    # Determine which architectures to build
+    arch_option = builder.options.arch.lower()
+    archs_to_build = []
+    
+    if arch_option == 'all':
+      archs_to_build = ['x86', 'x86_64']
+    elif arch_option == 'x64':
+      archs_to_build = ['x86_64']
+    else:  # default to x86
+      archs_to_build = ['x86']
+
+    # Detect compilers for requested architectures
+    for arch in archs_to_build:
+      try:
+        cxx = builder.DetectCxx(target_arch=arch)
+        self.target_archs.add(cxx.target.arch)
+        self.all_targets.append(cxx)
+      except Exception as e:
+        raise Exception('No suitable C/C++ compiler found for {0}: {1}'.format(arch, e))
 
   def detectSDKs(self):
     sdk_list = builder.options.sdks.split(',')

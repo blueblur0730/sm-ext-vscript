@@ -22,5 +22,7 @@ parser.options.add_argument('--enable-optimize', action='store_const', const='1'
 parser.options.add_argument('-s', '--sdks', default='all', dest='sdks',
                        help='Build against specified SDKs; valid args are "all", "present", or '
                             'comma-delimited list of engine names')
+parser.options.add_argument('--arch', default='x86', dest='arch',
+                       help='Build architecture; valid args are "x86", "x64", or "all" (default: x86)')
 
 parser.Configure()
