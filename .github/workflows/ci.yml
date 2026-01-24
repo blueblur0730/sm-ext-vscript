@@ -53,7 +53,7 @@ jobs:
     name: Build Project on ${{ matrix.os_short }}-${{ matrix.sm_short }}-${{ matrix.target_arch }}
     runs-on: ${{ matrix.os }}
     env:
-      SDKS: '["l4d2", "tf2"]'
+      SDKS: '["l4d2"]'
       MMSOURCE_VERSION: '1.12'
 
     steps:
@@ -135,13 +135,6 @@ jobs:
           repository: alliedmodders/hl2sdk
           ref: l4d2
           path: alliedmodders/hl2sdk-l4d2
-
-      - name: Checkout HL2SDK TF2
-        uses: actions/checkout@v4
-        with:
-          repository: alliedmodders/hl2sdk
-          ref: tf2
-          path: alliedmodders/hl2sdk-tf2
 
       - name: Checkout Metamod Source-${{ env.MMSOURCE_VERSION }}
         uses: actions/checkout@v4
