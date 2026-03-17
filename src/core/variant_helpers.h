@@ -107,9 +107,9 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 		case FIELD_INTEGER:
 			int int_a = a; int int_b = b; return int_a == int_b;
 		case FIELD_FLOAT:
-			float float_a = a.m_float; float float_b = b.m_float; return float_a == float_b;
+			float float_a = a; float float_b = b; return float_a == float_b;
 		case FIELD_BOOLEAN:
-			bool bool_a = a.m_bool; bool bool_b = b.m_bool;  return bool_a == bool_b;
+			bool bool_a = a; bool bool_b = b;  return bool_a == bool_b;
 		case FIELD_CSTRING:
 		{
 			const char* str_a = a; const char* str_b = b;
@@ -122,8 +122,6 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 		case FIELD_VECTOR:
 		{
 			const Vector &vec_a = a; const Vector &vec_b = b;
-			if (!vec_a || !vec_b) return false;
-
 			return vec_a.x == vec_b.x && vec_a.y == vec_b.y && vec_a.z == vec_b.z;
 		}
 		default:

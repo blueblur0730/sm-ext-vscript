@@ -7,6 +7,7 @@
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 
+#include "sdk/strtools_2013.h"
 #include "sdk/utlstring_2013.h"
 #include "tier1/strtools.h"
 #include "tier1/utlvector.h"
@@ -16,25 +17,6 @@
 #include "tier0/memdbgon.h"
 
 static const int64 k_nMillion = 1000000;
-
-#ifdef __cplusplus
-// This is the preferred Min operator. Using the MIN macro can lead to unexpected
-// side-effects or more expensive code.
-template< class T >
-T Min( T const &val1, T const &val2 )
-{
-	return val1 < val2 ? val1 : val2;
-}
-
-// This is the preferred Max operator. Using the MAX macro can lead to unexpected
-// side-effects or more expensive code.
-template< class T >
-T Max( T const &val1, T const &val2 )
-{
-	return val1 > val2 ? val1 : val2;
-}
-
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Helper: Find s substring

@@ -60,7 +60,7 @@ private:
 
 public:
 	VScriptVariantHandle() : ownsMemory(false) {
-		variant.GetType() = FIELD_VOID;
+		variant.SetType(FIELD_VOID);
 	}
 
 	bool IsValid() const override { return variant.GetType() != FIELD_VOID; }
