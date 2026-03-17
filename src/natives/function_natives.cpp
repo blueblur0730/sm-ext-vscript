@@ -95,7 +95,6 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 
 	if (needsRelease) {
 		ScriptVariant_t temp;
-		temp.SetType(FIELD_HSCRIPT);
 		temp = funcToCall;
 		temp.SetFlags(SV_FREE);
 		vm->ReleaseValue(temp);
