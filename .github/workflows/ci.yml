@@ -107,7 +107,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
 
@@ -122,7 +122,7 @@ jobs:
           mkdir alliedmodders
 
       - name: Checkout SourceMod-${{ matrix.sm_short }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: alliedmodders/sourcemod
           ref: ${{ matrix.sm_branch }}
@@ -130,21 +130,21 @@ jobs:
           submodules: recursive
 
       - name: Checkout HL2SDK L4D2
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: alliedmodders/hl2sdk
           ref: l4d2
           path: alliedmodders/hl2sdk-l4d2
 
       - name: Checkout Metamod Source-${{ env.MMSOURCE_VERSION }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: alliedmodders/metamod-source
           ref: ${{ env.MMSOURCE_VERSION }}-dev
           path: alliedmodders/mmsource-${{ env.MMSOURCE_VERSION }}
 
       - name: Checkout Own Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: main
 
@@ -177,7 +177,7 @@ jobs:
           cp -r build/package/addons/sourcemod/extensions addons/sourcemod/extensions
 
       - name: Upload Binary (Package)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: vscript-${{ env.EXT_VERSION }}.${{ env.GITHUB_SHA_SHORT }}-${{ matrix.os_short }}-${{ matrix.sm_short }}-${{ matrix.target_arch }}
-          path: addons
+          path: main/addons
