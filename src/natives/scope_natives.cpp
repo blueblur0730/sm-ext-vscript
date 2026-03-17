@@ -149,8 +149,9 @@ static cell_t Native_VScriptScope_GetTable(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript && variant.m_hScript != INVALID_HSCRIPT) {
-		VScriptTableHandle* handle = new VScriptTableHandle(variant.m_hScript, false);
+	HSCRIPT hTable = variant;
+	if (variant.GetType() == FIELD_HSCRIPT && hTable && hTable != INVALID_HSCRIPT) {
+		VScriptTableHandle* handle = new VScriptTableHandle(hTable, false);
 		result = CreateVScriptHandle(ctx, handle);
 	}
 
@@ -169,8 +170,9 @@ static cell_t Native_VScriptScope_GetArray(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	if (variant.m_type == FIELD_HSCRIPT && variant.m_hScript && variant.m_hScript != INVALID_HSCRIPT) {
-		VScriptArrayHandle* handle = new VScriptArrayHandle(variant.m_hScript, false);
+	HSCRIPT hTable = variant;
+	if (variant.GetType() == FIELD_HSCRIPT && hTable && hTable != INVALID_HSCRIPT) {
+		VScriptArrayHandle* handle = new VScriptArrayHandle(hTable, false);
 		result = CreateVScriptHandle(ctx, handle);
 	}
 
