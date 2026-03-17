@@ -34,7 +34,7 @@ VScriptHandlerUnified g_VScriptHandlerUnified;
 
 // VScriptVariantHandle implementations
 void VScriptVariantHandle::Cleanup(IScriptVM* vm) {
-	if (ownsMemory && (variant.m_flags & SV_FREE) && vm) {
+	if (ownsMemory && (variant.GetFlags() & SV_FREE) && vm) {
 		vm->ReleaseValue(variant);
 	}
 }
