@@ -32,7 +32,7 @@ static cell_t Native_VScriptTable_Create(IPluginContext* ctx, const cell_t* para
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
 
-	HSCRIPT table = tableVar.m_hScript;
+	HSCRIPT table = tableVar;
 	if (tableVar.GetType() != FIELD_HSCRIPT || !table || table == INVALID_HSCRIPT) return 0;
 
 	VScriptTableHandle* handle = new VScriptTableHandle(table, false);
@@ -196,6 +196,7 @@ static cell_t Native_VScriptTable_GetFloat(IPluginContext* ctx, const cell_t* pa
 	if (!vm->GetValue(table, key, &variant)) return params[3];
 	AutoReleaseVariant autoRelease(vm, variant);
 
+	cell_t result = 0;
 	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc((float)variant);
 	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)((int)variant));
 
@@ -252,7 +253,7 @@ static cell_t Native_VScriptTable_GetVector(IPluginContext* ctx, const cell_t* p
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	const Vector &vec = variant;
-	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, vec)) {
+	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, &vec)) {
 		return 1;
 	}
 
@@ -353,7 +354,7 @@ static cell_t Native_VScriptTable_GetVectorAt(IPluginContext* ctx, const cell_t*
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	const Vector &vec = variant;
-	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, vec)) {
+	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, &vec)) {
 		return 1;
 	}
 
@@ -375,7 +376,7 @@ static cell_t Native_VScriptTable_GetKeyValue(IPluginContext* ctx, const cell_t*
 		if (iterator == -1) return -1;
 
 		// Skip non-string keys (internal metadata)
-		const char* key = keyVar.m_pszString;
+		const char* key = keyVar;
 		if (keyVar.GetType() != FIELD_CSTRING || !key) {
 			// Release variants before continuing to avoid memory leak
 			if (keyVar.GetFlags() & SV_FREE) vm->ReleaseValue(keyVar);
@@ -460,7 +461,7 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 	// Create new array to hold keys
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
-	HSCRIPT arr = arrVar.m_hScript;
+	HSCRIPT arr = arrVar;
 	if (arrVar.GetType() != FIELD_HSCRIPT || !arr || arr == INVALID_HSCRIPT) return 0;
 
 	// Iterate through table and collect keys
@@ -472,7 +473,7 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 		if (iterator == -1) break;
 
 		// Skip non-string keys (internal metadata)
-		const char* key = keyVar.m_pszString;
+		const char* key = keyVar;
 		if (keyVar.GetType() == FIELD_CSTRING && key) {
 			// Add key to array
 			vm->ArrayAddToTail(arr, keyVar);
@@ -496,8 +497,8 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 	// Create new table
 	ScriptVariant_t newTableVar;
 	vm->CreateTable(newTableVar);
-	HSCRIPT newTable = newTableVar.m_hScript;
-	if (newTableVar.m_type != FIELD_HSCRIPT || !newTable || newTable == INVALID_HSCRIPT) return 0;
+	HSCRIPT newTable = newTableVar;
+	if (newTableVar.GetType() != FIELD_HSCRIPT || !newTable || newTable == INVALID_HSCRIPT) return 0;
 
 	// Iterate through source table and copy all key-value pairs
 	int iterator = 0;  // SDK uses 0 as start

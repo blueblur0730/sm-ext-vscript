@@ -552,6 +552,7 @@ public:
 
 	virtual bool SetValue( HSCRIPT hScope, const char *pszKey, const char *pszValue ) = 0;
 	virtual bool SetValue( HSCRIPT hScope, const char *pszKey, const ScriptVariant_t &value ) = 0;
+	virtual bool SetValue( HSCRIPT hScope, int nIndex, const ScriptVariant_t &value ) = 0;
 	bool SetValue( const char *pszKey, const ScriptVariant_t &value )																{ return SetValue(NULL, pszKey, value ); }
 
 	virtual void CreateTable( ScriptVariant_t &Table ) = 0;

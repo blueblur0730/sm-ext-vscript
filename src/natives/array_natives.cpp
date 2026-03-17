@@ -181,7 +181,7 @@ static cell_t Native_VScriptArray_GetVector(IPluginContext* ctx, const cell_t* p
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	const Vector &pVector = variant;
-	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, pVector)) {
+	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, &pVector)) {
 		return 1;
 	}
 

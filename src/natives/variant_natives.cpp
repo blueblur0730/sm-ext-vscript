@@ -196,7 +196,7 @@ static cell_t Native_ScriptVariant_GetVector(IPluginContext* ctx, const cell_t* 
 
 	const Vector &vec = handle->GetVariant();
 	if (handle->GetVariant().GetType() == FIELD_VECTOR &&
-	    WriteVectorResult(ctx, params, 2, vec)) {
+	    WriteVectorResult(ctx, params, 2, &vec)) {
 		return 1;
 	}
 	return 0;
