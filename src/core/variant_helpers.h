@@ -104,23 +104,24 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 	if (a.GetType() != b.GetType()) return false;
 
 	switch (a.GetType()) {
-		case FIELD_INTEGER:
+		case FIELD_INTEGER: {
 			int int_a = a; int int_b = b; return int_a == int_b;
-		case FIELD_FLOAT:
+		}
+		case FIELD_FLOAT: {
 			float float_a = a; float float_b = b; return float_a == float_b;
-		case FIELD_BOOLEAN:
+		}
+		case FIELD_BOOLEAN: {
 			bool bool_a = a; bool bool_b = b;  return bool_a == bool_b;
-		case FIELD_CSTRING:
-		{
+		}
+		case FIELD_CSTRING: {
 			const char* str_a = a; const char* str_b = b;
 			if (!str_a || !str_b) return false;
-
 			return strcmp(str_a, str_b) == 0;
 		}
-		case FIELD_HSCRIPT:
+		case FIELD_HSCRIPT: {
 			HSCRIPT hscript_a = a; HSCRIPT hscript_b = b; return hscript_a == hscript_b;
-		case FIELD_VECTOR:
-		{
+		}
+		case FIELD_VECTOR: {
 			const Vector &vec_a = a; const Vector &vec_b = b;
 			return vec_a.x == vec_b.x && vec_a.y == vec_b.y && vec_a.z == vec_b.z;
 		}
@@ -132,8 +133,7 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 // Create a ScriptVariant_t from a Vector (stack-allocated, no ownership transfer)
 inline ScriptVariant_t CreateVectorVariant(const Vector& v) {
 	ScriptVariant_t variant;
-	variant.GetType() = FIELD_VECTOR;
-	variant.m_pVector = const_cast<Vector*>(&v);
-	variant.GetFlags() = 0;  // No ownership - caller manages lifetime
+	variant = const_cast<Vector*>(&v);
+	variant.SetFlags(0);  // No ownership - caller manages lifetime
 	return variant;
 }

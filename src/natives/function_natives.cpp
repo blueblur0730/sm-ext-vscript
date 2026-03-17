@@ -80,7 +80,7 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 	if (funcHandle->IsCompiledScript()) {
 		ScriptVariant_t scriptResult;
 		ScriptStatus_t status = vm->ExecuteFunction(funcHandle->GetHScript(), nullptr, 0, &scriptResult, scope, true);
-		if (status != SCRIPT_DONE || scriptResult.m_type != FIELD_HSCRIPT) {
+		if (status != SCRIPT_DONE || scriptResult.GetType() != FIELD_HSCRIPT) {
 			if (scriptResult.m_flags & SV_FREE) {
 				vm->ReleaseValue(scriptResult);
 			}
@@ -95,7 +95,7 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 
 	if (needsRelease) {
 		ScriptVariant_t temp;
-		temp.m_type = FIELD_HSCRIPT;
+		temp.SetType(FIELD_HSCRIPT);
 		temp.m_hScript = funcToCall;
 		temp.m_flags = SV_FREE;
 		vm->ReleaseValue(temp);
@@ -135,7 +135,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 	for (int i = 0; i < numArgs; i++) {
 		cell_t* addr;
 		if (ctx->LocalToPhysAddr(params[3 + i], &addr) != SP_ERROR_NONE) {
-			args[i].variant.m_type = FIELD_VOID;
+			args[i].variant.SetType(FIELD_VOID);
 			continue;
 		}
 
@@ -144,7 +144,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 		if (argHandle) {
 			args[i].variant = argHandle->GetVariant();
 		} else {
-			args[i].variant.m_type = FIELD_VOID;
+			args[i].variant.SetType(FIELD_VOID);
 		}
 	}
 #else
@@ -155,7 +155,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 	for (int i = 0; i < numArgs; i++) {
 		cell_t* addr;
 		if (ctx->LocalToPhysAddr(params[3 + i], &addr) != SP_ERROR_NONE) {
-			args[i].m_type = FIELD_VOID;
+			args[i].SetType(FIELD_VOID);
 			continue;
 		}
 
@@ -164,7 +164,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 		if (argHandle) {
 			args[i] = argHandle->GetVariant();
 		} else {
-			args[i].m_type = FIELD_VOID;
+			args[i].SetType(FIELD_VOID);
 		}
 	}
 #endif
@@ -176,7 +176,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 	if (funcHandle->IsCompiledScript()) {
 		ScriptVariant_t scriptResult;
 		ScriptStatus_t status = vm->ExecuteFunction(funcHandle->GetHScript(), nullptr, 0, &scriptResult, scope, true);
-		if (status != SCRIPT_DONE || scriptResult.m_type != FIELD_HSCRIPT) {
+		if (status != SCRIPT_DONE || scriptResult.GetType() != FIELD_HSCRIPT) {
 			if (scriptResult.m_flags & SV_FREE) {
 				vm->ReleaseValue(scriptResult);
 			}
@@ -195,9 +195,8 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 
 	if (needsRelease) {
 		ScriptVariant_t temp;
-		temp.m_type = FIELD_HSCRIPT;
-		temp.m_hScript = funcToCall;
-		temp.m_flags = SV_FREE;
+		temp.SetFlags(SV_FREE);
+		temp = funcToCall;
 		vm->ReleaseValue(temp);
 	}
 

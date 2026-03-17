@@ -189,6 +189,7 @@ public:
 	int GetType() const						{ return m_type; }
 	void SetType(_fieldtypes type) 			{ m_type = type; }
 	uint16 GetFlags() const					{ return m_flags; }
+	void SetFlags( uint16 flags )			{ m_flags = flags; }
 
 	void ConvertToCopiedData(bool silent = false );
 
@@ -816,17 +817,31 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( int *pDest ) const
 template< class CValueAllocator >
 inline bool CVariantBase<CValueAllocator>::AssignTo( uint *pDest ) const
 {
+	uint64 ret;
+	int ret2;
 	switch( m_type )
 	{
-	case FIELD_VOID:		*pDest = 0; return false;
+	case FIELD_VOID: {
+		*pDest = 0; return false;
+	}
 //	case FIELD_INTEGER64:	*pDest = (uint)clamp( m_int, UINT_MIN, UINT_MAX ); return true;
-	case FIELD_UINT64:		uint64 ret = clamp( m_uint64, (uint64)0/*UINT_MIN*/, (uint64)UINT_MAX ); *pDest = (uint)ret; return true;
-	case FIELD_BOOLEAN:		*pDest = m_bool; return true;
-	case FIELD_INTEGER:		if ( m_int < 0 ) return false; int ret2 = clamp( m_int, 0, UINT_MAX ); *pDest = (uint)ret2; return true;
-	case FIELD_UINT:		*pDest = m_uint; return true;
-	default:
+	case FIELD_UINT64: {
+		ret = clamp( m_uint64, (uint64)0/*UINT_MIN*/, (uint64)UINT_MAX ); *pDest = (uint)ret; return true;
+	}
+	case FIELD_BOOLEAN: {
+		*pDest = m_bool; return true;
+	}
+	case FIELD_INTEGER: {
+		if ( m_int < 0 ) return false; ret2 = (int)clamp( m_int, (int)0, (int)UINT_MAX ); *pDest = (uint)ret2; return true;
+	}		
+	case FIELD_UINT: {
+		*pDest = m_uint; return true;
+	}
+
+	default: {
 		Warning( "No conversion from %s to int now\n", VariantFieldTypeName( m_type ) );
 		return false;
+	}
 	}
 }
 
@@ -927,7 +942,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( const char **pszString ) co
 		return false;
 	}
 
-	return m_pszString->IsValid();
+	return m_pszString;
 }
 
 
