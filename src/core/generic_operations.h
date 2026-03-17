@@ -115,13 +115,13 @@ cell_t GenericGetVector(IPluginContext* ctx, const cell_t* params) {
 	ScriptVariant_t variant;
 	if (!vm->GetValue(hscript, key, &variant)) return 0;
 
-	const Vector &pVector = variant;
-	if (variant.GetType() == FIELD_VECTOR && pVector) {
+	if (variant.GetType() == FIELD_VECTOR) {
 		cell_t* vec;
+		const Vector &pVector = variant;
 		ctx->LocalToPhysAddr(params[3], &vec);
-		vec[0] = sp_ftoc(pVector->x);
-		vec[1] = sp_ftoc(pVector->y);
-		vec[2] = sp_ftoc(pVector->z);
+		vec[0] = sp_ftoc(pVector.x);
+		vec[1] = sp_ftoc(pVector.y);
+		vec[2] = sp_ftoc(pVector.z);
 
 		if (variant.GetFlags() & SV_FREE) vm->ReleaseValue(variant);
 		return 1;

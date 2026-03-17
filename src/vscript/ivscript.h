@@ -461,11 +461,14 @@ public:
 	virtual ScriptLanguage_t GetLanguage() = 0;
 	virtual const char *GetLanguageName() = 0;
 
+	virtual void* GetInternalVM() = 0;	// SQVM*		m_pVM; this + 4
+
 	virtual void AddSearchPath( const char *pszSearchPath ) = 0;
 
 	//--------------------------------------------------------
- 
- 	virtual bool Frame( float simTime ) = 0;
+
+	virtual bool ForwardConsoleCommand(CCommandContext const &, CCommand const &) = 0;
+	virtual bool Frame( float simTime ) = 0;
 
 	//--------------------------------------------------------
 	// Simple script usage
@@ -478,7 +481,7 @@ public:
 	//--------------------------------------------------------
  	virtual HSCRIPT CompileScript( const char *pszScript, const char *pszId = NULL ) = 0;
 	inline HSCRIPT CompileScript( const unsigned char *pszScript, const char *pszId = NULL ) { return CompileScript( (char *)pszScript, pszId ); }
-	virtual void ReleaseScript( HSCRIPT ) = 0;
+	virtual void ReleaseScript( HSCRIPT hScript ) = 0;
 
 	//--------------------------------------------------------
 	// Execution of compiled
@@ -552,16 +555,27 @@ public:
 	bool SetValue( const char *pszKey, const ScriptVariant_t &value )																{ return SetValue(NULL, pszKey, value ); }
 
 	virtual void CreateTable( ScriptVariant_t &Table ) = 0;
+	virtual bool IsTable(HSCRIPT hScope) = 0;
 	virtual int	GetNumTableEntries( HSCRIPT hScope ) = 0;
 	virtual int GetKeyValue( HSCRIPT hScope, int nIterator, ScriptVariant_t *pKey, ScriptVariant_t *pValue ) = 0;
 
 	virtual bool GetValue( HSCRIPT hScope, const char *pszKey, ScriptVariant_t *pValue ) = 0;
-	bool GetValue( const char *pszKey, ScriptVariant_t *pValue )																	{ return GetValue(NULL, pszKey, pValue ); }
+	virtual bool GetValue( HSCRIPT hScope, int nIndex, ScriptVariant_t *pValue ) = 0;
+	bool GetValue(const char *pszKey, ScriptVariant_t *pValue)
+	{
+		return GetValue(NULL, pszKey, pValue);
+	}
+
+	virtual bool GetScalarValue( HSCRIPT hScope, ScriptVariant_t *pValue ) = 0;
 	virtual void ReleaseValue( ScriptVariant_t &value ) = 0;
 
 	virtual bool ClearValue( HSCRIPT hScope, const char *pszKey ) = 0;
 	bool ClearValue( const char *pszKey)																							{ return ClearValue( NULL, pszKey ); }
 
+	virtual void CreateArray( ScriptVariant_t &pArray ) = 0;
+	virtual bool IsArray( HSCRIPT hScope ) = 0;
+	virtual int GetArrayCount( HSCRIPT hScope ) = 0;
+	virtual int ArrayAddToTail( HSCRIPT hScope, const ScriptVariant_t &value ) = 0;
 	//----------------------------------------------------------------------------
 
 	// Josh: Some extra helpers here.
@@ -605,7 +619,8 @@ public:
 
 	virtual void WriteState( CUtlBuffer *pBuffer ) = 0;
 	virtual void ReadState( CUtlBuffer *pBuffer ) = 0;
-	virtual void RemoveOrphanInstances() = 0;
+	virtual void CollectGarbage(char const* psz, bool b) = 0;
+	//virtual void RemoveOrphanInstances() = 0;
 
 	virtual void DumpState() = 0;
 
@@ -724,6 +739,10 @@ public:
 		return ExecuteFunction( hFunction, args, ARRAYSIZE(args), pReturn, hScope, bWait );
 	}
 
+	virtual HSCRIPT GetRootTable() = 0;
+	virtual HSCRIPT CopyHandle( HSCRIPT hScope ) = 0;
+	virtual void *GetIdentity( HSCRIPT hScope ) = 0;	// SQObjectValue
+
 	//-----------------------------------------------------
 	/// @{
 	/// Machinery for smuggling a _get() metamethod override 
@@ -827,7 +846,6 @@ public:
 	virtual void DestroySquirrelMetamethod_Get( CSquirrelMetamethodDelegateImpl * pMetaMethodImpl ) = 0;
 
 public:
-
 	virtual int GetKeyValue2( HSCRIPT hScope, int nIterator, ScriptVariant_t *pKey, ScriptVariant_t *pValue ) = 0;
 };
 
