@@ -4,6 +4,8 @@
 #pragma once
 #endif
 
+#include <stdio.h>
+#include <stdarg.h>
 #include "sdk/annotations.h"
 
 #ifdef __cplusplus
