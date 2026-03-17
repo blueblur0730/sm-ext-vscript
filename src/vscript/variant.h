@@ -11,7 +11,6 @@
 
 #ifndef VARIANT_H
 #define VARIANT_H
-
 #if defined( COMPILER_MSVC )
 #pragma once
 #endif
@@ -19,7 +18,7 @@
 #include "datamap.h"
 #include "basehandle.h"
 #include "tier1/strtools.h"
-#include "tier1/utlstring.h"
+#include "sdk/utlstring_2013.h"
 #include "../../game/shared/ehandle.h"
 //#include "tier1/utlstringtoken.h"
 
@@ -179,7 +178,7 @@ public:
 	bool AssignTo( QuaternionAligned *pDest ) const { return AssignTo( (Quaternion*)pDest ); }
 	bool AssignTo( VectorAligned *pDest ) const		{ return AssignTo( (Vector*)pDest ); }
 	bool AssignTo( char *pDest, uint nBufLen ) const;
-	bool AssignTo( CUtlString *pString ) const;
+	bool AssignTo( CUtlStringNew *pString ) const;
 	bool AssignTo( const char **pszString ) const;
 	bool AssignTo( HSCRIPT *pDest ) const;
 	bool AssignTo( CBaseHandle *pDest ) const;
@@ -820,9 +819,9 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( uint *pDest ) const
 	{
 	case FIELD_VOID:		*pDest = 0; return false;
 //	case FIELD_INTEGER64:	*pDest = (uint)clamp( m_int, UINT_MIN, UINT_MAX ); return true;
-	case FIELD_UINT64:		*pDest = (uint)clamp( m_uint64, 0/*UINT_MIN*/, UINT_MAX ); return true;
+	case FIELD_UINT64:		uint64 ret = clamp( m_uint64, (uint64)0/*UINT_MIN*/, (uint64)UINT_MAX ); *pDest = (uint)ret; return true;
 	case FIELD_BOOLEAN:		*pDest = m_bool; return true;
-	case FIELD_INTEGER:		if ( m_int < 0 ) return false; *pDest = (uint)clamp( m_int, 0, UINT_MAX ); return true;
+	case FIELD_INTEGER:		if ( m_int < 0 ) return false; int ret = clamp( m_int, 0, UINT_MAX ); *pDest = (uint)ret; return true;
 	case FIELD_UINT:		*pDest = m_uint; return true;
 	default:
 		Warning( "No conversion from %s to int now\n", VariantFieldTypeName( m_type ) );
@@ -911,7 +910,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( char *pDest, uint nBufLen )
 }
 
 template< class CValueAllocator >
-inline bool CVariantBase<CValueAllocator>::AssignTo( CUtlString *pString ) const
+inline bool CVariantBase<CValueAllocator>::AssignTo( CUtlStringNew *pString ) const
 {
 	int nLen = ( m_type != FIELD_CSTRING ) ? 256 : V_strlen( m_pszString ) + 1;
 	pString->SetLength( nLen );
@@ -923,11 +922,11 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( const char **pszString ) co
 {
 	if ( m_type != FIELD_CSTRING )
 	{
-		Warning( "CVariantBase<CValueAllocator>::AssignTo: Using const char * but type was not FIELD_CSTRING. You might want to use CUtlString instead or the script passed an invalid param to a string param/table. Returning NULL.\n" );
-		return NULL;
+		Warning( "CVariantBase<CValueAllocator>::AssignTo: Using const char * but type was not FIELD_CSTRING. You might want to use CUtlStringNew instead or the script passed an invalid param to a string param/table. Returning NULL.\n" );
+		return false;
 	}
 
-	return m_pszString;
+	return m_pszString->IsValid();
 }
 
 

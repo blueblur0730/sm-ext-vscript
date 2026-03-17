@@ -35,7 +35,7 @@ public:
 	AutoReleaseVariant(IScriptVM* v, ScriptVariant_t& var) : vm(v), variant(var) {}
 
 	~AutoReleaseVariant() {
-		if (variant.m_flags & SV_FREE) {
+		if (variant.GetFlags() & SV_FREE) {
 			vm->ReleaseValue(variant);
 		}
 	}
@@ -76,7 +76,7 @@ public:
 [[nodiscard]] inline Handle_t CreateVariantHandleFromScriptVariant(IPluginContext* ctx, const ScriptVariant_t& variant) {
 	VScriptVariantHandle* handle = new VScriptVariantHandle();
 	handle->GetVariant() = variant;
-	handle->SetOwnsMemory((variant.m_flags & SV_FREE) != 0);
+	handle->SetOwnsMemory((variant.GetFlags() & SV_FREE) != 0);
 	return CreateVScriptHandle(ctx, handle);
 }
 
@@ -101,25 +101,31 @@ inline Vector ReadVectorParam(IPluginContext* ctx, const cell_t* params, int par
 
 // Compare two ScriptVariant_t values for equality
 inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_t& b) {
-	if (a.m_type != b.m_type) return false;
+	if (a.GetType() != b.GetType()) return false;
 
-	switch (a.m_type) {
+	switch (a.GetType()) {
 		case FIELD_INTEGER:
-			return a.m_int == b.m_int;
+			int int_a = a; int int_b = b; return int_a == int_b;
 		case FIELD_FLOAT:
-			return a.m_float == b.m_float;
+			float float_a = a.m_float; float float_b = b.m_float; return float_a == float_b;
 		case FIELD_BOOLEAN:
-			return a.m_bool == b.m_bool;
+			bool bool_a = a.m_bool; bool bool_b = b.m_bool;  return bool_a == bool_b;
 		case FIELD_CSTRING:
-			if (!a.m_pszString || !b.m_pszString) return false;
-			return strcmp(a.m_pszString, b.m_pszString) == 0;
+		{
+			const char* str_a = a; const char* str_b = b;
+			if (!str_a || !str_b) return false;
+
+			return strcmp(str_a, str_b) == 0;
+		}
 		case FIELD_HSCRIPT:
-			return a.m_hScript == b.m_hScript;
+			HSCRIPT hscript_a = a; HSCRIPT hscript_b = b; return hscript_a == hscript_b;
 		case FIELD_VECTOR:
-			if (!a.m_pVector || !b.m_pVector) return false;
-			return a.m_pVector->x == b.m_pVector->x &&
-			       a.m_pVector->y == b.m_pVector->y &&
-			       a.m_pVector->z == b.m_pVector->z;
+		{
+			const Vector &vec_a = a; const Vector &vec_b = b;
+			if (!vec_a || !vec_b) return false;
+
+			return vec_a.x == vec_b.x && vec_a.y == vec_b.y && vec_a.z == vec_b.z;
+		}
 		default:
 			return false;
 	}
@@ -128,8 +134,8 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 // Create a ScriptVariant_t from a Vector (stack-allocated, no ownership transfer)
 inline ScriptVariant_t CreateVectorVariant(const Vector& v) {
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_VECTOR;
+	variant.GetType() = FIELD_VECTOR;
 	variant.m_pVector = const_cast<Vector*>(&v);
-	variant.m_flags = 0;  // No ownership - caller manages lifetime
+	variant.GetFlags() = 0;  // No ownership - caller manages lifetime
 	return variant;
 }

@@ -60,10 +60,10 @@ private:
 
 public:
 	VScriptVariantHandle() : ownsMemory(false) {
-		variant.m_type = FIELD_VOID;
+		variant.GetType() = FIELD_VOID;
 	}
 
-	bool IsValid() const override { return variant.m_type != FIELD_VOID; }
+	bool IsValid() const override { return variant.GetType() != FIELD_VOID; }
 	HandleType_t GetHandleType() const override { return g_ScriptVariantType; }
 	const char* GetTypeName() const override { return "ScriptVariant"; }
 	void Cleanup(IScriptVM* vm) override;
