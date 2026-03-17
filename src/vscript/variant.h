@@ -18,7 +18,7 @@
 #include "datamap.h"
 #include "basehandle.h"
 #include "tier1/strtools.h"
-#include "../sdk/utlstring_2013.h"
+#include "sdk/utlstring_2013.h"
 #include "../../game/shared/ehandle.h"
 //#include "tier1/utlstringtoken.h"
 
