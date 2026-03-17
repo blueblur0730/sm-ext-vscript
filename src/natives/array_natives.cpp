@@ -32,9 +32,10 @@ static cell_t Native_VScriptArray_Create(IPluginContext* ctx, const cell_t* para
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
 
-	if (arrVar.m_type != FIELD_HSCRIPT || !arrVar.m_hScript || arrVar.m_hScript == INVALID_HSCRIPT) return 0;
+	HSCRIPT hScript = arrVar;
+	if (arrVar.GetType() != FIELD_HSCRIPT || !hScript || hScript == INVALID_HSCRIPT) return 0;
 
-	VScriptArrayHandle* handle = new VScriptArrayHandle(arrVar.m_hScript, false);
+	VScriptArrayHandle* handle = new VScriptArrayHandle(hScript, false);
 	handle->SetVariant(arrVar);
 	return CreateVScriptHandle(ctx, handle);
 }
@@ -50,8 +51,7 @@ static cell_t Native_VScriptArray_PushInt(IPluginContext* ctx, const cell_t* par
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_INTEGER;
-	variant.m_int = params[2];
+	variant = (int)params[2];
 	vm->ArrayAddToTail(arr, variant);
 	return 1;
 }
@@ -61,8 +61,7 @@ static cell_t Native_VScriptArray_PushFloat(IPluginContext* ctx, const cell_t* p
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_FLOAT;
-	variant.m_float = sp_ctof(params[2]);
+	variant = sp_ctof(params[2]);
 	vm->ArrayAddToTail(arr, variant);
 	return 1;
 }
@@ -72,8 +71,7 @@ static cell_t Native_VScriptArray_PushBool(IPluginContext* ctx, const cell_t* pa
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_BOOLEAN;
-	variant.m_bool = (params[2] != 0);
+	variant = (params[2] != 0);
 	vm->ArrayAddToTail(arr, variant);
 	return 1;
 }
@@ -86,8 +84,7 @@ static cell_t Native_VScriptArray_PushString(IPluginContext* ctx, const cell_t* 
 	ctx->LocalToString(params[2], &str);
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_CSTRING;
-	variant.m_pszString = str;
+	variant = str;
 	vm->ArrayAddToTail(arr, variant);
 	return 1;
 }
@@ -122,8 +119,8 @@ static cell_t Native_VScriptArray_GetInt(IPluginContext* ctx, const cell_t* para
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.m_type == FIELD_INTEGER) result = variant.m_int;
-	else if (variant.m_type == FIELD_FLOAT) result = (cell_t)variant.m_float;
+	if (variant.GetType() == FIELD_INTEGER) result = (int)variant;
+	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)((float)variant);
 
 	return result;
 }
@@ -137,8 +134,8 @@ static cell_t Native_VScriptArray_GetFloat(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.m_type == FIELD_FLOAT) result = sp_ftoc(variant.m_float);
-	else if (variant.m_type == FIELD_INTEGER) result = sp_ftoc((float)variant.m_int);
+	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc((float)variant);
+	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)((int)variant));
 
 	return result;
 }
@@ -152,7 +149,7 @@ static cell_t Native_VScriptArray_GetBool(IPluginContext* ctx, const cell_t* par
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.m_type == FIELD_BOOLEAN) result = variant.m_bool;
+	if (variant.GetType() == FIELD_BOOLEAN) result = (bool)variant;
 
 	return result;
 }
@@ -166,9 +163,10 @@ static cell_t Native_VScriptArray_GetString(IPluginContext* ctx, const cell_t* p
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	if (variant.m_type == FIELD_CSTRING && variant.m_pszString) {
-		ctx->StringToLocalUTF8(params[3], params[4], variant.m_pszString, nullptr);
-		result = strlen(variant.m_pszString);
+	const char *pszString = variant.m_pszString;
+	if (variant.GetType() == FIELD_CSTRING && pszString) {
+		ctx->StringToLocalUTF8(params[3], params[4], pszString, nullptr);
+		result = strlen(pszString);
 	}
 
 	return result;
@@ -182,7 +180,8 @@ static cell_t Native_VScriptArray_GetVector(IPluginContext* ctx, const cell_t* p
 	if (!vm->GetValue(arr, params[2], &variant)) return 0;
 	AutoReleaseVariant autoRelease(vm, variant);
 
-	if (variant.m_type == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, variant.m_pVector)) {
+	const Vector &pVector = variant;
+	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, pVector)) {
 		return 1;
 	}
 
@@ -204,8 +203,7 @@ static cell_t Native_VScriptArray_SetInt(IPluginContext* ctx, const cell_t* para
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_INTEGER;
-	variant.m_int = params[3];
+	variant = params[3];
 	return vm->SetValue(arr, params[2], variant);
 }
 
@@ -214,8 +212,7 @@ static cell_t Native_VScriptArray_SetFloat(IPluginContext* ctx, const cell_t* pa
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_FLOAT;
-	variant.m_float = sp_ctof(params[3]);
+	variant = sp_ctof(params[3]);
 	return vm->SetValue(arr, params[2], variant);
 }
 
@@ -234,8 +231,7 @@ static cell_t Native_VScriptArray_SetBool(IPluginContext* ctx, const cell_t* par
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_BOOLEAN;
-	variant.m_bool = (params[3] != 0);
+	variant = (params[3] != 0);
 	return vm->SetValue(arr, params[2], variant);
 }
 
@@ -247,8 +243,7 @@ static cell_t Native_VScriptArray_SetString(IPluginContext* ctx, const cell_t* p
 	ctx->LocalToString(params[3], &str);
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_CSTRING;
-	variant.m_pszString = str;
+	variant = str;
 	return vm->SetValue(arr, params[2], variant);
 }
 
@@ -279,8 +274,7 @@ static cell_t Native_VScriptArray_Remove(IPluginContext* ctx, const cell_t* para
 
 	// Set array as '__sm_temp_array__' in root temporarily
 	ScriptVariant_t arrVar;
-	arrVar.m_type = FIELD_HSCRIPT;
-	arrVar.m_hScript = arr;
+	arrVar = arr;
 	vm->SetValue(root, "__sm_temp_array__", arrVar);
 
 	HSCRIPT compiled = vm->CompileScript(code, "ArrayRemove");
@@ -312,8 +306,7 @@ static cell_t Native_VScriptArray_Pop(IPluginContext* ctx, const cell_t* params)
 		snprintf(code, sizeof(code), "__sm_temp_array__.remove(%d)", length - 1);
 
 		ScriptVariant_t arrVar;
-		arrVar.m_type = FIELD_HSCRIPT;
-		arrVar.m_hScript = arr;
+		arrVar = arr;
 		vm->SetValue(root, "__sm_temp_array__", arrVar);
 
 		HSCRIPT compiled = vm->CompileScript(code, "ArrayPop");
@@ -337,8 +330,7 @@ static cell_t Native_VScriptArray_Clear(IPluginContext* ctx, const cell_t* param
 	if (!root || root == INVALID_HSCRIPT) return 0;
 
 	ScriptVariant_t arrVar;
-	arrVar.m_type = FIELD_HSCRIPT;
-	arrVar.m_hScript = arr;
+	arrVar = arr;
 	vm->SetValue(root, "__sm_temp_array__", arrVar);
 
 	HSCRIPT compiled = vm->CompileScript("__sm_temp_array__.clear()", "ArrayClear");
@@ -411,8 +403,7 @@ static cell_t Native_VScriptArray_Insert(IPluginContext* ctx, const cell_t* para
 
 	// Set array and value in root temporarily
 	ScriptVariant_t arrVar;
-	arrVar.m_type = FIELD_HSCRIPT;
-	arrVar.m_hScript = arr;
+	arrVar = arr;
 	vm->SetValue(root, "__sm_temp_array__", arrVar);
 	vm->SetValue(root, "__sm_temp_value__", valueHandle->GetVariant());
 

@@ -69,6 +69,7 @@ public:
 	void Cleanup(IScriptVM* vm) override;
 
 	ScriptVariant_t& GetVariant() { return variant; }
+	void SetVariant(const ScriptVariant_t& v) { variant = v; }
 	const ScriptVariant_t& GetVariant() const { return variant; }
 	void SetOwnsMemory(bool owns) { ownsMemory = owns; }
 	bool GetOwnsMemory() const { return ownsMemory; }

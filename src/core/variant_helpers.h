@@ -75,7 +75,7 @@ public:
 // Create a VScriptVariantHandle from a ScriptVariant_t and return its Handle_t
 [[nodiscard]] inline Handle_t CreateVariantHandleFromScriptVariant(IPluginContext* ctx, const ScriptVariant_t& variant) {
 	VScriptVariantHandle* handle = new VScriptVariantHandle();
-	handle->GetVariant() = variant;
+	handle->SetVariant(variant);
 	handle->SetOwnsMemory((variant.GetFlags() & SV_FREE) != 0);
 	return CreateVScriptHandle(ctx, handle);
 }

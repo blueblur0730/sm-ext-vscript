@@ -94,8 +94,7 @@ static cell_t Native_VScriptScope_SetTable(IPluginContext* ctx, const cell_t* pa
 	if (!tableHandle) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_HSCRIPT;
-	variant.m_hScript = tableHandle->GetHScript();
+	variant = tableHandle->GetHScript();
 	return vm->SetValue(scope, key, variant);
 }
 
@@ -110,8 +109,7 @@ static cell_t Native_VScriptScope_SetArray(IPluginContext* ctx, const cell_t* pa
 	if (!arrHandle) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_HSCRIPT;
-	variant.m_hScript = arrHandle->GetHScript();
+	variant = arrHandle->GetHScript();
 	return vm->SetValue(scope, key, variant);
 }
 

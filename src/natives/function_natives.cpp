@@ -81,13 +81,13 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 		ScriptVariant_t scriptResult;
 		ScriptStatus_t status = vm->ExecuteFunction(funcHandle->GetHScript(), nullptr, 0, &scriptResult, scope, true);
 		if (status != SCRIPT_DONE || scriptResult.GetType() != FIELD_HSCRIPT) {
-			if (scriptResult.m_flags & SV_FREE) {
+			if (scriptResult.GetFlags() & SV_FREE) {
 				vm->ReleaseValue(scriptResult);
 			}
 			return 0;
 		}
-		funcToCall = scriptResult.m_hScript;
-		needsRelease = (scriptResult.m_flags & SV_FREE) != 0;
+		funcToCall = scriptResult;
+		needsRelease = (scriptResult.GetFlags() & SV_FREE) != 0;
 	}
 
 	ScriptVariant_t returnValue;
@@ -96,8 +96,8 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 	if (needsRelease) {
 		ScriptVariant_t temp;
 		temp.SetType(FIELD_HSCRIPT);
-		temp.m_hScript = funcToCall;
-		temp.m_flags = SV_FREE;
+		temp = funcToCall;
+		temp.SetFlags(SV_FREE);
 		vm->ReleaseValue(temp);
 	}
 
@@ -177,13 +177,13 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 		ScriptVariant_t scriptResult;
 		ScriptStatus_t status = vm->ExecuteFunction(funcHandle->GetHScript(), nullptr, 0, &scriptResult, scope, true);
 		if (status != SCRIPT_DONE || scriptResult.GetType() != FIELD_HSCRIPT) {
-			if (scriptResult.m_flags & SV_FREE) {
+			if (scriptResult.GetFlags() & SV_FREE) {
 				vm->ReleaseValue(scriptResult);
 			}
 			return 0;
 		}
-		funcToCall = scriptResult.m_hScript;
-		needsRelease = (scriptResult.m_flags & SV_FREE) != 0;
+		funcToCall = scriptResult;
+		needsRelease = (scriptResult.GetFlags() & SV_FREE) != 0;
 	}
 
 	ScriptVariant_t returnValue;

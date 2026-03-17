@@ -26,25 +26,22 @@
 
 static cell_t Native_ScriptVariant_FromInt(IPluginContext* ctx, const cell_t* params) {
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_INTEGER;
-	variant.m_int = params[1];
-	variant.m_flags = 0;
+	variant = (int)params[1];
+	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
 static cell_t Native_ScriptVariant_FromFloat(IPluginContext* ctx, const cell_t* params) {
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_FLOAT;
 	variant.m_float = sp_ctof(params[1]);
-	variant.m_flags = 0;
+	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
 static cell_t Native_ScriptVariant_FromBool(IPluginContext* ctx, const cell_t* params) {
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_BOOLEAN;
 	variant.m_bool = (params[1] != 0);
-	variant.m_flags = 0;
+	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
@@ -58,20 +55,20 @@ static cell_t Native_ScriptVariant_FromString(IPluginContext* ctx, const cell_t*
 	// Create temporary table to force VM to copy and manage the string
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
-	if (tableVar.m_type != FIELD_HSCRIPT || !tableVar.m_hScript || tableVar.m_hScript == INVALID_HSCRIPT) {
+	HSCRIPT hTable = tableVar;
+	if (tableVar.GetType() != FIELD_HSCRIPT || !hTable || hTable == INVALID_HSCRIPT) {
 		return 0;
 	}
 
 	// Store string in table (VM copies it using its own allocator)
 	ScriptVariant_t tempVar;
-	tempVar.m_type = FIELD_CSTRING;
-	tempVar.m_pszString = str;
-	tempVar.m_flags = 0;
-	vm->SetValue(tableVar.m_hScript, 0, tempVar);
+	tempVar = str;
+	tempVar.SetFlags(0);
+	vm->SetValue(hTable, 0, tempVar);
 
 	// Retrieve VM-owned copy
 	ScriptVariant_t vmVar;
-	vm->GetValue(tableVar.m_hScript, 0, &vmVar);
+	vm->GetValue(hTable, 0, &vmVar);
 	vm->ReleaseValue(tableVar);
 
 	return CreateVariantHandleFromScriptVariant(ctx, vmVar);
@@ -84,18 +81,19 @@ static cell_t Native_ScriptVariant_FromVector(IPluginContext* ctx, const cell_t*
 	// Create temporary table to force VM to copy and manage the vector
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
-	if (tableVar.m_type != FIELD_HSCRIPT || !tableVar.m_hScript || tableVar.m_hScript == INVALID_HSCRIPT) {
+	HSCRIPT hTable = tableVar;
+	if (tableVar.GetType() != FIELD_HSCRIPT || !hTable || hTable == INVALID_HSCRIPT) {
 		return 0;
 	}
 
 	// Store vector in table (VM copies it using its own allocator)
 	Vector v = ReadVectorParam(ctx, params, 1);
 	ScriptVariant_t tempVar = CreateVectorVariant(v);
-	vm->SetValue(tableVar.m_hScript, 0, tempVar);
+	vm->SetValue(hTable, 0, tempVar);
 
 	// Retrieve VM-owned copy
 	ScriptVariant_t vmVar;
-	vm->GetValue(tableVar.m_hScript, 0, &vmVar);
+	vm->GetValue(hTable, 0, &vmVar);
 	vm->ReleaseValue(tableVar);
 
 	// Create handle with VM-owned variant
@@ -104,8 +102,8 @@ static cell_t Native_ScriptVariant_FromVector(IPluginContext* ctx, const cell_t*
 
 static cell_t Native_ScriptVariant_Null(IPluginContext* ctx, const cell_t* params) {
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_VOID;
-	variant.m_flags = 0;
+	variant.SetType(FIELD_VOID);
+	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
@@ -114,9 +112,8 @@ static cell_t Native_ScriptVariant_FromTable(IPluginContext* ctx, const cell_t* 
 	if (!tableHandle) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_HSCRIPT;
-	variant.m_hScript = tableHandle->GetHScript();
-	variant.m_flags = 0;
+	variant = tableHandle->GetHScript();
+	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
@@ -125,9 +122,8 @@ static cell_t Native_ScriptVariant_FromArray(IPluginContext* ctx, const cell_t* 
 	if (!arrHandle) return 0;
 
 	ScriptVariant_t variant;
-	variant.m_type = FIELD_HSCRIPT;
-	variant.m_hScript = arrHandle->GetHScript();
-	variant.m_flags = 0;
+	variant = arrHandle->GetHScript();
+	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
@@ -141,17 +137,17 @@ static cell_t Native_ScriptVariant_Type_get(IPluginContext* ctx, const cell_t* p
 static cell_t Native_ScriptVariant_IsNull_get(IPluginContext* ctx, const cell_t* params) {
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 1;
-	return (handle->GetVariant().m_type == FIELD_VOID);
+	return (handle->GetVariant().GetType() == FIELD_VOID);
 }
 
 static cell_t Native_ScriptVariant_GetInt(IPluginContext* ctx, const cell_t* params) {
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	switch (handle->GetVariant().m_type) {
-		case FIELD_INTEGER: return handle->GetVariant().m_int;
-		case FIELD_FLOAT: return (cell_t)handle->GetVariant().m_float;
-		case FIELD_BOOLEAN: return handle->GetVariant().m_bool;
+	switch (handle->GetVariant().GetType()) {
+		case FIELD_INTEGER: return (int)(handle->GetVariant());
+		case FIELD_FLOAT: return (cell_t)((float)handle->GetVariant());
+		case FIELD_BOOLEAN: return (bool)handle->GetVariant();
 		default: return 0;
 	}
 }
@@ -161,10 +157,10 @@ static cell_t Native_ScriptVariant_GetFloat(IPluginContext* ctx, const cell_t* p
 	if (!handle) return 0;
 
 	float result = 0.0f;
-	switch (handle->GetVariant().m_type) {
-		case FIELD_FLOAT: result = handle->GetVariant().m_float; break;
-		case FIELD_INTEGER: result = (float)handle->GetVariant().m_int; break;
-		case FIELD_BOOLEAN: result = handle->GetVariant().m_bool ? 1.0f : 0.0f; break;
+	switch (handle->GetVariant().GetType()) {
+		case FIELD_FLOAT: result = (float)handle->GetVariant(); break;
+		case FIELD_INTEGER: result = (float)((int)handle->GetVariant()); break;
+		case FIELD_BOOLEAN: result = (bool)handle->GetVariant() ? 1.0f : 0.0f; break;
 		default: break;
 	}
 	return sp_ftoc(result);
@@ -174,10 +170,10 @@ static cell_t Native_ScriptVariant_GetBool(IPluginContext* ctx, const cell_t* pa
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	switch (handle->GetVariant().m_type) {
-		case FIELD_BOOLEAN: return handle->GetVariant().m_bool;
-		case FIELD_INTEGER: return handle->GetVariant().m_int != 0;
-		case FIELD_FLOAT: return handle->GetVariant().m_float != 0.0f;
+	switch (handle->GetVariant().GetType()) {
+		case FIELD_BOOLEAN: return (bool)handle->GetVariant();
+		case FIELD_INTEGER: return ((int)handle->GetVariant()) != 0;
+		case FIELD_FLOAT: return ((float)handle->GetVariant()) != 0.0f;
 		default: return 0;
 	}
 }
@@ -186,9 +182,10 @@ static cell_t Native_ScriptVariant_GetString(IPluginContext* ctx, const cell_t* 
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_CSTRING && handle->GetVariant().m_pszString) {
-		ctx->StringToLocalUTF8(params[2], params[3], handle->GetVariant().m_pszString, nullptr);
-		return strlen(handle->GetVariant().m_pszString);
+	const char *str = handle->GetVariant();
+	if (handle->GetVariant().GetType() == FIELD_CSTRING && str) {
+		ctx->StringToLocalUTF8(params[2], params[3], str, nullptr);
+		return strlen(str);
 	}
 	return 0;
 }
@@ -197,8 +194,9 @@ static cell_t Native_ScriptVariant_GetVector(IPluginContext* ctx, const cell_t* 
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_VECTOR &&
-	    WriteVectorResult(ctx, params, 2, handle->GetVariant().m_pVector)) {
+	const Vector &vec = handle->GetVariant();
+	if (handle->GetVariant().GetType() == FIELD_VECTOR &&
+	    WriteVectorResult(ctx, params, 2, vec)) {
 		return 1;
 	}
 	return 0;
@@ -211,11 +209,12 @@ static cell_t Native_ScriptVariant_GetTable(IPluginContext* ctx, const cell_t* p
 	IScriptVM* vm = g_VScriptManager.GetVM();
 	if (!vm) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
-	    handle->GetVariant().m_hScript &&
-	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
-		if (vm->IsTable(handle->GetVariant().m_hScript)) {
-			VScriptTableHandle* h = new VScriptTableHandle(handle->GetVariant().m_hScript, false);
+	HSCRIPT hScript = handle->GetVariant();
+	if (handle->GetVariant().GetType() == FIELD_HSCRIPT &&
+	    hScript &&
+	    hScript != INVALID_HSCRIPT) {
+		if (vm->IsTable(hScript)) {
+			VScriptTableHandle* h = new VScriptTableHandle(hScript, false);
 			return CreateVScriptHandle(ctx, h);
 		}
 	}
@@ -229,11 +228,12 @@ static cell_t Native_ScriptVariant_GetArray(IPluginContext* ctx, const cell_t* p
 	IScriptVM* vm = g_VScriptManager.GetVM();
 	if (!vm) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
-	    handle->GetVariant().m_hScript &&
-	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
-		if (vm->IsArray(handle->GetVariant().m_hScript)) {
-			VScriptArrayHandle* h = new VScriptArrayHandle(handle->GetVariant().m_hScript, false);
+	HSCRIPT hScript = handle->GetVariant();
+	if (handle->GetVariant().GetType() == FIELD_HSCRIPT &&
+	    hScript &&
+	    hScript != INVALID_HSCRIPT) {
+		if (vm->IsArray(hScript)) {
+			VScriptArrayHandle* h = new VScriptArrayHandle(hScript, false);
 			return CreateVScriptHandle(ctx, h);
 		}
 	}
@@ -244,10 +244,11 @@ static cell_t Native_ScriptVariant_GetScope(IPluginContext* ctx, const cell_t* p
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
-	    handle->GetVariant().m_hScript &&
-	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
-		VScriptScopeHandle* h = new VScriptScopeHandle(handle->GetVariant().m_hScript, false);
+	HSCRIPT hScript = handle->GetVariant();
+	if (handle->GetVariant().GetType() == FIELD_HSCRIPT &&
+	    hScript &&
+	    hScript != INVALID_HSCRIPT) {
+		VScriptScopeHandle* h = new VScriptScopeHandle(hScript, false);
 		return CreateVScriptHandle(ctx, h);
 	}
 	return 0;
@@ -257,10 +258,11 @@ static cell_t Native_ScriptVariant_GetFunction(IPluginContext* ctx, const cell_t
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	if (handle->GetVariant().m_type == FIELD_HSCRIPT &&
-	    handle->GetVariant().m_hScript &&
-	    handle->GetVariant().m_hScript != INVALID_HSCRIPT) {
-		VScriptFunctionHandle* h = new VScriptFunctionHandle(handle->GetVariant().m_hScript, false, false);
+	HSCRIPT hScript = handle->GetVariant();
+	if (handle->GetVariant().GetType() == FIELD_HSCRIPT &&
+	    hScript &&
+	    hScript != INVALID_HSCRIPT) {
+		VScriptFunctionHandle* h = new VScriptFunctionHandle(hScript, false, false);
 		return CreateVScriptHandle(ctx, h);
 	}
 	return 0;
@@ -295,9 +297,10 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return -1;
 
-	if (handle->GetVariant().m_type != FIELD_HSCRIPT ||
-	    !handle->GetVariant().m_hScript ||
-	    handle->GetVariant().m_hScript == INVALID_HSCRIPT) {
+	HSCRIPT hScript = handle->GetVariant();
+	if (handle->GetVariant().GetType() != FIELD_HSCRIPT ||
+	    !hScript ||
+	    hScript == INVALID_HSCRIPT) {
 		return -1;
 	}
 
@@ -309,8 +312,8 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 
 	// Call GetEntityIndex() method on the entity instance
 	ScriptVariant_t tableVar;
-	tableVar.m_type = FIELD_HSCRIPT;
-	tableVar.m_hScript = handle->GetVariant().m_hScript;
+	HSCRIPT hTable = handle->GetVariant();
+	tableVar = hTable;
 	vm->SetValue(root, "__sm_temp_entity__", tableVar);
 
 	const char* code = "return __sm_temp_entity__.GetEntityIndex()";
@@ -325,11 +328,11 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 	vm->ReleaseScript(compiled);
 	vm->ClearValue(root, "__sm_temp_entity__");
 
-	if (status != SCRIPT_DONE || returnValue.m_type != FIELD_INTEGER) {
+	if (status != SCRIPT_DONE || returnValue.GetType() != FIELD_INTEGER) {
 		return -1;
 	}
 
-	return returnValue.m_int;
+	return (int)returnValue;
 }
 
 const sp_nativeinfo_t g_VariantNatives[] = {
