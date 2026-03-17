@@ -10,6 +10,8 @@ for sdk_name in Extension.sdks:
       'src/extension.cpp',
       'src/core/vscript_manager.cpp',
       'src/core/handle_types.cpp',
+      'src/sdk/strtools_2013.cpp'
+      'src/sdk/utlstring_2013.cpp'
       'src/natives/variant_natives.cpp',
       'src/natives/scope_natives.cpp',
       'src/natives/table_natives.cpp',
