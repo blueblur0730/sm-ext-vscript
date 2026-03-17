@@ -16,8 +16,6 @@
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
 
-static const int64 k_nMillion = 1000000;
-
 //-----------------------------------------------------------------------------
 // Purpose: Helper: Find s substring
 //-----------------------------------------------------------------------------
@@ -30,33 +28,6 @@ static ptrdiff_t IndexOf( const char *pstrToSearch, const char *pstrTarget )
 	}
 	return ( pstrHit - pstrToSearch );
 }
-
-
-//-----------------------------------------------------------------------------
-// Purpose: Helper: kill all whitespace.
-//-----------------------------------------------------------------------------
-static size_t RemoveWhitespace( char *pszString )
-{
-	if ( pszString == NULL )
-		return 0;
-
-	char *pstrDest = pszString;
-	size_t cRemoved = 0;
-	for ( char *pstrWalker = pszString; *pstrWalker != 0; pstrWalker++ )
-	{
-		if ( !V_isspace( (unsigned char)*pstrWalker ) ) 
-		{
-			*pstrDest = *pstrWalker;
-			pstrDest++;
-		}
-		else
-			cRemoved += 1;
-	}
-	*pstrDest = 0;
-
-	return cRemoved;
-}
-
 
 //-----------------------------------------------------------------------------
 // Simple string class. 

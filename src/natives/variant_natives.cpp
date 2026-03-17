@@ -33,14 +33,14 @@ static cell_t Native_ScriptVariant_FromInt(IPluginContext* ctx, const cell_t* pa
 
 static cell_t Native_ScriptVariant_FromFloat(IPluginContext* ctx, const cell_t* params) {
 	ScriptVariant_t variant;
-	variant.m_float = sp_ctof(params[1]);
+	variant = sp_ctof(params[1]);
 	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
 
 static cell_t Native_ScriptVariant_FromBool(IPluginContext* ctx, const cell_t* params) {
 	ScriptVariant_t variant;
-	variant.m_bool = (params[1] != 0);
+	variant = (params[1] != 0);
 	variant.SetFlags(0);
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
@@ -130,7 +130,7 @@ static cell_t Native_ScriptVariant_FromArray(IPluginContext* ctx, const cell_t* 
 static cell_t Native_ScriptVariant_Type_get(IPluginContext* ctx, const cell_t* params) {
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
-	return handle->GetVariant().m_type;
+	return handle->GetVariant().GetType();
 }
 
 // ScriptVariant.IsNull.get
