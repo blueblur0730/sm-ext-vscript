@@ -163,7 +163,7 @@ static cell_t Native_VScriptArray_GetString(IPluginContext* ctx, const cell_t* p
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	const char *pszString = variant.m_pszString;
+	const char *pszString = variant;
 	if (variant.GetType() == FIELD_CSTRING && pszString) {
 		ctx->StringToLocalUTF8(params[3], params[4], pszString, nullptr);
 		result = strlen(pszString);
