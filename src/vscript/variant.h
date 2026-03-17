@@ -226,8 +226,13 @@ private:
 //		uint32			m_utlStringToken; // Can't use CUtlStringToken in union because it has a nonempty constructor
 	};
 
+	int 				m_extra;	// L4D2
 	int16				m_type;
 	uint16				m_flags;
+
+#ifdef _WIN32
+	int					m_padding;	// L4D2
+#endif	
 
 	friend class CLuaVM;
 	friend class CPythonVM;

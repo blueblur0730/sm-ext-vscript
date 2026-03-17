@@ -10,15 +10,15 @@ for sdk_name in Extension.sdks:
       'src/extension.cpp',
       'src/core/vscript_manager.cpp',
       'src/core/handle_types.cpp',
-      'src/sdk/strtools_2013.cpp'
-      'src/sdk/utlstring_2013.cpp'
+      'src/sdk/strtools_2013.cpp',
+      'src/sdk/utlstring_2013.cpp',
       'src/natives/variant_natives.cpp',
       'src/natives/scope_natives.cpp',
       'src/natives/table_natives.cpp',
       'src/natives/array_natives.cpp',
       'src/natives/function_natives.cpp',
       'src/natives/vm_natives.cpp',
-      os.path.join(Extension.sm_root, 'public', 'smsdk_ext.cpp'),
+      os.path.join(Extension.sm_root, 'public', 'smsdk_ext.cpp')
     ]
 
     if binary.compiler.target.platform == 'windows':
