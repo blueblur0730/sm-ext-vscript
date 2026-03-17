@@ -509,7 +509,7 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 		if (iterator == -1) break;
 
 		// Copy key-value pair to new table
-		const char* key = keyVar.m_pszString;
+		const char* key = keyVar;
 		if (keyVar.GetType() == FIELD_CSTRING && key) {
 			vm->SetValue(newTable, key, valueVar);
 		} else if (keyVar.GetType() == FIELD_INTEGER) {
