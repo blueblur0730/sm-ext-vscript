@@ -1,7 +1,7 @@
 //====== Copyright Valve Corporation, All rights reserved. =======
 
-#ifndef UTLSTRING_H
-#define UTLSTRING_H
+#ifndef UTLSTRING_2013_H
+#define UTLSTRING_2013_H
 #ifdef _WIN32
 #pragma once
 #endif
