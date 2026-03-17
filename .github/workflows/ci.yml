@@ -173,10 +173,11 @@ jobs:
         working-directory: main
         shell: bash
         run: |
-          cp -r build/package/addons/sourcemod/extensions addons/sourcemod
+          mkdir -p addons/sourcemod/extensions
+          cp -r build/package/addons/sourcemod/extensions addons/sourcemod/extensions
 
       - name: Upload Binary (Package)
         uses: actions/upload-artifact@v4
         with:
           name: vscript-${{ env.EXT_VERSION }}.${{ env.GITHUB_SHA_SHORT }}-${{ matrix.os_short }}-${{ matrix.sm_short }}-${{ matrix.target_arch }}
-          path: main/addons
+          path: addons
