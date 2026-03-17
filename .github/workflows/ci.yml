@@ -173,8 +173,8 @@ jobs:
         working-directory: main
         shell: bash
         run: |
-          mkdir -p addons/sourcemod/extensions
-          cp -r build/package/addons/sourcemod/extensions addons/sourcemod/extensions
+          mkdir -p addons/sourcemod
+          cp -r build/package/addons/sourcemod/extensions addons/sourcemod
 
       - name: Upload Binary (Package)
         uses: actions/upload-artifact@v7
