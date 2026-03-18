@@ -168,11 +168,14 @@ void RemoveHandleTypes();
 // Template-based handle creation
 template<typename T>
 [[nodiscard]] Handle_t CreateVScriptHandle(IPluginContext* ctx, T* handle) {
+	HandleError err;
 	Handle_t hndl = handlesys->CreateHandle(handle->GetHandleType(), handle,
-		myself->GetIdentity(), myself->GetIdentity(), nullptr);
+		myself->GetIdentity(), myself->GetIdentity(), &err);
 	if (hndl != BAD_HANDLE) {
 		handle->SetSourceModHandle(hndl);
 		g_VScriptManager.RegisterHandle(hndl);
+	} else {
+		ctx->ReportError("Failed to create %s handle, err code: %d", handle->GetTypeName(), err);
 	}
 	return hndl;
 }
@@ -199,7 +202,10 @@ template<typename T>
 template<typename T>
 [[nodiscard]] bool GetVMAndHScript(IPluginContext* ctx, cell_t handleParam, IScriptVM*& vm, HSCRIPT& hscript) {
 	vm = g_VScriptManager.GetVM();
-	if (!vm) return false;
+	if (!vm) {
+		ctx->ReportError("Failed to get VM Instance.");
+		return false;
+	}
 
 	T* handle = ReadVScriptHandle<T>(ctx, handleParam);
 	if (!handle) return false;

@@ -28,13 +28,19 @@
 
 static cell_t Native_VScriptArray_Create(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
 
 	HSCRIPT hScript = arrVar;
-	if (arrVar.GetType() != FIELD_HSCRIPT || !hScript || hScript == INVALID_HSCRIPT) return 0;
+	if (arrVar.GetType() != FIELD_HSCRIPT || !hScript || hScript == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to create VScript array HSCRIPT Instance. hScript: %d, type: %d", hScript, arrVar.GetType());
+		return 0;
+	}
 
 	VScriptArrayHandle* handle = new VScriptArrayHandle(hScript, false);
 	handle->SetVariant(arrVar);
@@ -263,12 +269,17 @@ static cell_t Native_VScriptArray_Remove(IPluginContext* ctx, const cell_t* para
 
 	int index = params[2];
 	int length = vm->GetArrayCount(arr);
-
-	if (index < 0 || index >= length) return 0;
+	if (index < 0 || index >= length) {
+		ctx->ThrowNativeError("Index out of range: %d, length: %d", index, length);
+		return 0;
+	}
 
 	// Use VScript to remove element: array.remove(index)
 	HSCRIPT root = vm->GetRootTable();
-	if (!root || root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to get root table.");
+		return 0;
+	}
 
 	char code[128];
 	snprintf(code, sizeof(code), "__sm_temp_array__.remove(%d)", index);
@@ -294,11 +305,17 @@ static cell_t Native_VScriptArray_Pop(IPluginContext* ctx, const cell_t* params)
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	int length = vm->GetArrayCount(arr);
-	if (length == 0) return 0;
+	if (length == 0) {
+		ctx->ThrowNativeError("Length should not be zero.");
+		return 0;
+	}
 
 	// Get last element
 	ScriptVariant_t value;
-	if (!vm->GetValue(arr, length - 1, &value)) return 0;
+	if (!vm->GetValue(arr, length - 1, &value)) {
+		ctx->ThrowNativeError("Failed to get last element.");
+		return 0;
+	}
 
 	// Remove last element
 	HSCRIPT root = vm->GetRootTable();
@@ -328,7 +345,10 @@ static cell_t Native_VScriptArray_Clear(IPluginContext* ctx, const cell_t* param
 
 	// Use VScript to clear: array.clear()
 	HSCRIPT root = vm->GetRootTable();
-	if (!root || root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to get root table.");
+		return 0;
+	}
 
 	ScriptVariant_t arrVar;
 	arrVar = arr;
@@ -393,14 +413,20 @@ static cell_t Native_VScriptArray_Insert(IPluginContext* ctx, const cell_t* para
 	int index = params[2];
 	int length = vm->GetArrayCount(arr);
 
-	if (index < 0 || index > length) return 0;
-
+	if (index < 0 || index >= length) {
+		ctx->ThrowNativeError("Index out of range: %d, length: %d", index, length);
+		return 0;
+	}
+	
 	VScriptVariantHandle* valueHandle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[3]);
 	if (!valueHandle) return 0;
 
 	// Use VScript to insert: array.insert(index, value)
 	HSCRIPT root = vm->GetRootTable();
-	if (!root || root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to get root table.");
+		return 0;
+	}
 
 	// Set array and value in root temporarily
 	ScriptVariant_t arrVar;

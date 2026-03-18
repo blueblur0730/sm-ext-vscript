@@ -28,7 +28,10 @@
 
 static cell_t Native_VScriptScope_Create(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	char* name;
 	ctx->LocalToString(params[1], &name);
@@ -49,11 +52,16 @@ static cell_t Native_VScriptScope_Create(IPluginContext* ctx, const cell_t* para
 
 static cell_t Native_VScriptScope_GetRoot(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	HSCRIPT root = vm->GetRootTable();
-	if (!root || root == INVALID_HSCRIPT) return 0;
-
+	if (!root || root == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to get root table.");
+		return 0;
+	}
 	// Root table is not owned by us
 	VScriptScopeHandle* handle = new VScriptScopeHandle(root, false);
 	return CreateVScriptHandle(ctx, handle);
@@ -146,7 +154,11 @@ static cell_t Native_VScriptScope_GetTable(IPluginContext* ctx, const cell_t* pa
 	ctx->LocalToString(params[2], &key);
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(scope, key, &variant)) return 0;
+	if (!vm->GetValue(scope, key, &variant)) {
+		ctx->ThrowNativeError("Failed to retrive value from key: %s", key);
+		return 0;
+	}
+
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
@@ -167,7 +179,11 @@ static cell_t Native_VScriptScope_GetArray(IPluginContext* ctx, const cell_t* pa
 	ctx->LocalToString(params[2], &key);
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(scope, key, &variant)) return 0;
+	if (!vm->GetValue(scope, key, &variant)) {
+		ctx->ThrowNativeError("Failed to retrive value from key: %s", key);
+		return 0;
+	}
+
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
@@ -207,7 +223,10 @@ static cell_t Native_VScriptScope_LookupFunction(IPluginContext* ctx, const cell
 
 	HSCRIPT func = vm->LookupFunction(name, scope);
 	// Check for both INVALID_HSCRIPT (-1) and nullptr (0)
-	if (func == INVALID_HSCRIPT || func == nullptr) return 0;
+	if (func == INVALID_HSCRIPT || func == nullptr) {
+		ctx->ThrowNativeError("Failed to lookup function by name: %s", name);
+		return 0;
+	}
 
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(func, true, false);
 	return CreateVScriptHandle(ctx, handle);
@@ -221,15 +240,20 @@ static cell_t Native_VScriptScope_Execute(IPluginContext* ctx, const cell_t* par
 
 	// Compile the script
 	HSCRIPT compiled = vm->CompileScript(code, "execute");
-
-	if (!compiled || compiled == INVALID_HSCRIPT) return 0;
+	if (!compiled || compiled == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to compile script.");
+		return 0;
+	}
 
 	// Execute and get return value
 	ScriptVariant_t returnValue;
 	ScriptStatus_t status = vm->ExecuteFunction(compiled, nullptr, 0, &returnValue, scope, true);
 	vm->ReleaseScript(compiled);
 
-	if (status != SCRIPT_DONE) return 0;
+	if (status != SCRIPT_DONE) {
+		ctx->ThrowNativeError("Failed to execute compiled script. status: %d, returnResult Type: %d", status, returnValue.GetType());
+		return 0;
+	}
 
 	return CreateVariantHandleFromScriptVariant(ctx, returnValue);
 }

@@ -65,7 +65,10 @@ static bool ReadScopeOrTableHandle(IPluginContext* ctx, Handle_t handle, HSCRIPT
 
 static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	VScriptFunctionHandle* funcHandle = ReadVScriptHandle<VScriptFunctionHandle>(ctx, params[1]);
 	if (!funcHandle) return 0;
@@ -85,7 +88,9 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 				vm->ReleaseValue(scriptResult);
 			}
 			return 0;
+			ctx->ThrowNativeError("Failed to execute compiled script. status: %d, scriptResult Type: %d", status, scriptResult.GetType());
 		}
+
 		funcToCall = scriptResult;
 		needsRelease = (scriptResult.GetFlags() & SV_FREE) != 0;
 	}
@@ -100,14 +105,20 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 		vm->ReleaseValue(temp);
 	}
 
-	if (status != SCRIPT_DONE) return 0;
+	if (status != SCRIPT_DONE) {
+		ctx->ThrowNativeError("Failed to execute compiled script. status: %d, returnResult Type: %d", status, returnValue.GetType());
+		return 0;
+	}
 
 	return CreateVariantHandleFromScriptVariant(ctx, returnValue);
 }
 
 static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	VScriptFunctionHandle* funcHandle = ReadVScriptHandle<VScriptFunctionHandle>(ctx, params[1]);
 	if (!funcHandle) return 0;
@@ -180,6 +191,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 				vm->ReleaseValue(scriptResult);
 			}
 			return 0;
+			ctx->ThrowNativeError("Failed to execute compiled script. status: %d, scriptResult Type: %d", status, scriptResult.GetType());
 		}
 		funcToCall = scriptResult;
 		needsRelease = (scriptResult.GetFlags() & SV_FREE) != 0;
@@ -199,7 +211,10 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 		vm->ReleaseValue(temp);
 	}
 
-	if (status != SCRIPT_DONE) return 0;
+	if (status != SCRIPT_DONE) {
+		ctx->ThrowNativeError("Failed to execute compiled script. status: %d, returnResult Type: %d", status, returnValue.GetType());
+		return 0;
+	}
 
 	return CreateVariantHandleFromScriptVariant(ctx, returnValue);
 }

@@ -49,15 +49,19 @@ static cell_t Native_ScriptVariant_FromBool(IPluginContext* ctx, const cell_t* p
 static cell_t Native_ScriptVariant_FromString(IPluginContext* ctx, const cell_t* params) {
 	char* str;
 	ctx->LocalToString(params[1], &str);
-
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	// Create temporary table to force VM to copy and manage the string
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
 	HSCRIPT hTable = tableVar;
 	if (tableVar.GetType() != FIELD_HSCRIPT || !hTable || hTable == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to create table HSCRIPT Instance, table: %d, type: %d", hTable, tableVar.GetType());
 		return 0;
 	}
 
@@ -77,13 +81,18 @@ static cell_t Native_ScriptVariant_FromString(IPluginContext* ctx, const cell_t*
 
 static cell_t Native_ScriptVariant_FromVector(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	// Create temporary table to force VM to copy and manage the vector
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
 	HSCRIPT hTable = tableVar;
 	if (tableVar.GetType() != FIELD_HSCRIPT || !hTable || hTable == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to create table HSCRIPT Instance. hTable: %d, type: %d.", hTable, tableVar.GetType());
 		return 0;
 	}
 
@@ -208,7 +217,10 @@ static cell_t Native_ScriptVariant_GetTable(IPluginContext* ctx, const cell_t* p
 	if (!handle) return 0;
 
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	HSCRIPT hScript = handle->GetVariant();
 	if (handle->GetVariant().GetType() == FIELD_HSCRIPT &&
@@ -227,7 +239,10 @@ static cell_t Native_ScriptVariant_GetArray(IPluginContext* ctx, const cell_t* p
 	if (!handle) return 0;
 
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	HSCRIPT hScript = handle->GetVariant();
 	if (handle->GetVariant().GetType() == FIELD_HSCRIPT &&
@@ -273,23 +288,35 @@ static cell_t Native_ScriptVariant_FromEntity(IPluginContext* ctx, const cell_t*
 	int entity = params[1];
 
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	HSCRIPT root = vm->GetRootTable();
-	if (!root || root == INVALID_HSCRIPT) return 0;
+	if (!root || root == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to get root table.");
+		return 0;
+	}
 
 	// Use EntIndexToHScript to convert entity index to instance (more general than PlayerInstanceFromIndex)
 	char code[128];
 	snprintf(code, sizeof(code), "return EntIndexToHScript(%d)", entity);
 
 	HSCRIPT compiled = vm->CompileScript(code, "FromEntity");
-	if (!compiled || compiled == INVALID_HSCRIPT) return 0;
+	if (!compiled || compiled == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to compile script.");
+		return 0;
+	}
 
 	ScriptVariant_t returnValue;
 	ScriptStatus_t status = vm->ExecuteFunction(compiled, nullptr, 0, &returnValue, root, true);
 	vm->ReleaseScript(compiled);
 
-	if (status != SCRIPT_DONE) return 0;
+	if (status != SCRIPT_DONE) {
+		ctx->ThrowNativeError("Failed to execute compiled script. status: %d, returnResult Type: %d", status, returnValue.GetType());
+		return 0;
+	}
 
 	return CreateVariantHandleFromScriptVariant(ctx, returnValue);
 }
@@ -302,6 +329,7 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 	if (handle->GetVariant().GetType() != FIELD_HSCRIPT ||
 	    !hScript ||
 	    hScript == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Invalid HSCRIPT from handle.");
 		return -1;
 	}
 
@@ -309,7 +337,10 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 	if (!vm) return -1;
 
 	HSCRIPT root = vm->GetRootTable();
-	if (!root || root == INVALID_HSCRIPT) return -1;
+	if (!root || root == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to get root table.");
+		return 0;
+	}
 
 	// Call GetEntityIndex() method on the entity instance
 	ScriptVariant_t tableVar;
@@ -330,6 +361,7 @@ static cell_t Native_ScriptVariant_ToEntity(IPluginContext* ctx, const cell_t* p
 	vm->ClearValue(root, "__sm_temp_entity__");
 
 	if (status != SCRIPT_DONE || returnValue.GetType() != FIELD_INTEGER) {
+		ctx->ThrowNativeError("Failed to execute compiled script. status: %d, returnResult Type: %d", status, returnValue.GetType());
 		return -1;
 	}
 

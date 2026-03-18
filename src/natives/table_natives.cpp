@@ -28,13 +28,20 @@
 
 static cell_t Native_VScriptTable_Create(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
 
 	HSCRIPT table = tableVar;
-	if (tableVar.GetType() != FIELD_HSCRIPT || !table || table == INVALID_HSCRIPT) return 0;
+	if (tableVar.GetType() != FIELD_HSCRIPT || !table || table == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to create table HSCRIPT Instance. table: %d, type: %d", table, tableVar.GetType());
+		return 0;
+	}
+
 
 	VScriptTableHandle* handle = new VScriptTableHandle(table, false);
 	handle->SetVariant(tableVar);
@@ -229,7 +236,11 @@ static cell_t Native_VScriptTable_GetString(IPluginContext* ctx, const cell_t* p
 	ctx->LocalToString(params[2], &key);
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(table, key, &variant)) return 0;
+	if (!vm->GetValue(table, key, &variant)) {
+		ctx->ThrowNativeError("Failed to get string from table by key: %s.", key);
+		return 0;
+	}
+
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
@@ -250,7 +261,11 @@ static cell_t Native_VScriptTable_GetVector(IPluginContext* ctx, const cell_t* p
 	ctx->LocalToString(params[2], &key);
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(table, key, &variant)) return 0;
+	if (!vm->GetValue(table, key, &variant)) {
+		ctx->ThrowNativeError("Failed to get vector from table by key: %s.", key);
+		return 0;
+	}
+
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	const Vector &vec = variant;
@@ -269,7 +284,10 @@ static cell_t Native_VScriptTable_GetValue(IPluginContext* ctx, const cell_t* pa
 	ctx->LocalToString(params[2], &key);
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(table, key, &variant)) return 0;
+	if (!vm->GetValue(table, key, &variant)) {
+		ctx->ThrowNativeError("Failed to get value from table by key: %s.", key);
+		return 0;
+	}
 
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
@@ -309,7 +327,10 @@ static cell_t Native_VScriptTable_GetValueAt(IPluginContext* ctx, const cell_t* 
 	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(table, params[2], &variant)) return 0;
+	if (!vm->GetValue(table, params[2], &variant)) {
+		ctx->ThrowNativeError("Failed to get value from table by index: %d.", params[2]);
+		return 0;
+	}
 
 	return CreateVariantHandleFromScriptVariant(ctx, variant);
 }
@@ -333,7 +354,11 @@ static cell_t Native_VScriptTable_GetStringAt(IPluginContext* ctx, const cell_t*
 	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(table, params[2], &variant)) return 0;
+	if (!vm->GetValue(table, params[2], &variant)) {
+		ctx->ThrowNativeError("Failed to get string from table by index: %d.", params[2]);
+		return 0;
+	}
+
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
@@ -351,7 +376,11 @@ static cell_t Native_VScriptTable_GetVectorAt(IPluginContext* ctx, const cell_t*
 	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
 
 	ScriptVariant_t variant;
-	if (!vm->GetValue(table, params[2], &variant)) return 0;
+	if (!vm->GetValue(table, params[2], &variant)) {
+		ctx->ThrowNativeError("Failed to get vector from table by index: %d.", params[2]);
+		return 0;
+	}
+
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	const Vector &vec = variant;
@@ -427,7 +456,10 @@ static cell_t Native_VScriptTable_LookupFunction(IPluginContext* ctx, const cell
 	ctx->LocalToString(params[2], &name);
 
 	HSCRIPT func = vm->LookupFunction(name, table);
-	if (!func || func == INVALID_HSCRIPT) return 0;
+	if (!func || func == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to lookup function by name: %s.", name);
+		return 0;
+	}
 
 	VScriptFunctionHandle* handle = new VScriptFunctionHandle(func, true, false);
 	return CreateVScriptHandle(ctx, handle);
@@ -439,8 +471,10 @@ static cell_t Native_VScriptTable_Clear(IPluginContext* ctx, const cell_t* param
 
 	// Use VScript to clear: table.clear()
 	HSCRIPT root = vm->GetRootTable();
-	if (!root || root == INVALID_HSCRIPT) return 0;
-
+	if (!root || root == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to get root table.");
+		return 0;
+	}
 	ScriptVariant_t tableVar;
 	tableVar = table;
 	vm->SetValue(root, "__sm_temp_table__", tableVar);
@@ -463,7 +497,10 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
 	HSCRIPT arr = arrVar;
-	if (arrVar.GetType() != FIELD_HSCRIPT || !arr || arr == INVALID_HSCRIPT) return 0;
+	if (arrVar.GetType() != FIELD_HSCRIPT || !arr || arr == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to create array HSCRIPT Instance. arr: %d, type: %d", arr, arrVar.GetType());
+		return 0;
+	}
 
 	// Iterate through table and collect keys
 	int iterator = 0;  // SDK uses 0 as start
@@ -499,7 +536,10 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 	ScriptVariant_t newTableVar;
 	vm->CreateTable(newTableVar);
 	HSCRIPT newTable = newTableVar;
-	if (newTableVar.GetType() != FIELD_HSCRIPT || !newTable || newTable == INVALID_HSCRIPT) return 0;
+	if (newTableVar.GetType() != FIELD_HSCRIPT || !newTable || newTable == INVALID_HSCRIPT) {
+		ctx->ThrowNativeError("Failed to create new table HSCRIPT Instance. newTable: %d, type: %d", newTable, newTableVar.GetType());
+		return 0;
+	}
 
 	// Iterate through source table and copy all key-value pairs
 	int iterator = 0;  // SDK uses 0 as start

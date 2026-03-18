@@ -32,7 +32,10 @@ static cell_t Native_VScript_IsValid_get(IPluginContext* ctx, const cell_t* para
 
 static cell_t Native_VScript_IsArray_get(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	HandleSecurity sec(ctx->GetIdentity(), myself->GetIdentity());
 	void* object;
@@ -49,7 +52,10 @@ static cell_t Native_VScript_IsArray_get(IPluginContext* ctx, const cell_t* para
 
 static cell_t Native_VScript_IsTable_get(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	HandleSecurity sec(ctx->GetIdentity(), myself->GetIdentity());
 	void* object;
@@ -66,7 +72,10 @@ static cell_t Native_VScript_IsTable_get(IPluginContext* ctx, const cell_t* para
 
 static cell_t Native_VScript_Compile(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	FormattedString code(ctx, params, 1);
 
@@ -83,7 +92,10 @@ static cell_t Native_VScript_Compile(IPluginContext* ctx, const cell_t* params) 
 // VScript_Run
 static cell_t Native_VScript_Run(IPluginContext* ctx, const cell_t* params) {
 	IScriptVM* vm = g_VScriptManager.GetVM();
-	if (!vm) return 0;
+	if (!vm) {
+		ctx->ThrowNativeError("Failed to get VM Instance.");
+		return 0;
+	}
 
 	FormattedString code(ctx, params, 1);
 
