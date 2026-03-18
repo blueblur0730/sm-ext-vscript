@@ -21,7 +21,6 @@
 #pragma once
 
 #include "handle_types.h"
-#include "mathlib/vector.h"
 #include <vscript/ivscript.h>
 #include <smsdk_ext.h>
 #include <memory>

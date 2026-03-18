@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "mathlib/vector.h"
 #include "handle_types.h"
 #include <vscript/ivscript.h>
 #include <smsdk_ext.h>

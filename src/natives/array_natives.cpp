@@ -19,7 +19,6 @@
  */
 
 #include "extension.h"
-#include "mathlib/vector.h"
 #include "core/handle_types.h"
 #include "core/vscript_manager.h"
 #include "core/generic_operations.h"
