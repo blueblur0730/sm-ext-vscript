@@ -17,17 +17,12 @@
 
 #include "datamap.h"
 #include "basehandle.h"
-#include "mathlib/mathlib.h"
+#include "mathlib/vector.h"
+#include "mathlib/vector2d.h"
 #include "tier1/strtools.h"
 #include "tier1/utlstring.h"
 #include "../../game/shared/ehandle.h"
 //#include "tier1/utlstringtoken.h"
-
-// bullshit.
-const Vector vec3_origin(0, 0, 0);
-const Vector2D vec2_origin(0, 0);
-const QAngle vec3_angle(0, 0, 0);
-const Quaternion quat_identity(0, 0, 0, 1);
 
 //-----------------------------------------------------------------------------
 // Forward declarations
@@ -135,7 +130,7 @@ public:
 	operator bool() const					{ Assert( m_type == FIELD_BOOLEAN );	return m_bool; }
 	operator HSCRIPT() const				{ Assert( m_type == FIELD_HSCRIPT );	return m_hScript; }
 	operator CBaseHandle() const			{ Assert( m_type == FIELD_EHANDLE );	return CBaseHandle( m_hEntity ); }
-        operator CBaseEntity*() const				{ Assert( m_type == FIELD_EHANDLE );    return CHandle<CBaseEntity>(CBaseHandle( m_hEntity )); }
+    operator CBaseEntity*() const			{ Assert( m_type == FIELD_EHANDLE );    return CHandle<CBaseEntity>(CBaseHandle( m_hEntity )); }
 	operator const Quaternion &() const		{ Assert( m_type == FIELD_QUATERNION );	return m_pData ? *(Quaternion*)m_pData : quat_identity; }
 //	operator CUtlStringToken() const		{ Assert( m_type == FIELD_UTLSTRINGTOKEN );	CUtlStringToken t; t.m_nHashCode = m_utlStringToken; return t; }
 
