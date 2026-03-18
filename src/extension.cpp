@@ -21,6 +21,14 @@
 #include "extension.h"
 #include "core/vscript_manager.h"
 #include "core/handle_types.h"
+#include "mathlib/mathlib.h"
+
+// Define the math constants that are declared extern in mathlib.h
+const Vector vec3_origin(0, 0, 0);
+const Vector2D vec2_origin(0, 0);
+const QAngle vec3_angle(0, 0, 0);
+const Quaternion quat_identity(0, 0, 0, 1);
+const Vector vec3_invalid(0, 0, 0);
 
 VscriptExt g_VscriptExt;
 SMEXT_LINK(&g_VscriptExt);
