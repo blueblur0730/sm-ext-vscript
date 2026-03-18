@@ -23,6 +23,11 @@
 #include "../../game/shared/ehandle.h"
 //#include "tier1/utlstringtoken.h"
 
+// bullshit.
+const Vector vec3_origin(0, 0, 0);
+const Vector2D vec2_origin(0, 0);
+const QAngle vec3_angle(0, 0, 0);
+const Quaternion quat_identity(0, 0, 0, 1);
 
 //-----------------------------------------------------------------------------
 // Forward declarations
