@@ -18,10 +18,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined _vscript_included
+#if defined _vscript_ext_included
  #endinput
 #endif
-#define _vscript_included
+#define _vscript_ext_included
 
 /**
  * VScript Interface for SourceMod

@@ -1,6 +1,6 @@
 #include <sourcemod>
 #include <sdktools>
-#include <vscript>
+#include <vscript_ext>
 
 public Plugin myinfo = {
 	name = "VScript Stagger Test",

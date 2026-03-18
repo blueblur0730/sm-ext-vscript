@@ -1,5 +1,5 @@
 #include <sourcemod>
-#include <vscript>
+#include <vscript_ext>
 
 public Plugin myinfo = {
 	name = "VScript Test",
