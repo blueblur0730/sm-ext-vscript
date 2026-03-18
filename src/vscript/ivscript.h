@@ -460,26 +460,24 @@ public:
 	virtual ScriptLanguage_t GetLanguage() = 0;
 	virtual const char *GetLanguageName() = 0;
 
-	virtual void* GetInternalVM() = 0;	// SQVM*		m_pVM; this + 4
+	virtual void *GetInternalVM() = 0;	// SQVM*		m_pVM; this + 4
 
 	virtual void AddSearchPath( const char *pszSearchPath ) = 0;
 
 	//--------------------------------------------------------
 
-	virtual bool ForwardConsoleCommand(CCommandContext const &, CCommand const &) = 0;
+	virtual bool ForwardConsoleCommand(CCommandContext const & commandContext, CCommand const &command) = 0;
 	virtual bool Frame( float simTime ) = 0;
 
 	//--------------------------------------------------------
 	// Simple script usage
 	//--------------------------------------------------------
 	virtual ScriptStatus_t Run( const char *pszScript, bool bWait = true ) = 0;
-	inline ScriptStatus_t Run( const unsigned char *pszScript, bool bWait = true ) { return Run( (char *)pszScript, bWait ); }
 
 	//--------------------------------------------------------
 	// Compilation
 	//--------------------------------------------------------
  	virtual HSCRIPT CompileScript( const char *pszScript, const char *pszId = NULL ) = 0;
-	inline HSCRIPT CompileScript( const unsigned char *pszScript, const char *pszId = NULL ) { return CompileScript( (char *)pszScript, pszId ); }
 	virtual void ReleaseScript( HSCRIPT hScript ) = 0;
 
 	//--------------------------------------------------------
@@ -532,12 +530,7 @@ public:
 
 	virtual HSCRIPT RegisterInstance( ScriptClassDesc_t *pDesc, void *pInstance ) = 0;
 	virtual void SetInstanceUniqeId( HSCRIPT hInstance, const char *pszId ) = 0;
-	template <typename T> HSCRIPT RegisterInstance( T *pInstance )																	{ return RegisterInstance( GetScriptDesc( pInstance ), pInstance );	}
-	template <typename T> HSCRIPT RegisterInstance( T *pInstance, const char *pszInstance, HSCRIPT hScope = NULL)					{ HSCRIPT hInstance = RegisterInstance( GetScriptDesc( pInstance ), pInstance ); SetValue( hScope, pszInstance, hInstance ); return hInstance; }
-	virtual void RemoveInstance( HSCRIPT ) = 0;
-	void RemoveInstance( HSCRIPT hInstance, const char *pszInstance, HSCRIPT hScope = NULL )										{ ClearValue( hScope, pszInstance ); RemoveInstance( hInstance ); }
-	void RemoveInstance( const char *pszInstance, HSCRIPT hScope = NULL )															{ ScriptVariant_t val; if ( GetValue( hScope, pszInstance, &val ) ) { if ( val.GetType() == FIELD_HSCRIPT) { RemoveInstance(val, pszInstance, hScope); } ReleaseValue(val); } }
-
+	virtual void RemoveInstance( HSCRIPT hInstance ) = 0;
 	virtual void *GetInstanceValue( HSCRIPT hInstance, ScriptClassDesc_t *pExpectedType = NULL ) = 0;
 
 	//----------------------------------------------------------------------------
@@ -547,30 +540,21 @@ public:
 	//----------------------------------------------------------------------------
 
 	virtual bool ValueExists( HSCRIPT hScope, const char *pszKey ) = 0;
-	bool ValueExists( const char *pszKey )																							{ return ValueExists( NULL, pszKey ); }
-
 	virtual bool SetValue( HSCRIPT hScope, const char *pszKey, const char *pszValue ) = 0;
 	virtual bool SetValue( HSCRIPT hScope, const char *pszKey, const ScriptVariant_t &value ) = 0;
 	virtual bool SetValue( HSCRIPT hScope, int nIndex, const ScriptVariant_t &value ) = 0;
-	bool SetValue( const char *pszKey, const ScriptVariant_t &value )																{ return SetValue(NULL, pszKey, value ); }
 
 	virtual void CreateTable( ScriptVariant_t &Table ) = 0;
-	virtual bool IsTable(HSCRIPT hScope) = 0;
+	virtual bool IsTable( HSCRIPT hScope ) = 0;
 	virtual int	GetNumTableEntries( HSCRIPT hScope ) = 0;
 	virtual int GetKeyValue( HSCRIPT hScope, int nIterator, ScriptVariant_t *pKey, ScriptVariant_t *pValue ) = 0;
 
 	virtual bool GetValue( HSCRIPT hScope, const char *pszKey, ScriptVariant_t *pValue ) = 0;
 	virtual bool GetValue( HSCRIPT hScope, int nIndex, ScriptVariant_t *pValue ) = 0;
-	bool GetValue(const char *pszKey, ScriptVariant_t *pValue)
-	{
-		return GetValue(NULL, pszKey, pValue);
-	}
-
 	virtual bool GetScalarValue( HSCRIPT hScope, ScriptVariant_t *pValue ) = 0;
 	virtual void ReleaseValue( ScriptVariant_t &value ) = 0;
 
 	virtual bool ClearValue( HSCRIPT hScope, const char *pszKey ) = 0;
-	bool ClearValue( const char *pszKey)																							{ return ClearValue( NULL, pszKey ); }
 
 	virtual void CreateArray( ScriptVariant_t &pArray ) = 0;
 	virtual bool IsArray( HSCRIPT hScope ) = 0;
