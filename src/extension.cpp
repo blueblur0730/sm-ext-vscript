@@ -21,7 +21,6 @@
 #include "extension.h"
 #include "core/vscript_manager.h"
 #include "core/handle_types.h"
-#include "mathlib/mathlib.h"
 
 VscriptExt g_VscriptExt;
 SMEXT_LINK(&g_VscriptExt);

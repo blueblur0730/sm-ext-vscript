@@ -22,6 +22,7 @@
 #include "core/handle_types.h"
 #include "core/vscript_manager.h"
 #include "core/variant_helpers.h"
+#include "mathlib/mathlib.h"
 #include <vscript/ivscript.h>
 
 static cell_t Native_ScriptVariant_FromInt(IPluginContext* ctx, const cell_t* params) {

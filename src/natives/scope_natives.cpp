@@ -23,6 +23,7 @@
 #include "core/vscript_manager.h"
 #include "core/generic_operations.h"
 #include "core/variant_helpers.h"
+#include "mathlib/mathlib.h"
 #include <vscript/ivscript.h>
 
 static cell_t Native_VScriptScope_Create(IPluginContext* ctx, const cell_t* params) {

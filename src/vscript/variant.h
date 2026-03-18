@@ -17,8 +17,7 @@
 
 #include "datamap.h"
 #include "basehandle.h"
-#include "mathlib/vector.h"
-#include "mathlib/vector2d.h"
+#include "mathlib/mathlib.h"
 #include "tier1/strtools.h"
 #include "tier1/utlstring.h"
 #include "../../game/shared/ehandle.h"
