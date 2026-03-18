@@ -519,24 +519,24 @@ void Test_Variant() {
 
 	// Test FromInt
 	ScriptVariant intVar = ScriptVariant.FromInt(42);
-	TestResultWithValue("[ScriptVariant] FromInt", intVar.Type == FIELD_INTEGER, "(type=%d, value=%d)", intVar.Type, intVar.Int);
+	TestResultWithValue("[ScriptVariant] FromInt", intVar.Type == VSF_INTEGER, "(type=%d, value=%d)", intVar.Type, intVar.Int);
 	delete intVar;
 
 	// Test FromFloat
 	ScriptVariant floatVar = ScriptVariant.FromFloat(3.14);
-	TestResultWithValue("[ScriptVariant] FromFloat", floatVar.Type == FIELD_FLOAT, "(type=%d, value=%.2f)", floatVar.Type, floatVar.Float);
+	TestResultWithValue("[ScriptVariant] FromFloat", floatVar.Type == VSF_FLOAT, "(type=%d, value=%.2f)", floatVar.Type, floatVar.Float);
 	delete floatVar;
 
 	// Test FromBool
 	ScriptVariant boolVar = ScriptVariant.FromBool(true);
-	TestResultWithValue("[ScriptVariant] FromBool", boolVar.Type == FIELD_BOOLEAN, "(type=%d, value=%d)", boolVar.Type, boolVar.Bool);
+	TestResultWithValue("[ScriptVariant] FromBool", boolVar.Type == VSF_BOOLEAN, "(type=%d, value=%d)", boolVar.Type, boolVar.Bool);
 	delete boolVar;
 
 	// Test FromString
 	ScriptVariant stringVar = ScriptVariant.FromString("hello");
 	char buffer[64];
 	stringVar.GetString(buffer, sizeof(buffer));
-	TestResultWithValue("[ScriptVariant] FromString", stringVar.Type == FIELD_CSTRING, "(type=%d, value=%s)", stringVar.Type, buffer);
+	TestResultWithValue("[ScriptVariant] FromString", stringVar.Type == VSF_CSTRING, "(type=%d, value=%s)", stringVar.Type, buffer);
 	delete stringVar;
 
 	// Test FromVector
@@ -544,7 +544,7 @@ void Test_Variant() {
 	ScriptVariant vectorVar = ScriptVariant.FromVector(vec);
 	float vecOut[3];
 	vectorVar.GetVector(vecOut);
-	TestResultWithValue("[ScriptVariant] FromVector", vectorVar.Type == FIELD_VECTOR, "(type=%d)", vectorVar.Type);
+	TestResultWithValue("[ScriptVariant] FromVector", vectorVar.Type == VSF_VECTOR, "(type=%d)", vectorVar.Type);
 	delete vectorVar;
 
 	// Test FromTable
@@ -552,7 +552,7 @@ void Test_Variant() {
 	tbl.SetInt("key", 123);
 	ScriptVariant tableVar = ScriptVariant.FromTable(tbl);
 	VScriptTable tblOut = tableVar.Table;
-	TestResultWithValue("[ScriptVariant] FromTable", tableVar.Type == FIELD_HSCRIPT && tblOut, "(type=%d, value=%d)", tableVar.Type, tblOut ? tblOut.GetInt("key") : 0);
+	TestResultWithValue("[ScriptVariant] FromTable", tableVar.Type == VSF_HSCRIPT && tblOut, "(type=%d, value=%d)", tableVar.Type, tblOut ? tblOut.GetInt("key") : 0);
 	delete tblOut;
 	delete tableVar;
 	delete tbl;
@@ -562,14 +562,14 @@ void Test_Variant() {
 	arr.PushInt(456);
 	ScriptVariant arrayVar = ScriptVariant.FromArray(arr);
 	VScriptArray arrOut = arrayVar.Array;
-	TestResultWithValue("[ScriptVariant] FromArray", arrayVar.Type == FIELD_HSCRIPT && arrOut, "(type=%d, value=%d)", arrayVar.Type, arrOut ? arrOut.GetInt(0) : 0);
+	TestResultWithValue("[ScriptVariant] FromArray", arrayVar.Type == VSF_HSCRIPT && arrOut, "(type=%d, value=%d)", arrayVar.Type, arrOut ? arrOut.GetInt(0) : 0);
 	delete arrOut;
 	delete arrayVar;
 	delete arr;
 
 	// Test Null
 	ScriptVariant nullVar = ScriptVariant.Null();
-	TestResultWithValue("[ScriptVariant] Null", nullVar.Type == FIELD_VOID && nullVar.IsNull, "(type=%d, IsNull=%d)", nullVar.Type, nullVar.IsNull);
+	TestResultWithValue("[ScriptVariant] Null", nullVar.Type == VSF_VOID && nullVar.IsNull, "(type=%d, IsNull=%d)", nullVar.Type, nullVar.IsNull);
 	delete nullVar;
 
 	// Test FromEntity (find a valid client)
