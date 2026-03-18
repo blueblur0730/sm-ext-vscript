@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-22.04, windows-latest]
         sm_version: [latest, "1.12"]
-        target_arch: [x86, x64]
+        target_arch: x86 #[x86, x64]
 
         include:
           - os: ubuntu-latest
@@ -47,8 +47,8 @@ jobs:
           - target_arch: x86
             vs_dev_arch: x86
 
-          - target_arch: x64
-            vs_dev_arch: x86_64
+          #- target_arch: x64
+            #vs_dev_arch: x86_64
 
     name: Build Project on ${{ matrix.os_short }}-${{ matrix.sm_short }}-${{ matrix.target_arch }}
     runs-on: ${{ matrix.os }}
@@ -174,7 +174,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p addons/sourcemod
-          cp -r build/package/addons/sourcemod/extensions addons/sourcemod
+          cp -r build/package/addons/sourcemod addons/sourcemod
 
       - name: Upload Binary (Package)
         uses: actions/upload-artifact@v7
