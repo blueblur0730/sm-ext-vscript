@@ -6,7 +6,7 @@ builder.SetBuildFolder('package')
 # Folder structure: (dest_folder, src_folder or None for extensions)
 folder_list = [
   ('addons/sourcemod/extensions', None),
-  ('addons/sourcemod/scripting/include', 'scripting/include'),
+  ('addons/sourcemod/scripting', 'scripting'),
   ('scripts/vscripts', 'tools'),
 ]
 
