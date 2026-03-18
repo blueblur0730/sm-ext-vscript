@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-22.04, windows-latest]
         sm_version: [latest, "1.12"]
-        target_arch: x86 #[x86, x64]
+        target_arch: [x86] #[x86, x64]
 
         include:
           - os: ubuntu-latest
