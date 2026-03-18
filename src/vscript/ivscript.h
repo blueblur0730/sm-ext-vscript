@@ -100,7 +100,6 @@
 #include "appframework/IAppSystem.h"
 #include "tier1/functors.h"
 #include "vscript/variant.h"
-#include "sdk/fmtstr_2013.h"
 #include <functional>
 #include "tier0/memdbgon.h"
 

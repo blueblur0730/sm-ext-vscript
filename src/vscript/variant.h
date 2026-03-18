@@ -19,7 +19,7 @@
 #include "basehandle.h"
 #include "mathlib/vector.h"
 #include "tier1/strtools.h"
-#include "sdk/utlstring_2013.h"
+#include "tier1/utlstring.h"
 #include "../../game/shared/ehandle.h"
 //#include "tier1/utlstringtoken.h"
 
@@ -179,7 +179,7 @@ public:
 	bool AssignTo( QuaternionAligned *pDest ) const { return AssignTo( (Quaternion*)pDest ); }
 	bool AssignTo( VectorAligned *pDest ) const		{ return AssignTo( (Vector*)pDest ); }
 	bool AssignTo( char *pDest, uint nBufLen ) const;
-	bool AssignTo( CUtlStringNew *pString ) const;
+	bool AssignTo( CUtlString *pString ) const;
 	bool AssignTo( const char **pszString ) const;
 	bool AssignTo( HSCRIPT *pDest ) const;
 	bool AssignTo( CBaseHandle *pDest ) const;
@@ -932,11 +932,11 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( char *pDest, uint nBufLen )
 }
 
 template< class CValueAllocator >
-inline bool CVariantBase<CValueAllocator>::AssignTo( CUtlStringNew *pString ) const
+inline bool CVariantBase<CValueAllocator>::AssignTo( CUtlString *pString ) const
 {
 	int nLen = ( m_type != FIELD_CSTRING ) ? 256 : V_strlen( m_pszString ) + 1;
 	pString->SetLength( nLen );
-	return AssignTo( pString->GetForModify(), uint( nLen ) );
+	return AssignTo( pString->Get(), uint( nLen ) );
 }
 
 template< class CValueAllocator >
@@ -944,7 +944,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( const char **pszString ) co
 {
 	if ( m_type != FIELD_CSTRING )
 	{
-		Warning( "CVariantBase<CValueAllocator>::AssignTo: Using const char * but type was not FIELD_CSTRING. You might want to use CUtlStringNew instead or the script passed an invalid param to a string param/table. Returning NULL.\n" );
+		Warning( "CVariantBase<CValueAllocator>::AssignTo: Using const char * but type was not FIELD_CSTRING. You might want to use CUtlString instead or the script passed an invalid param to a string param/table. Returning NULL.\n" );
 		return false;
 	}
 
