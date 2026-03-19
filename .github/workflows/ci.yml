@@ -2,12 +2,12 @@ name: CI
 on:
   push:
     branches:
-     - compile
+     - debug
     paths: ["src/**", "pushtrigger.txt"]
 
   pull_request:
     branches:
-     - compile
+     - debug
     paths: ["src/**", "pushtrigger.txt"]
 
   workflow_dispatch:
