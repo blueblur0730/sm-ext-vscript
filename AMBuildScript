@@ -168,8 +168,12 @@ class ExtensionConfig(object):
       cxx.cxxflags += ['-Wno-inconsistent-missing-override', '-Wno-deprecated-register', '-Wno-register']
 
     if builder.options.opt == '1':
-      cxx.cflags += ['-O2']
-      cxx.cxxflags += ['-g']
+        cxx.cflags += ['-O3']
+        cxx.cxxflags += [
+        '-g0',
+        '-funroll-loops',
+        '-finline-functions',
+      ]
 
   def configure_msvc(self, cxx):
     cxx.defines += ['_CRT_SECURE_NO_DEPRECATE', '_CRT_SECURE_NO_WARNINGS', '_CRT_NONSTDC_NO_DEPRECATE']
@@ -178,7 +182,7 @@ class ExtensionConfig(object):
     cxx.cxxflags += ['/std:c++17', '/EHsc', '/GR-', '/TP']
 
     if builder.options.opt == '1':
-      cxx.cflags += ['/O2', '/Zo']
+      cxx.cflags += ['/Ox', '/Zo']
       cxx.linkflags += ['/OPT:ICF', '/OPT:REF']
 
     if builder.options.debug == '1':
@@ -200,7 +204,7 @@ class ExtensionConfig(object):
       cxx.linkflags += ['-s']
 
   def configure_windows(self, cxx):
-    cxx.defines += ['_WINDOWS']
+    cxx.defines += ['WIN32', '_WINDOWS']
 
   def ConfigureForExtension(self, context, compiler):
     compiler.cxxincludes += [
