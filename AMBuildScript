@@ -152,6 +152,7 @@ class ExtensionConfig(object):
       '-msse',
       '-fvisibility=hidden',
       '-fPIC',
+      '-g',
     ]
     cxx.cxxflags += [
       '-std=c++17',
@@ -170,7 +171,6 @@ class ExtensionConfig(object):
     if builder.options.opt == '1':
         cxx.cflags += ['-O3']
         cxx.cxxflags += [
-        '-g0',
         '-funroll-loops',
         '-finline-functions',
       ]
@@ -199,9 +199,6 @@ class ExtensionConfig(object):
     if cxx.family == 'clang':
       cxx.linkflags += ['-lgcc_eh']
     cxx.linkflags += ['-static-libstdc++']
-
-    if builder.options.opt == '1':
-      cxx.linkflags += ['-s']
 
   def configure_windows(self, cxx):
     cxx.defines += ['WIN32', '_WINDOWS']
