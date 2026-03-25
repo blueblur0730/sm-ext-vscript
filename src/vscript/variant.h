@@ -20,7 +20,7 @@
 #include "mathlib/mathlib.h"
 #include "tier1/strtools.h"
 #include "tier1/utlstring.h"
-#include "tier0/dbg.h"
+//#include "tier0/dbg.h"
 #include "../../game/shared/ehandle.h"
 //#include "tier1/utlstringtoken.h"
 
@@ -541,7 +541,7 @@ void CVariantBase<CValueAllocator>::ConvertToCopiedData( bool silent )
 		case FIELD_QUATERNION: CopyData( *(Quaternion*)m_pData, true ); break;
 		default: 
 			if (!silent)
-				Warning( "Attempted to ConvertToCopiedData for unsupported type (%d)\n", m_type);
+				// Warning( "Attempted to ConvertToCopiedData for unsupported type (%d)\n", m_type);
 			break;
 		}
 	}
@@ -567,7 +567,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( T *pDest ) const
 	VariantDataType_t destType = VariantDeduceType( T );
 	if ( destType == FIELD_TYPEUNKNOWN )
 	{
-		Warning( "Unable to convert variant to unknown type\n" );
+		// Warning( "Unable to convert variant to unknown type\n" );
 	}
 	if ( destType == m_type )
 	{
@@ -592,7 +592,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( T *pDest ) const
 	}
 	else
 	{
-		Warning( "No free conversion of %s variant to %s right now\n",
+		// Warning( "No free conversion of %s variant to %s right now\n",
 			VariantFieldTypeName( m_type ), VariantFieldTypeName<T>() );
 		if ( destType != FIELD_VECTOR )
 		{
@@ -609,7 +609,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( HSCRIPT *pDest ) const
 	{
 	case FIELD_HSCRIPT:	*pDest = m_hScript; return true;
 	default:
-		Warning( "No free conversion of %s variant to HSCRIPT right now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No free conversion of %s variant to HSCRIPT right now\n", VariantFieldTypeName( m_type ) );
 		break;
 	}
 	return false;
@@ -623,7 +623,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( CBaseHandle *pDest ) const
 	{
 	case FIELD_EHANDLE:	*pDest = CHandle< CBaseEntity >(m_hEntity); return true;
 	default:
-		Warning( "No free conversion of %s variant to EHANDLE right now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No free conversion of %s variant to EHANDLE right now\n", VariantFieldTypeName( m_type ) );
 		break;
 	}
 	return false;
@@ -636,7 +636,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( CBaseEntity **pDest ) const
 	{
 	case FIELD_EHANDLE:	*pDest = CHandle< CBaseEntity >(m_hEntity); return true;
 	default:
-		Warning( "No free conversion of %s variant to CBaseEntity * right now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No free conversion of %s variant to CBaseEntity * right now\n", VariantFieldTypeName( m_type ) );
 		break;
 	}
 	return false;
@@ -650,7 +650,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( CBaseEntity **pDest ) const
 // 	case FIELD_UTLSTRINGTOKEN:	pDest->m_nHashCode = m_utlStringToken; return true;
 // 	case FIELD_CSTRING: *pDest = MakeStringToken( m_pszString ); return true;
 // 	default:
-// 		Warning( "No free conversion of %s variant to CUtlStringToken right now\n", VariantFieldTypeName( m_type ) );
+// 		// Warning( "No free conversion of %s variant to CUtlStringToken right now\n", VariantFieldTypeName( m_type ) );
 // 		break;
 // 	}
 // 	return false;
@@ -674,7 +674,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( Vector2D *pDest ) const
 		break;
 
 	default:
-		Warning( "No free conversion of %s variant to Vector2D right now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No free conversion of %s variant to Vector2D right now\n", VariantFieldTypeName( m_type ) );
 		break;
 	}
 	return false;
@@ -699,7 +699,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( Vector *pDest ) const
 		break;
 
 	default:
-		Warning( "No free conversion of %s variant to Vector right now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No free conversion of %s variant to Vector right now\n", VariantFieldTypeName( m_type ) );
 		break;
 	}
 	return false;
@@ -728,7 +728,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( QAngle *pDest ) const
 		return true;
 
 	default:
-		Warning( "No free conversion of %s variant to QAngle right now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No free conversion of %s variant to QAngle right now\n", VariantFieldTypeName( m_type ) );
 		break;
 	}
 	return false;
@@ -752,7 +752,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( QAngle *pDest ) const
 // 		break;
 // 
 // 	default:
-// 		Warning( "No free conversion of %s variant to Vector4D right now\n", VariantFieldTypeName( m_type ) );
+// 		// Warning( "No free conversion of %s variant to Vector4D right now\n", VariantFieldTypeName( m_type ) );
 // 		break;
 // 	}
 // 	return false;
@@ -780,7 +780,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( Quaternion *pDest ) const
 		return true;
 
 	default:
-		Warning( "No free conversion of %s variant to Quaternion right now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No free conversion of %s variant to Quaternion right now\n", VariantFieldTypeName( m_type ) );
 		break;
 	}
 	return false;
@@ -798,7 +798,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( float *pDest ) const
 	case FIELD_FLOAT64:		*pDest = m_float64; return true;
 	case FIELD_BOOLEAN:		*pDest = m_bool; return true;
 	default:
-		Warning( "No conversion from %s to float now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No conversion from %s to float now\n", VariantFieldTypeName( m_type ) );
 		return false;
 	}
 }
@@ -815,7 +815,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( int *pDest ) const
 	case FIELD_BOOLEAN:		*pDest = m_bool; return true;
 	case FIELD_CSTRING:		*pDest = atoi( m_pszString ); return true;
 	default:
-		Warning( "No conversion from %s to int now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No conversion from %s to int now\n", VariantFieldTypeName( m_type ) );
 		return false;
 	}
 }
@@ -845,7 +845,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( uint *pDest ) const
 	}
 
 	default: {
-		Warning( "No conversion from %s to int now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No conversion from %s to int now\n", VariantFieldTypeName( m_type ) );
 		return false;
 	}
 	}
@@ -875,12 +875,12 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( bool *pDest ) const
 		}
 		else
 		{
-			Warning("Invalid conversion : CString '%s' to bool\n", m_pszString );
+			// Warning("Invalid conversion : CString '%s' to bool\n", m_pszString );
 			return false;
 		}
 
 	default:
-		Warning( "No conversion from %s to bool now\n", VariantFieldTypeName( m_type ) );
+		// Warning( "No conversion from %s to bool now\n", VariantFieldTypeName( m_type ) );
 		return false;
 	}
 }
@@ -926,7 +926,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( char *pDest, uint nBufLen )
 		}
 	}
 
-	Warning( "No conversion from %s to string at the moment!\n", VariantFieldTypeName( m_type ) );
+	// Warning( "No conversion from %s to string at the moment!\n", VariantFieldTypeName( m_type ) );
 	*pDest = 0;
 	return false;
 }
@@ -944,7 +944,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( const char **pszString ) co
 {
 	if ( m_type != FIELD_CSTRING )
 	{
-		Warning( "CVariantBase<CValueAllocator>::AssignTo: Using const char * but type was not FIELD_CSTRING. You might want to use CUtlString instead or the script passed an invalid param to a string param/table. Returning NULL.\n" );
+		// Warning( "CVariantBase<CValueAllocator>::AssignTo: Using const char * but type was not FIELD_CSTRING. You might want to use CUtlString instead or the script passed an invalid param to a string param/table. Returning NULL.\n" );
 		return false;
 	}
 
