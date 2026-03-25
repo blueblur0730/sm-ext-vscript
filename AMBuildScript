@@ -191,8 +191,6 @@ class ExtensionConfig(object):
     else:
       cxx.cflags += ['/MT']
 
-    cxx.linkflags += [os.path.join(self.sdks.path, 'lib', "public", 'tier0.lib')]
-
   def configure_linux(self, cxx):
     cxx.defines += ['_LINUX', 'POSIX']
     cxx.linkflags += ['-Wl,--exclude-libs,ALL', '-lm']
