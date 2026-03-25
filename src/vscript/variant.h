@@ -20,6 +20,7 @@
 #include "mathlib/mathlib.h"
 #include "tier1/strtools.h"
 #include "tier1/utlstring.h"
+#include "tier0/dbg.h"
 #include "../../game/shared/ehandle.h"
 //#include "tier1/utlstringtoken.h"
 

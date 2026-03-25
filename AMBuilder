@@ -21,5 +21,6 @@ for sdk_name in Extension.sdks:
 
     if binary.compiler.target.platform == 'windows':
       binary.sources += ['src/version.rc']
+      binary.compiler.linkflags += [os.path.join(sdk.path, 'lib', "public", 'tier0.lib')]
 
     Extension.extensions += [builder.Add(binary)]
