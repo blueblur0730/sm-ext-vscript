@@ -174,8 +174,6 @@ class ExtensionConfig(object):
         '-funroll-loops',
         '-finline-functions',
       ]
-        
-    cxx.linkflags += [os.path.join(self.sdks.path, 'lib', "public", 'tier0.lib')]
 
   def configure_msvc(self, cxx):
     cxx.defines += ['_CRT_SECURE_NO_DEPRECATE', '_CRT_SECURE_NO_WARNINGS', '_CRT_NONSTDC_NO_DEPRECATE']
@@ -236,6 +234,7 @@ class ExtensionConfig(object):
     ]
     for path in paths:
       compiler.cxxincludes += [os.path.join(sdk.path, *path)]
+      compiler.linkflags += [os.path.join(sdk.path, 'lib', "public", 'tier0.lib')]
 
     return compiler
 
