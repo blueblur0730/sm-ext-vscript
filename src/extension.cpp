@@ -32,16 +32,15 @@ const Vector vec3_invalid(0, 0, 0);
 VscriptExt g_VscriptExt;
 SMEXT_LINK(&g_VscriptExt);
 
-IScriptManager* g_pScriptManager = nullptr;
-
 bool VscriptExt::SDK_OnMetamodLoad(ISmmAPI* ismm, char* error, size_t maxlen, bool late) {
-	GET_V_IFACE_ANY(GetEngineFactory, g_pScriptManager, IScriptManager, VSCRIPT_INTERFACE_VERSION);
-	if (!g_pScriptManager) {
+	IScriptManager* pScriptManager = nullptr;
+	GET_V_IFACE_CURRENT(GetEngineFactory, pScriptManager, IScriptManager, VSCRIPT_INTERFACE_VERSION);
+	if (!pScriptManager) {
 		snprintf(error, maxlen, "Couldn't get IScriptManager!");
 		return false;
 	}
 
-	if (!g_VScriptManager.Initialize(g_pScriptManager)) {
+	if (!g_VScriptManager.Initialize(pScriptManager)) {
 		snprintf(error, maxlen, "Failed to initialize VScriptManager!");
 		return false;
 	}
