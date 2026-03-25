@@ -593,7 +593,7 @@ inline bool CVariantBase<CValueAllocator>::AssignTo( T *pDest ) const
 	else
 	{
 		// Warning( "No free conversion of %s variant to %s right now\n",
-			VariantFieldTypeName( m_type ), VariantFieldTypeName<T>() );
+			// VariantFieldTypeName( m_type ), VariantFieldTypeName<T>() );
 		if ( destType != FIELD_VECTOR )
 		{
 			*pDest = 0;
