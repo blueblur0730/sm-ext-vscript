@@ -191,7 +191,7 @@ static cell_t Native_ScriptVariant_GetString(IPluginContext* ctx, const cell_t* 
 	VScriptVariantHandle* handle = ReadVScriptHandle<VScriptVariantHandle>(ctx, params[1]);
 	if (!handle) return 0;
 
-	const char *str;
+	char *str = nullptr;
 	handle->GetVariant().AssignTo(str);
 	if (handle->GetVariant().GetType() == FIELD_CSTRING && str) {
 		ctx->StringToLocalUTF8(params[2], params[3], str, nullptr);

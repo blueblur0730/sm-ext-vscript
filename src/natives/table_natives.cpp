@@ -242,7 +242,7 @@ static cell_t Native_VScriptTable_GetString(IPluginContext* ctx, const cell_t* p
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	const char* str = variant;
+	char* str = nullptr;
 	variant.AssignTo(str);
 	if (variant.GetType() == FIELD_CSTRING && str) {
 		ctx->StringToLocalUTF8(params[3], params[4], str, nullptr);
@@ -362,8 +362,8 @@ static cell_t Native_VScriptTable_GetStringAt(IPluginContext* ctx, const cell_t*
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	const char *str;
-	variant.AssignTo(&str);
+	char *str = nullptr;
+	variant.AssignTo(str);
 	if (variant.GetType() == FIELD_CSTRING && str) {
 		ctx->StringToLocalUTF8(params[3], params[4], str, nullptr);
 		result = strlen(str);
@@ -408,8 +408,8 @@ static cell_t Native_VScriptTable_GetKeyValue(IPluginContext* ctx, const cell_t*
 		if (iterator == -1) return -1;
 
 		// Skip non-string keys (internal metadata)
-		const char *key;
-		keyVar.AssignTo(&key);
+		char *key = nullptr;
+		keyVar.AssignTo(key);
 		if (keyVar.GetType() != FIELD_CSTRING || !key) {
 			// Release variants before continuing to avoid memory leak
 			if (keyVar.GetFlags() & SV_FREE) vm->ReleaseValue(keyVar);
@@ -514,8 +514,8 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 		if (iterator == -1) break;
 
 		// Skip non-string keys (internal metadata)
-		const char *key;
-		keyVar.AssignTo(&key);
+		char *key = nullptr;
+		keyVar.AssignTo(key);
 		if (keyVar.GetType() == FIELD_CSTRING && key) {
 			// Add key to array
 			vm->ArrayAddToTail(arr, keyVar);
@@ -554,8 +554,8 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 		if (iterator == -1) break;
 
 		// Copy key-value pair to new table
-		const char *key;
-		keyVar.AssignTo(&key);
+		char *key = nullptr;
+		keyVar.AssignTo(key);
 		if (keyVar.GetType() == FIELD_CSTRING && key) {
 			vm->SetValue(newTable, key, valueVar);
 		} else if (keyVar.GetType() == FIELD_INTEGER) {

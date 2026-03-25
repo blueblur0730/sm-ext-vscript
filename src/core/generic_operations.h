@@ -95,7 +95,7 @@ cell_t GenericGetString(IPluginContext* ctx, const cell_t* params) {
 	if (!vm->GetValue(hscript, key, &variant)) return 0;
 
 	size_t written = 0;
-	const char *pStr;
+	char *pStr = nullptr;
 	variant.AssignTo(pStr);
 	if (variant.GetType() == FIELD_CSTRING && pStr) {
 		ctx->StringToLocalUTF8(params[3], params[4], pStr, &written);

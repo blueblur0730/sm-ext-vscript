@@ -114,8 +114,8 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 			bool bool_a = a.Get<bool>(); bool bool_b = b.Get<bool>();  return bool_a == bool_b;
 		}
 		case FIELD_CSTRING: {
-			const char* str_a; 
-			const char* str_b;
+			char* str_a = nullptr; 
+			char* str_b = nullptr; 
 			a.AssignTo(str_a);
 			b.AssignTo(str_b);
 			if (!str_a || !str_b) return false;
