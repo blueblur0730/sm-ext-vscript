@@ -36,7 +36,7 @@ static cell_t Native_VScriptArray_Create(IPluginContext* ctx, const cell_t* para
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
 
-	HSCRIPT hScript = arrVar;
+	HSCRIPT hScript = arrVar.Get<HSCRIPT>();
 	if (arrVar.GetType() != FIELD_HSCRIPT || !hScript || hScript == INVALID_HSCRIPT) {
 		ctx->ThrowNativeError("Failed to create VScript array HSCRIPT Instance. hScript: %d, type: %d", hScript, arrVar.GetType());
 		return 0;
@@ -91,7 +91,7 @@ static cell_t Native_VScriptArray_PushString(IPluginContext* ctx, const cell_t* 
 	ctx->LocalToString(params[2], &str);
 
 	ScriptVariant_t variant;
-	variant = str;
+	variant = ScriptVariant_t(str, false);
 	vm->ArrayAddToTail(arr, variant);
 	return 1;
 }
@@ -101,8 +101,7 @@ static cell_t Native_VScriptArray_PushVector(IPluginContext* ctx, const cell_t* 
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	Vector v = ReadVectorParam(ctx, params, 2);
-	ScriptVariant_t variant = CreateVectorVariant(v);
-	vm->ArrayAddToTail(arr, variant);
+	vm->ArrayAddToTail(arr, CreateVectorVariant(v));
 	return 1;
 }
 
@@ -126,8 +125,8 @@ static cell_t Native_VScriptArray_GetInt(IPluginContext* ctx, const cell_t* para
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_INTEGER) result = (int)variant;
-	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)((float)variant);
+	if (variant.GetType() == FIELD_INTEGER) result = (cell_t)variant.Get<int>();
+	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)((float)variant.Get<float>());
 
 	return result;
 }
@@ -141,8 +140,8 @@ static cell_t Native_VScriptArray_GetFloat(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc((float)variant);
-	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)((int)variant));
+	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc(variant.Get<float>());
+	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)(variant.Get<int>()));
 
 	return result;
 }
@@ -156,7 +155,7 @@ static cell_t Native_VScriptArray_GetBool(IPluginContext* ctx, const cell_t* par
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_BOOLEAN) result = (bool)variant;
+	if (variant.GetType() == FIELD_BOOLEAN) result = (cell_t)variant.Get<bool>();
 
 	return result;
 }
@@ -170,7 +169,8 @@ static cell_t Native_VScriptArray_GetString(IPluginContext* ctx, const cell_t* p
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	const char *pszString = variant;
+	const char *pszString;
+	variant.AssignTo(pszString);
 	if (variant.GetType() == FIELD_CSTRING && pszString) {
 		ctx->StringToLocalUTF8(params[3], params[4], pszString, nullptr);
 		result = strlen(pszString);
@@ -187,7 +187,8 @@ static cell_t Native_VScriptArray_GetVector(IPluginContext* ctx, const cell_t* p
 	if (!vm->GetValue(arr, params[2], &variant)) return 0;
 	AutoReleaseVariant autoRelease(vm, variant);
 
-	const Vector &pVector = variant;
+	Vector pVector(0, 0, 0);
+	variant.AssignTo(&pVector);
 	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, &pVector)) {
 		return 1;
 	}
@@ -250,7 +251,7 @@ static cell_t Native_VScriptArray_SetString(IPluginContext* ctx, const cell_t* p
 	ctx->LocalToString(params[3], &str);
 
 	ScriptVariant_t variant;
-	variant = str;
+	variant = ScriptVariant_t(str, false);
 	return vm->SetValue(arr, params[2], variant);
 }
 
@@ -259,8 +260,7 @@ static cell_t Native_VScriptArray_SetVector(IPluginContext* ctx, const cell_t* p
 	if (!GetVMAndHScript<VScriptArrayHandle>(ctx, params[1], vm, arr)) return 0;
 
 	Vector v = ReadVectorParam(ctx, params, 3);
-	ScriptVariant_t variant = CreateVectorVariant(v);
-	return vm->SetValue(arr, params[2], variant);
+	return vm->SetValue(arr, params[2], CreateVectorVariant(v));
 }
 
 static cell_t Native_VScriptArray_Remove(IPluginContext* ctx, const cell_t* params) {

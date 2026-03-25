@@ -36,7 +36,7 @@ static cell_t Native_VScriptTable_Create(IPluginContext* ctx, const cell_t* para
 	ScriptVariant_t tableVar;
 	vm->CreateTable(tableVar);
 
-	HSCRIPT table = tableVar;
+	HSCRIPT table = tableVar.Get<HSCRIPT>();
 	if (tableVar.GetType() != FIELD_HSCRIPT || !table || table == INVALID_HSCRIPT) {
 		ctx->ThrowNativeError("Failed to create table HSCRIPT Instance. table: %d, type: %d", table, tableVar.GetType());
 		return 0;
@@ -100,8 +100,7 @@ static cell_t Native_VScriptTable_SetVector(IPluginContext* ctx, const cell_t* p
 	ctx->LocalToString(params[2], &key);
 
 	Vector v = ReadVectorParam(ctx, params, 3);
-	ScriptVariant_t variant = CreateVectorVariant(v);
-	return vm->SetValue(table, key, variant);
+	return vm->SetValue(table, key, CreateVectorVariant(v));
 }
 
 static cell_t Native_VScriptTable_SetValue(IPluginContext* ctx, const cell_t* params) {
@@ -162,7 +161,7 @@ static cell_t Native_VScriptTable_SetStringAt(IPluginContext* ctx, const cell_t*
 	ctx->LocalToString(params[3], &str);
 
 	ScriptVariant_t variant;
-	variant = str;
+	variant = ScriptVariant_t(str, false);
 	return vm->SetValue(table, params[2], variant);
 }
 
@@ -171,8 +170,7 @@ static cell_t Native_VScriptTable_SetVectorAt(IPluginContext* ctx, const cell_t*
 	if (!GetVMAndHScript<VScriptTableHandle>(ctx, params[1], vm, table)) return 0;
 
 	Vector v = ReadVectorParam(ctx, params, 3);
-	ScriptVariant_t variant = CreateVectorVariant(v);
-	return vm->SetValue(table, params[2], variant);
+	return vm->SetValue(table, params[2], CreateVectorVariant(v));
 }
 
 static cell_t Native_VScriptTable_GetInt(IPluginContext* ctx, const cell_t* params) {
@@ -187,8 +185,8 @@ static cell_t Native_VScriptTable_GetInt(IPluginContext* ctx, const cell_t* para
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_INTEGER) result = (int)variant;
-	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)((float)variant);
+	if (variant.GetType() == FIELD_INTEGER) result = (cell_t)variant.Get<int>();
+	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)(variant.Get<float>());
 
 	return result;
 }
@@ -205,8 +203,8 @@ static cell_t Native_VScriptTable_GetFloat(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc((float)variant);
-	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)((int)variant));
+	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc(variant.Get<float>());
+	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)(variant.Get<int>()));
 
 	return result;
 }
@@ -223,7 +221,7 @@ static cell_t Native_VScriptTable_GetBool(IPluginContext* ctx, const cell_t* par
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_BOOLEAN) result = (bool)variant;
+	if (variant.GetType() == FIELD_BOOLEAN) result = (cell_t)variant.Get<bool>();
 
 	return result;
 }
@@ -245,6 +243,7 @@ static cell_t Native_VScriptTable_GetString(IPluginContext* ctx, const cell_t* p
 
 	cell_t result = 0;
 	const char* str = variant;
+	variant.AssignTo(str);
 	if (variant.GetType() == FIELD_CSTRING && str) {
 		ctx->StringToLocalUTF8(params[3], params[4], str, nullptr);
 		result = strlen(str);
@@ -268,7 +267,8 @@ static cell_t Native_VScriptTable_GetVector(IPluginContext* ctx, const cell_t* p
 
 	AutoReleaseVariant autoRelease(vm, variant);
 
-	const Vector &vec = variant;
+	Vector vec(0, 0, 0);
+	variant.AssignTo(&vec);
 	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, &vec)) {
 		return 1;
 	}
@@ -301,8 +301,8 @@ static cell_t Native_VScriptTable_GetIntAt(IPluginContext* ctx, const cell_t* pa
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_INTEGER) result = (int)variant;
-	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)((float)variant);
+	if (variant.GetType() == FIELD_INTEGER) result = (cell_t)variant.Get<int>();
+	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)(variant.Get<float>());
 
 	return result;
 }
@@ -316,8 +316,8 @@ static cell_t Native_VScriptTable_GetFloatAt(IPluginContext* ctx, const cell_t* 
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc((float)variant);
-	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)((int)variant));
+	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc(variant.Get<float>());
+	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)(variant.Get<int>()));
 
 	return result;
 }
@@ -344,7 +344,7 @@ static cell_t Native_VScriptTable_GetBoolAt(IPluginContext* ctx, const cell_t* p
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_BOOLEAN) result = (bool)variant;
+	if (variant.GetType() == FIELD_BOOLEAN) result = (cell_t)variant.Get<bool>();
 
 	return result;
 }
@@ -362,7 +362,8 @@ static cell_t Native_VScriptTable_GetStringAt(IPluginContext* ctx, const cell_t*
 	AutoReleaseVariant autoRelease(vm, variant);
 
 	cell_t result = 0;
-	const char* str = variant;
+	const char *str;
+	variant.AssignTo(&str);
 	if (variant.GetType() == FIELD_CSTRING && str) {
 		ctx->StringToLocalUTF8(params[3], params[4], str, nullptr);
 		result = strlen(str);
@@ -383,7 +384,8 @@ static cell_t Native_VScriptTable_GetVectorAt(IPluginContext* ctx, const cell_t*
 
 	AutoReleaseVariant autoRelease(vm, variant);
 
-	const Vector &vec = variant;
+	Vector vec(0, 0, 0);
+	variant.AssignTo(&vec);
 	if (variant.GetType() == FIELD_VECTOR && WriteVectorResult(ctx, params, 3, &vec)) {
 		return 1;
 	}
@@ -406,7 +408,8 @@ static cell_t Native_VScriptTable_GetKeyValue(IPluginContext* ctx, const cell_t*
 		if (iterator == -1) return -1;
 
 		// Skip non-string keys (internal metadata)
-		const char* key = keyVar;
+		const char *key;
+		keyVar.AssignTo(&key);
 		if (keyVar.GetType() != FIELD_CSTRING || !key) {
 			// Release variants before continuing to avoid memory leak
 			if (keyVar.GetFlags() & SV_FREE) vm->ReleaseValue(keyVar);
@@ -496,7 +499,7 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 	// Create new array to hold keys
 	ScriptVariant_t arrVar;
 	vm->CreateArray(arrVar);
-	HSCRIPT arr = arrVar;
+	HSCRIPT arr = arrVar.Get<HSCRIPT>();
 	if (arrVar.GetType() != FIELD_HSCRIPT || !arr || arr == INVALID_HSCRIPT) {
 		ctx->ThrowNativeError("Failed to create array HSCRIPT Instance. arr: %d, type: %d", arr, arrVar.GetType());
 		return 0;
@@ -511,7 +514,8 @@ static cell_t Native_VScriptTable_GetKeys(IPluginContext* ctx, const cell_t* par
 		if (iterator == -1) break;
 
 		// Skip non-string keys (internal metadata)
-		const char* key = keyVar;
+		const char *key;
+		keyVar.AssignTo(&key);
 		if (keyVar.GetType() == FIELD_CSTRING && key) {
 			// Add key to array
 			vm->ArrayAddToTail(arr, keyVar);
@@ -535,7 +539,7 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 	// Create new table
 	ScriptVariant_t newTableVar;
 	vm->CreateTable(newTableVar);
-	HSCRIPT newTable = newTableVar;
+	HSCRIPT newTable = newTableVar.Get<HSCRIPT>();
 	if (newTableVar.GetType() != FIELD_HSCRIPT || !newTable || newTable == INVALID_HSCRIPT) {
 		ctx->ThrowNativeError("Failed to create new table HSCRIPT Instance. newTable: %d, type: %d", newTable, newTableVar.GetType());
 		return 0;
@@ -550,7 +554,8 @@ static cell_t Native_VScriptTable_Clone(IPluginContext* ctx, const cell_t* param
 		if (iterator == -1) break;
 
 		// Copy key-value pair to new table
-		const char* key = keyVar;
+		const char *key;
+		keyVar.AssignTo(&key);
 		if (keyVar.GetType() == FIELD_CSTRING && key) {
 			vm->SetValue(newTable, key, valueVar);
 		} else if (keyVar.GetType() == FIELD_INTEGER) {

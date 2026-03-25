@@ -105,24 +105,29 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 
 	switch (a.GetType()) {
 		case FIELD_INTEGER: {
-			int int_a = a; int int_b = b; return int_a == int_b;
+			int int_a = a.Get<int>(); int int_b = b.Get<int>(); return int_a == int_b;
 		}
 		case FIELD_FLOAT: {
-			float float_a = a; float float_b = b; return float_a == float_b;
+			float float_a = a.Get<float>(); float float_b = b.Get<float>(); return float_a == float_b;
 		}
 		case FIELD_BOOLEAN: {
-			bool bool_a = a; bool bool_b = b;  return bool_a == bool_b;
+			bool bool_a = a.Get<bool>(); bool bool_b = b.Get<bool>();  return bool_a == bool_b;
 		}
 		case FIELD_CSTRING: {
-			const char* str_a = a; const char* str_b = b;
+			const char* str_a; 
+			const char* str_b;
+			a.AssignTo(str_a);
+			b.AssignTo(str_b);
 			if (!str_a || !str_b) return false;
 			return strcmp(str_a, str_b) == 0;
 		}
 		case FIELD_HSCRIPT: {
-			HSCRIPT hscript_a = a; HSCRIPT hscript_b = b; return hscript_a == hscript_b;
+			HSCRIPT hscript_a = a.Get<HSCRIPT>(); HSCRIPT hscript_b = b.Get<HSCRIPT>(); return hscript_a == hscript_b;
 		}
 		case FIELD_VECTOR: {
-			const Vector &vec_a = a; const Vector &vec_b = b;
+			Vector vec_a(0, 0, 0); Vector vec_b(0, 0, 0);
+			a.AssignTo(&vec_a);
+			b.AssignTo(&vec_b);
 			return vec_a.x == vec_b.x && vec_a.y == vec_b.y && vec_a.z == vec_b.z;
 		}
 		default:
@@ -133,7 +138,8 @@ inline bool CompareScriptVariants(const ScriptVariant_t& a, const ScriptVariant_
 // Create a ScriptVariant_t from a Vector (stack-allocated, no ownership transfer)
 inline ScriptVariant_t CreateVectorVariant(const Vector& v) {
 	ScriptVariant_t variant;
-	variant = const_cast<Vector*>(&v);
+	variant = v;
+	variant.ConvertToCopiedData();
 	variant.SetFlags(0);  // No ownership - caller manages lifetime
 	return variant;
 }

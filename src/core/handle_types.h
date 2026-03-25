@@ -94,7 +94,7 @@ public:
 	void Cleanup(IScriptVM* vm) override;
 
 	void SetVariant(const ScriptVariant_t& v) {
-		variant = v;
+		v.AssignTo(&variant);
 		hasVariant = true;
 	}
 };

@@ -38,8 +38,8 @@ cell_t GenericGetInt(IPluginContext* ctx, const cell_t* params) {
 	if (!vm->GetValue(hscript, key, &variant)) return params[3];
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_INTEGER) result = variant;
-	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)variant;
+	if (variant.GetType() == FIELD_INTEGER) result = (cell_t)variant.Get<int>();
+	else if (variant.GetType() == FIELD_FLOAT) result = (cell_t)(variant.Get<float>());
 
 	if (variant.GetFlags() & SV_FREE) vm->ReleaseValue(variant);
 	return result;
@@ -57,8 +57,8 @@ cell_t GenericGetFloat(IPluginContext* ctx, const cell_t* params) {
 	if (!vm->GetValue(hscript, key, &variant)) return params[3];
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc(variant);
-	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)variant);
+	if (variant.GetType() == FIELD_FLOAT) result = sp_ftoc(variant.Get<float>());
+	else if (variant.GetType() == FIELD_INTEGER) result = sp_ftoc((float)(variant.Get<int>()));
 
 	if (variant.GetFlags() & SV_FREE) vm->ReleaseValue(variant);
 	return result;
@@ -76,8 +76,8 @@ cell_t GenericGetBool(IPluginContext* ctx, const cell_t* params) {
 	if (!vm->GetValue(hscript, key, &variant)) return params[3];
 
 	cell_t result = params[3];
-	if (variant.GetType() == FIELD_BOOLEAN) result = variant;
-	else if (variant.GetType() == FIELD_INTEGER) result = variant;
+	if (variant.GetType() == FIELD_BOOLEAN) result = (cell_t)(variant.Get<bool>());
+	else if (variant.GetType() == FIELD_INTEGER) result = (cell_t)variant.Get<int>();
 
 	if (variant.GetFlags() & SV_FREE) vm->ReleaseValue(variant);
 	return result;
@@ -95,7 +95,8 @@ cell_t GenericGetString(IPluginContext* ctx, const cell_t* params) {
 	if (!vm->GetValue(hscript, key, &variant)) return 0;
 
 	size_t written = 0;
-	const char *pStr = variant;
+	const char *pStr;
+	variant.AssignTo(pStr);
 	if (variant.GetType() == FIELD_CSTRING && pStr) {
 		ctx->StringToLocalUTF8(params[3], params[4], pStr, &written);
 	}
@@ -117,7 +118,8 @@ cell_t GenericGetVector(IPluginContext* ctx, const cell_t* params) {
 
 	if (variant.GetType() == FIELD_VECTOR) {
 		cell_t* vec;
-		const Vector &pVector = variant;
+		Vector pVector(0, 0, 0);
+		variant.AssignTo(&pVector);
 		ctx->LocalToPhysAddr(params[3], &vec);
 		vec[0] = sp_ftoc(pVector.x);
 		vec[1] = sp_ftoc(pVector.y);
@@ -143,7 +145,7 @@ cell_t GenericGetValue(IPluginContext* ctx, const cell_t* params) {
 	if (!vm->GetValue(hscript, key, &variant)) return 0;
 
 	VScriptVariantHandle* handle = new VScriptVariantHandle();
-	handle->GetVariant() = variant;
+	handle->SetVariant(variant);
 	handle->SetOwnsMemory((variant.GetFlags() & SV_FREE) != 0);
 	return CreateVScriptHandle(ctx, handle);
 }
@@ -207,7 +209,7 @@ cell_t GenericSetString(IPluginContext* ctx, const cell_t* params) {
 	ctx->LocalToString(params[3], &value);
 
 	ScriptVariant_t variant;
-	variant = value;
+	variant = ScriptVariant_t(value, false);
 	variant.SetFlags(0);
 
 	return vm->SetValue(hscript, key, variant);
@@ -227,7 +229,8 @@ cell_t GenericSetVector(IPluginContext* ctx, const cell_t* params) {
 	Vector v(sp_ctof(vec[0]), sp_ctof(vec[1]), sp_ctof(vec[2]));
 
 	ScriptVariant_t variant;
-	variant = const_cast<Vector*>(&v);
+	variant = v;
+	variant.ConvertToCopiedData();
 	variant.SetFlags(0);
 
 	return vm->SetValue(hscript, key, variant);

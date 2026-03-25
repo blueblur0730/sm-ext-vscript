@@ -91,7 +91,7 @@ static cell_t Native_VScriptFunction_Call(IPluginContext* ctx, const cell_t* par
 			ctx->ThrowNativeError("Failed to execute compiled script. status: %d, scriptResult Type: %d", status, scriptResult.GetType());
 		}
 
-		funcToCall = scriptResult;
+		funcToCall = scriptResult.Get<HSCRIPT>();
 		needsRelease = (scriptResult.GetFlags() & SV_FREE) != 0;
 	}
 
@@ -193,7 +193,7 @@ static cell_t Native_VScriptFunction_CallWithArgs(IPluginContext* ctx, const cel
 			return 0;
 			ctx->ThrowNativeError("Failed to execute compiled script. status: %d, scriptResult Type: %d", status, scriptResult.GetType());
 		}
-		funcToCall = scriptResult;
+		funcToCall = scriptResult.Get<HSCRIPT>();
 		needsRelease = (scriptResult.GetFlags() & SV_FREE) != 0;
 	}
 
