@@ -229,7 +229,7 @@ private:
 
 	int 				m_extra;	// L4D2
 	int16				m_type;
-	int16				m_flags;
+	uint16				m_flags;
 
 //#ifdef _WIN32
 //	int					m_padding;	// L4D2
